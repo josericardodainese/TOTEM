@@ -1,0 +1,903 @@
+<title>Projeto TOTEM 20</title>
+<style>
+  :root {
+    --bg:        #F6F7F9;
+    --surface:   #FFFFFF;
+    --surface-2: #EDEFF3;
+    --surface-3: #E4E8EE;
+    --ink:       #131922;
+    --ink-2:     #495568;
+    --ink-3:     #6E7A8B;
+    --rule:      #DCE0E7;
+    --rule-2:    #C7CDD7;
+    --col:       #B0362C;
+    --accent:    #3B3F8F;
+    --accent-bg: #ECEDF7;
+    --col-bg:    #FBEDEB;
+    --row:       #2B6AA8;
+    --row-bg:    #EAF1F9;
+    --led:       #9A6210;
+    --led-bg:    #FBF2E2;
+    --ok:        #2E7D5B;
+    --ok-bg:     #E8F4EE;
+    --warn:      #8C4A0E;
+    --warn-bg:   #FBEFE3;
+    --shadow:    0 1px 2px rgba(19,25,34,.06), 0 4px 14px rgba(19,25,34,.05);
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:        #10141A;
+      --surface:   #171C24;
+      --surface-2: #1D232C;
+      --surface-3: #252C37;
+      --ink:       #E7EBF1;
+      --ink-2:     #A6B0BF;
+      --ink-3:     #7C8794;
+      --rule:      #2A323D;
+      --rule-2:    #3A434F;
+        --col:       #EC8076;
+      --accent:    #9AA0E8;
+      --accent-bg: #1B1D33;
+      --col-bg:    #2E1D1B;
+      --row:       #7FB2E3;
+      --row-bg:    #16232F;
+      --led:       #E3AF56;
+      --led-bg:    #2C2415;
+      --ok:        #63C79A;
+      --ok-bg:     #14261E;
+      --warn:      #DFA469;
+      --warn-bg:   #2B2016;
+      --shadow:    0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:        #10141A;
+    --surface:   #171C24;
+    --surface-2: #1D232C;
+    --surface-3: #252C37;
+    --ink:       #E7EBF1;
+    --ink-2:     #A6B0BF;
+    --ink-3:     #7C8794;
+    --rule:      #2A323D;
+    --rule-2:    #3A434F;
+    --col:       #EC8076;
+    --accent:    #9AA0E8;
+      --accent-bg: #1B1D33;
+    --col-bg:    #2E1D1B;
+    --row:       #7FB2E3;
+    --row-bg:    #16232F;
+    --led:       #E3AF56;
+    --led-bg:    #2C2415;
+    --ok:        #63C79A;
+    --ok-bg:     #14261E;
+    --warn:      #DFA469;
+    --warn-bg:   #2B2016;
+    --shadow:    0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    margin: 0;
+    padding: 0 24px 120px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 940px; margin: 0 auto; }
+  .prose { max-width: 68ch; }
+
+  /* ---------- masthead ---------- */
+  header.masthead {
+    padding: 72px 0 40px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-size: clamp(34px, 6vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -.03em;
+    font-weight: 800;
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 62ch;
+    margin: 0;
+  }
+  .meta-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    margin-top: 28px;
+  }
+  .chip {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .chip.ok  { background: var(--ok-bg);  border-color: var(--ok);  color: var(--ok); }
+
+  /* ---------- toc ---------- */
+  nav.toc {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 22px 26px;
+    margin-bottom: 56px;
+    box-shadow: var(--shadow);
+  }
+  nav.toc p {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 14px;
+  }
+  nav.toc ol {
+    margin: 0; padding: 0; list-style: none;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px 28px;
+    counter-reset: toc;
+  }
+  nav.toc li { counter-increment: toc; display: flex; gap: 10px; align-items: baseline; }
+  nav.toc li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+    flex: none;
+  }
+  nav.toc a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule-2); }
+  nav.toc a:hover { border-bottom-color: var(--ink); }
+
+  /* ---------- sections ---------- */
+  section { margin-bottom: 68px; scroll-margin-top: 24px; }
+  h2 {
+    font-size: 27px; font-weight: 750; letter-spacing: -.02em;
+    margin: 0 0 8px; padding-top: 10px;
+    text-wrap: balance;
+  }
+  .sec-head { border-top: 1px solid var(--ink); padding-top: 14px; margin-bottom: 26px; }
+  .sec-head .eyebrow { margin-bottom: 10px; }
+  .sec-head p { margin: 0; color: var(--ink-2); max-width: 66ch; }
+
+  h3 {
+    font-size: 17px; font-weight: 700; letter-spacing: -.01em;
+    margin: 38px 0 12px;
+  }
+  h4 {
+    font-family: var(--mono);
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600;
+    margin: 28px 0 10px;
+  }
+  p { margin: 0 0 16px; }
+  a { color: var(--row); }
+
+  code {
+    font-family: var(--mono);
+    font-size: .88em;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+  strong { font-weight: 680; }
+
+  /* ---------- tables ---------- */
+  .tablewrap { overflow-x: auto; margin: 20px 0 8px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  thead th {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600; background: var(--surface-2);
+    position: sticky; top: 0;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--surface-2); }
+  td.m, th.m { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .cap { color: var(--ink-3); font-size: 13px; margin: 10px 0 0; }
+
+  .tag-col { color: var(--col); background: var(--col-bg); border: 1px solid var(--col); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+  .tag-row { color: var(--row); background: var(--row-bg); border: 1px solid var(--row); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+  .tag-led { color: var(--led); background: var(--led-bg); border: 1px solid var(--led); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+  .tag-pwr { color: var(--ink-2); background: var(--surface-3); border: 1px solid var(--rule-2); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+
+  /* ---------- code blocks ---------- */
+  pre {
+    font-family: var(--mono); font-size: 13px; line-height: 1.6;
+    background: var(--surface); color: var(--ink);
+    border: 1px solid var(--rule); border-left: 3px solid var(--ink-3);
+    border-radius: 5px; padding: 14px 18px;
+    overflow-x: auto; margin: 16px 0;
+  }
+  pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+  /* ---------- callouts ---------- */
+  .note {
+    border-left: 3px solid var(--rule-2);
+    background: var(--surface);
+    border-radius: 0 5px 5px 0;
+    padding: 14px 18px; margin: 22px 0;
+    font-size: 14.5px;
+  }
+  .note p:last-child { margin-bottom: 0; }
+  .note .lbl {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em;
+    text-transform: uppercase; display: block; margin-bottom: 6px; font-weight: 600;
+  }
+  .note.warn { border-left-color: var(--warn); background: var(--warn-bg); }
+  .note.warn .lbl { color: var(--warn); }
+  .note.ok   { border-left-color: var(--ok); background: var(--ok-bg); }
+  .note.ok .lbl { color: var(--ok); }
+  .note.info .lbl { color: var(--ink-3); }
+
+  /* ---------- pinout chip ---------- */
+  .chipwrap { overflow-x: auto; margin: 24px 0 6px; }
+  .chip-diagram {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0 0;
+    min-width: 620px;
+    align-items: stretch;
+  }
+  .chip-body {
+    background: var(--surface-3);
+    border: 2px solid var(--ink-2);
+    border-radius: 8px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px 26px;
+    min-width: 150px;
+  }
+  .chip-body .nm { font-family: var(--mono); font-size: 14px; font-weight: 700; letter-spacing: .02em; }
+  .chip-body .sub { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); margin-top: 4px; letter-spacing: .08em; }
+  .chip-usb {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+    color: var(--ink-3); text-align: center; padding-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .pinlist { display: flex; flex-direction: column; gap: 3px; padding: 4px 0; }
+  .pin {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 12px;
+    padding: 5px 10px;
+    background: var(--surface); border: 1px solid var(--rule);
+  }
+  .pinlist.left .pin  { border-radius: 4px 0 0 4px; border-right: none; justify-content: flex-end; text-align: right; }
+  .pinlist.right .pin { border-radius: 0 4px 4px 0; border-left: none; }
+  .pin .num { color: var(--ink-3); font-size: 10.5px; min-width: 16px; }
+  .pin .pad { font-weight: 700; min-width: 30px; }
+  .pin .gp  { color: var(--ink-2); min-width: 42px; }
+  .pin .fn  { font-weight: 700; }
+  .pin.c .fn { color: var(--col); }
+  .pin.r .fn { color: var(--row); }
+  .pin.l .fn { color: var(--led); }
+  .pin.p .fn { color: var(--ink-2); }
+  .pin.x    { opacity: .45; }
+  .pin.x .fn { color: var(--ink-3); font-weight: 500; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 16px 0 0; font-family: var(--mono); font-size: 11.5px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
+  .sw { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
+
+  /* ---------- cell diagram ---------- */
+  .celldiag { display: flex; gap: 30px; flex-wrap: wrap; align-items: flex-start; margin: 22px 0; }
+  .celldiag svg { flex: none; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px; }
+  .celldiag .txt { flex: 1 1 300px; min-width: 280px; }
+
+  /* ---------- led chain ---------- */
+  .chain { display: flex; align-items: center; gap: 0; overflow-x: auto; padding: 18px 0 8px; }
+  .chain .node {
+    font-family: var(--mono); font-size: 11.5px;
+    border: 1px solid var(--led); color: var(--led); background: var(--led-bg);
+    border-radius: 4px; padding: 9px 12px; white-space: nowrap; text-align: center; flex: none;
+  }
+  .chain .node.src { border-color: var(--ink-2); color: var(--ink); background: var(--surface-3); }
+  .chain .arr { font-family: var(--mono); font-size: 11px; color: var(--ink-3); padding: 0 9px; flex: none; white-space: nowrap; }
+
+  /* ---------- stages ---------- */
+  .stage {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 6px; padding: 22px 26px; margin: 0 0 16px;
+    box-shadow: var(--shadow);
+  }
+  .stage-head { display: flex; gap: 14px; align-items: baseline; margin-bottom: 6px; }
+  .stage-num {
+    font-family: var(--mono); font-size: 12px; font-weight: 700;
+    color: var(--bg); background: var(--ink);
+    border-radius: 3px; padding: 3px 8px; flex: none;
+  }
+  .stage h3 { margin: 0; font-size: 18px; }
+  .stage .goal { font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); margin: 0 0 14px; }
+  .stage ol, .stage ul { margin: 0 0 12px; padding-left: 22px; }
+  .stage li { margin-bottom: 7px; }
+  .stage li:last-child { margin-bottom: 0; }
+  .stage p:last-child, .stage .tablewrap:last-child, .stage pre:last-child { margin-bottom: 0; }
+
+  ul.clean { list-style: none; padding: 0; margin: 0 0 16px; }
+  ul.clean li { padding-left: 20px; position: relative; margin-bottom: 8px; }
+  ul.clean li::before { content: "—"; position: absolute; left: 0; color: var(--ink-3); font-family: var(--mono); }
+
+  /* ---------- change list ---------- */
+  .change { border-bottom: 1px solid var(--rule); padding: 16px 0; display: grid; grid-template-columns: minmax(200px, 260px) 1fr; gap: 6px 26px; }
+  .change:last-child { border-bottom: none; }
+  .change .f { font-family: var(--mono); font-size: 12.5px; font-weight: 600; word-break: break-all; }
+  .change .d { color: var(--ink-2); font-size: 14.5px; }
+  .change .d p { margin: 0 0 8px; }
+  .change .d p:last-child { margin: 0; }
+  @media (max-width: 640px) { .change { grid-template-columns: 1fr; } }
+
+  footer {
+    border-top: 1px solid var(--rule); padding-top: 24px; margin-top: 20px;
+    font-size: 13.5px; color: var(--ink-3);
+  }
+  :focus-visible { outline: 2px solid var(--row); outline-offset: 2px; border-radius: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  /* ---------- decision cards ---------- */
+  .dec {
+    border: 1px solid var(--rule); border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0; background: var(--surface);
+    padding: 20px 24px; margin: 0 0 14px; box-shadow: var(--shadow);
+  }
+  .dec h3 { margin: 0 0 14px; font-size: 17px; }
+  .dec dl { margin: 0; display: grid; grid-template-columns: 128px 1fr; gap: 10px 18px; }
+  .dec dt {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-3); font-weight: 600; padding-top: 3px;
+  }
+  .dec dd { margin: 0; font-size: 14.5px; color: var(--ink-2); }
+  .dec dd strong { color: var(--ink); }
+  @media (max-width: 600px) { .dec dl { grid-template-columns: 1fr; gap: 4px; } .dec dd { margin-bottom: 8px; } }
+
+  /* ---------- variant split ---------- */
+  .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin: 22px 0; }
+  .vcard { border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); padding: 22px 24px; box-shadow: var(--shadow); }
+  .vcard .tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .vcard h3 { margin: 8px 0 4px; font-size: 19px; }
+  .vcard .br { font-family: var(--mono); font-size: 12px; color: var(--ink-3); margin: 0 0 14px; word-break: break-all; }
+  .vcard ul { margin: 0; padding-left: 18px; font-size: 14.5px; color: var(--ink-2); }
+  .vcard li { margin-bottom: 6px; }
+
+  .kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 14px; margin: 24px 0; }
+  .kpi div { border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); padding: 14px 16px; }
+  .kpi .n { font-family: var(--mono); font-size: 22px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .kpi .l { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-top: 3px; }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Fork de GEIGEIGEIST/TOTEM · firmware QMK + Vial</p>
+  <h1>Projeto TOTEM 20</h1>
+  <p class="standfirst">
+    Um teclado split de 38 teclas transformado em macropad de peça única com 20.
+    O que é, como chegou aqui, e por que cada decisão foi tomada do jeito que foi.
+  </p>
+  <div class="kpi">
+    <div><div class="n">38 → 20</div><div class="l">teclas</div></div>
+    <div><div class="n">2</div><div class="l">variantes</div></div>
+    <div><div class="n">5</div><div class="l">perfis</div></div>
+    <div><div class="n">4 × 6</div><div class="l">matriz</div></div>
+    <div><div class="n">4</div><div class="l">builds OK</div></div>
+  </div>
+</header>
+
+<nav class="toc">
+  <p>Conteúdo</p>
+  <ol>
+    <li><a href="#oque">O que é o projeto</a></li>
+    <li><a href="#variantes">As duas variantes</a></li>
+    <li><a href="#matriz">A matriz, fonte de tudo</a></li>
+    <li><a href="#perfis">Perfis e acordes</a></li>
+    <li><a href="#decisoes">Registro de decisões</a></li>
+    <li><a href="#repo">Mapa do repositório</a></li>
+    <li><a href="#ambiente">Ambiente de build</a></li>
+    <li><a href="#pendencias">O que ainda está em aberto</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<section id="oque">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 01</p>
+    <h2>O que é o projeto</h2>
+    <p>Um fork do TOTEM que muda o teclado de categoria, não só de tamanho.</p>
+  </div>
+
+  <div class="prose">
+    <p>
+      O <a href="https://github.com/GEIGEIGEIST/TOTEM">TOTEM</a> original é um
+      teclado <strong>split</strong> de 38 teclas com column stagger, do
+      @geigeigeist, feito para digitar. Duas metades, matriz 8 × 5, handedness
+      gravada na EEPROM e um link serial entre os lados.
+    </p>
+    <p>
+      Este fork o reconstrói como <strong>macropad unibody de 20 teclas</strong>
+      para a mão esquerda: jogo, 3ds Max e macros. Uma peça só, um controlador
+      só, matriz 4 × 6, sem link serial nem handedness.
+    </p>
+    <p>
+      Isso não é uma redução — é outra categoria de dispositivo. Tudo que existia
+      exclusivamente para dar conta do split precisou sair:
+      <code>MATRIX_ROWS 8</code>/<code>MATRIX_COLS 5</code>,
+      <code>EE_HANDS</code>, <code>MASTER_LEFT</code>,
+      <code>SERIAL_USART_*</code>, o bloco <code>split</code>, a feature
+      <code>swap_hands</code> e o <code>hand_swap_config</code>.
+    </p>
+    <p>
+      A remoção do link serial liberou dois GPIOs — <code>GP0</code> e
+      <code>GP1</code>, antes TX e RX — que passaram a ser reaproveitados. Esse
+      detalhe reaparece o tempo todo: <strong>neste projeto o orçamento de pinos
+      decide tudo.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="variantes">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 02</p>
+    <h2>As duas variantes</h2>
+    <p>Mesmo teclado, mesma matriz, mesmos perfis. O que muda é como você controla.</p>
+  </div>
+
+  <div class="split">
+    <div class="vcard">
+      <span class="tag">Variante A</span>
+      <h3>Com encoder e display</h3>
+      <p class="br">encoder-oled-screen</p>
+      <ul>
+        <li>Encoder rotativo EC11 + OLED SSD1306 128 × 64</li>
+        <li>Menu na tela: perfil, RGB, cronômetro, APM</li>
+        <li>Clique curto troca perfil, giro navega, clique longo confirma</li>
+        <li><strong>Waveshare RP2040-Zero</strong> — 15 pinos</li>
+        <li>21 switches (o botão do encoder entra na matriz)</li>
+      </ul>
+    </div>
+    <div class="vcard">
+      <span class="tag">Variante B</span>
+      <h3>Só teclas</h3>
+      <p class="br">without-encoder-oled-screen</p>
+      <ul>
+        <li>Sem hardware extra — tudo por acordes de duas teclas</li>
+        <li>Camada de RGB com efeito, brilho, matiz e velocidade</li>
+        <li>15 efeitos, incluindo pulsar, piscar e mapa de calor</li>
+        <li><strong>Seeed XIAO RP2040</strong> — 11 pinos</li>
+        <li>20 switches</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Aspecto</th><th>Variante A</th><th>Variante B</th></tr></thead>
+      <tbody>
+        <tr><td>Placa</td><td class="m">RP2040-Zero</td><td class="m">XIAO RP2040</td></tr>
+        <tr><td>GPIOs necessários</td><td class="m">15</td><td class="m">11</td></tr>
+        <tr><td>Trocar de perfil</td><td class="m">clique · G+B · menu</td><td class="m">G + B</td></tr>
+        <tr><td>Ajustar RGB</td><td class="m">menu no display</td><td class="m">camada via G + E</td></tr>
+        <tr><td>Chegar na camada 4</td><td class="m">menu</td><td class="m">G + E</td></tr>
+        <tr><td>Switches</td><td class="m">21</td><td class="m">20</td></tr>
+        <tr><td><code>totem_vial.uf2</code></td><td class="m">125 KiB</td><td class="m">119 KiB</td></tr>
+        <tr><td><code>totem_default.uf2</code></td><td class="m">89 KiB</td><td class="m">83 KiB</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note info">
+    <span class="lbl">Por que as placas são diferentes</span>
+    <p>
+      Não foi preferência. A variante A precisa de 15 pinos e o XIAO expõe 11 —
+      não cabe de jeito nenhum. A variante B precisa de 11, que é exatamente o
+      que o XIAO tem, <em>e</em> é exatamente a pinagem do esquema elétrico do
+      projeto. As duas escolhas foram forçadas pela aritmética, não pelo gosto.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="matriz">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 03</p>
+    <h2>A matriz, fonte de tudo</h2>
+    <p>Extraída do esquema elétrico e conferida contra o desenho de legendas. As duas fontes batem.</p>
+  </div>
+
+  <div class="prose">
+    <p>
+      Tudo no firmware descende desta tabela. Ela veio de duas fontes
+      independentes que se confirmaram mutuamente: a folha <em>MATRIX</em> do
+      esquema, traçando cada <code>SW</code> pela linha e coluna a que se liga; e
+      o desenho da carcaça com as legendas brancas, onde vermelho marca colunas e
+      azul marca linhas.
+    </p>
+    <p>
+      A contagem por coluna bate nas duas: <strong>3+4+3+4+4+2 = 20</strong>. E as
+      irregularidades coincidem — COL6 só existe nas duas linhas de baixo, e COL3
+      não tem tecla na ROW1.
+    </p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr><th class="m">SW</th><th class="m">Linha</th><th class="m">Coluna</th><th class="m">Matriz</th><th class="m">Jogo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="m">SW1</td><td><span class="tag-row">ROW4</span></td><td><span class="tag-col">COL2</span></td><td class="m">[0,1]</td><td class="m">1</td></tr>
+        <tr><td class="m">SW2</td><td><span class="tag-row">ROW4</span></td><td><span class="tag-col">COL3</span></td><td class="m">[0,2]</td><td class="m">2</td></tr>
+        <tr><td class="m">SW3</td><td><span class="tag-row">ROW4</span></td><td><span class="tag-col">COL4</span></td><td class="m">[0,3]</td><td class="m">3</td></tr>
+        <tr><td class="m">SW4</td><td><span class="tag-row">ROW4</span></td><td><span class="tag-col">COL5</span></td><td class="m">[0,4]</td><td class="m">R</td></tr>
+        <tr><td class="m">SW5</td><td><span class="tag-row">ROW3</span></td><td><span class="tag-col">COL1</span></td><td class="m">[1,0]</td><td class="m">Q</td></tr>
+        <tr><td class="m">SW6</td><td><span class="tag-row">ROW3</span></td><td><span class="tag-col">COL2</span></td><td class="m">[1,1]</td><td class="m">A</td></tr>
+        <tr><td class="m">SW7</td><td><span class="tag-row">ROW3</span></td><td><span class="tag-col">COL3</span></td><td class="m">[1,2]</td><td class="m">W</td></tr>
+        <tr><td class="m">SW8</td><td><span class="tag-row">ROW3</span></td><td><span class="tag-col">COL4</span></td><td class="m">[1,3]</td><td class="m">D</td></tr>
+        <tr><td class="m">SW9</td><td><span class="tag-row">ROW3</span></td><td><span class="tag-col">COL5</span></td><td class="m">[1,4]</td><td class="m">F</td></tr>
+        <tr><td class="m">SW10</td><td><span class="tag-row">ROW2</span></td><td><span class="tag-col">COL1</span></td><td class="m">[2,0]</td><td class="m">Shift</td></tr>
+        <tr><td class="m">SW11</td><td><span class="tag-row">ROW2</span></td><td><span class="tag-col">COL2</span></td><td class="m">[2,1]</td><td class="m">Z</td></tr>
+        <tr><td class="m">SW12</td><td><span class="tag-row">ROW2</span></td><td><span class="tag-col">COL3</span></td><td class="m">[2,2]</td><td class="m">S</td></tr>
+        <tr><td class="m">SW13</td><td><span class="tag-row">ROW2</span></td><td><span class="tag-col">COL4</span></td><td class="m">[2,3]</td><td class="m">X</td></tr>
+        <tr><td class="m">SW14</td><td><span class="tag-row">ROW2</span></td><td><span class="tag-col">COL5</span></td><td class="m">[2,4]</td><td class="m">T</td></tr>
+        <tr><td class="m">SW15</td><td><span class="tag-row">ROW2</span></td><td><span class="tag-col">COL6</span></td><td class="m">[2,5]</td><td class="m">E</td></tr>
+        <tr><td class="m">SW16</td><td><span class="tag-row">ROW1</span></td><td><span class="tag-col">COL1</span></td><td class="m">[3,0]</td><td class="m">G</td></tr>
+        <tr><td class="m">SW17</td><td><span class="tag-row">ROW1</span></td><td><span class="tag-col">COL2</span></td><td class="m">[3,1]</td><td class="m">Ctrl</td></tr>
+        <tr><td class="m">SW18</td><td><span class="tag-row">ROW1</span></td><td><span class="tag-col">COL4</span></td><td class="m">[3,3]</td><td class="m">C</td></tr>
+        <tr><td class="m">SW19</td><td><span class="tag-row">ROW1</span></td><td><span class="tag-col">COL5</span></td><td class="m">[3,4]</td><td class="m">Espaço</td></tr>
+        <tr><td class="m">SW20</td><td><span class="tag-row">ROW1</span></td><td><span class="tag-col">COL6</span></td><td class="m">[3,5]</td><td class="m">B</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    Diodos <code>COL2ROW</code>: ânodo no switch, cátodo (faixa) para a linha.
+    As posições vazias são <code>[0,0]</code>, <code>[1,5]</code>,
+    <code>[3,2]</code> e — só na variante B — <code>[0,5]</code>, que na
+    variante A recebe o botão do encoder.
+  </p>
+
+  <div class="note warn">
+    <span class="lbl">Duas armadilhas de leitura da matriz</span>
+    <p>
+      <strong>SW18 está em COL4, não em COL3.</strong> A linha de baixo tem um
+      vão, e o diodo <code>D18</code> alinha com o <code>D13</code>.
+    </p>
+    <p>
+      <strong>O firmware indexa ao contrário do esquema.</strong>
+      <code>row 0</code> é a ROW4, a linha física de cima. Isso existe para o
+      <code>LAYOUT</code> e o <code>vial.json</code> serem lidos de cima para
+      baixo, mas é a primeira coisa a lembrar ao medir com multímetro.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="perfis">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 04</p>
+    <h2>Perfis e acordes</h2>
+    <p>Cinco camadas, todas as 20 teclas livres em cada uma pelo Vial.</p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th class="m">#</th><th>Perfil</th><th>Cor</th><th>No ciclo?</th></tr></thead>
+      <tbody>
+        <tr><td class="m">0</td><td>Jogo</td><td>Vermelho</td><td>sim</td></tr>
+        <tr><td class="m">1</td><td>3ds Max</td><td>Azul</td><td>sim</td></tr>
+        <tr><td class="m">2</td><td>Macros / uso geral</td><td>Verde</td><td>sim</td></tr>
+        <tr><td class="m">3</td><td>Reservada</td><td>Roxo</td><td>não</td></tr>
+        <tr><td class="m">4</td><td>RGB / manutenção</td><td>Amarelo</td><td>não</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    O perfil ativo é gravado na EEPROM, então sobrevive a reinício. As camadas
+    3 e 4 ficam fora do ciclo de propósito.
+  </p>
+
+  <h3>Como o acorde funciona</h3>
+  <div class="prose">
+    <p>
+      Trocar de perfil sem gastar uma tecla exclusiva exigia uma combinação. Um
+      <code>COMBO</code> comum do QMK dispara instantaneamente e não garante
+      retenção, então o acorde é uma máquina de estados própria com quatro
+      regras:
+    </p>
+    <ul class="clean">
+      <li>as duas teclas devem descer <strong>dentro de 50 ms</strong> uma da outra;</li>
+      <li>o acorde precisa ser mantido por <strong>1 segundo</strong>;</li>
+      <li>enquanto armado, <strong>nenhum keycode chega ao computador</strong>;</li>
+      <li>se soltar antes, as duas teclas são entregues normalmente.</li>
+    </ul>
+    <p>
+      As teclas escolhidas são os cantos mais distantes: <strong>G</strong>
+      embaixo à esquerda, <strong>B</strong> e <strong>E</strong> na ponta do
+      cluster do polegar. A terceira regra é o que impede um <code>g</code>
+      perdido de vazar para o jogo no meio de uma troca.
+    </p>
+  </div>
+
+  <div class="note info">
+    <span class="lbl">O preço disso</span>
+    <p>
+      Não vazar keycode exige reter a tecla por até 50 ms — latência que recai
+      <strong>só</strong> sobre G, B e E. É o parâmetro
+      <code>CHORD_SYNC_MS</code>, ajustável para 0 se você preferir latência zero
+      e aceitar o vazamento.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="decisoes">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 05 · o que não está no diff</p>
+    <h2>Registro de decisões</h2>
+    <p>Cada uma foi forçada por uma restrição concreta. É isto que não se recupera lendo o código.</p>
+  </div>
+
+  <div class="dec">
+    <h3>O XIAO não comporta encoder e display</h3>
+    <dl>
+      <dt>Restrição</dt><dd>O XIAO RP2040 expõe <strong>11 GPIOs</strong>. Com encoder e OLED são necessários <strong>15</strong>: 6 colunas + 4 linhas + 1 RGB + 2 encoder + 2 I²C.</dd>
+      <dt>Decisão</dt><dd>Variante A migra para o <strong>RP2040-Zero</strong>, que expõe 20 na borda castellada.</dd>
+      <dt>Consequência</dt><dd>Nenhum sacrifício resolveria: encoder + OLED sem RGB dá 14; só o encoder dá 12. A matriz também já estava no ótimo — 21 switches exigem no mínimo 10 pinos em qualquer arranjo.</dd>
+    </dl>
+  </div>
+
+  <div class="dec">
+    <h3>O botão do encoder entra na matriz</h3>
+    <dl>
+      <dt>Restrição</dt><dd>Cada GPIO gasto no encoder é um a menos para o resto.</dd>
+      <dt>Decisão</dt><dd>O botão vira um switch comum com diodo, na vaga livre <code>[0,5]</code>.</dd>
+      <dt>Consequência</dt><dd>Custa <strong>zero pino</strong>. Em troca, o firmware o intercepta por posição, então remapeá-lo no Vial não surte efeito.</dd>
+    </dl>
+  </div>
+
+  <div class="dec">
+    <h3>I²C1, não I²C0</h3>
+    <dl>
+      <dt>Restrição</dt><dd>A primeira tentativa com <code>I2CD0</code> falhou em <code>'I2CD0' undeclared</code>. O ChibiOS vem com <code>RP_I2C_USE_I2C0 FALSE</code>.</dd>
+      <dt>Decisão</dt><dd>OLED em <code>GP10</code>/<code>GP11</code>, um par válido do I²C1, que já vem habilitado.</dd>
+      <dt>Consequência</dt><dd>Dispensa um <code>mcuconf.h</code> customizado. Só o <code>halconf.h</code> com <code>HAL_USE_I2C</code> foi necessário.</dd>
+    </dl>
+  </div>
+
+  <div class="dec">
+    <h3><code>ENCODER_MAP_ENABLE</code> desligado</h3>
+    <dl>
+      <dt>Restrição</dt><dd>Lendo o <code>quantum/encoder.c</code>: com ele ligado, o QMK despacha os eventos direto como keycodes e <strong>nunca chama</strong> <code>encoder_update_kb()</code>.</dd>
+      <dt>Decisão</dt><dd>Deixar desligado, já que é ali que o menu lê o giro.</dd>
+      <dt>Consequência</dt><dd>O menu funciona; em troca, o giro <strong>não é remapeável no Vial</strong>. Ligá-lo tornaria o menu inacessível pelo botão giratório.</dd>
+    </dl>
+  </div>
+
+  <div class="dec">
+    <h3>A cor do perfil só age no efeito sólido</h3>
+    <dl>
+      <dt>Restrição</dt><dd>O indicador reescrevia a matiz a cada troca de camada. Com a variante B ganhando controles de cor, isso os tornaria inúteis — você ajustaria e a próxima troca desfaria.</dd>
+      <dt>Decisão</dt><dd><code>profile_indicate()</code> retorna cedo se o efeito não for <code>SOLID_COLOR</code>.</dd>
+      <dt>Consequência</dt><dd>Em animação a paleta é sua. Em contrapartida, aí não há indicação de perfil pela cor. Brilho e efeito nunca foram tocados.</dd>
+    </dl>
+  </div>
+
+  <div class="dec">
+    <h3>Symlink, nunca cópia</h3>
+    <dl>
+      <dt>Restrição</dt><dd>O repositório é projeto de hardware, sem build system. A definição precisa viver dentro de uma árvore QMK de 1,6 GB.</dd>
+      <dt>Decisão</dt><dd><code>ln -s</code> da pasta <code>totem/</code> para dentro de <code>~/vial-qmk/keyboards/</code>.</dd>
+      <dt>Consequência</dt><dd>Um único conjunto de arquivos. Copiar criaria duas versões divergindo em silêncio — você editaria no repo e compilaria a velha.</dd>
+    </dl>
+  </div>
+
+  <div class="dec">
+    <h3>UID nova do Vial</h3>
+    <dl>
+      <dt>Restrição</dt><dd>O Vial indexa a definição do teclado pelo <code>VIAL_KEYBOARD_UID</code>.</dd>
+      <dt>Decisão</dt><dd>Gerar 8 bytes aleatórios novos.</dd>
+      <dt>Consequência</dt><dd>Reaproveitar a do TOTEM faria o Vial carregar o layout errado de 38 teclas. O combo de destravamento também apontava para a linha 4, que não existe mais.</dd>
+    </dl>
+  </div>
+
+  <h3>Três falhas que enganam</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Sintoma</th><th>Causa real</th></tr></thead>
+      <tbody>
+        <tr><td class="m">brew sai com código 0</td><td>Tap trust do Homebrew bloqueou; diz <code>Would install 1 formula</code> e não instala nada</td></tr>
+        <tr><td class="m">No bootloader specified</td><td>Chave de comentário <code>//</code> <strong>dentro</strong> de um objeto no <code>keyboard.json</code> quebra o schema</td></tr>
+        <tr><td class="m">fatal error: stdint.h</td><td><code>arm-none-eabi-gcc</code> do Homebrew não inclui a newlib</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    As três custaram tempo real. Nenhuma das mensagens aponta para a causa.
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<section id="repo">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 06</p>
+    <h2>Mapa do repositório</h2>
+    <p>Todo o firmware vive em <code>firmware/QMK/VIAL_source/totem/</code>.</p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th class="m">Branch</th><th>Conteúdo</th><th class="m">Estado</th></tr></thead>
+      <tbody>
+        <tr><td class="m">main</td><td>TOTEM split original, intocado</td><td class="m">base</td></tr>
+        <tr><td class="m">encoder-oled-screen</td><td>Variante A — encoder + OLED, RP2040-Zero</td><td class="m">pronta</td></tr>
+        <tr><td class="m">without-encoder-oled-screen</td><td>Variante B — só teclas, XIAO RP2040</td><td class="m">pronta</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Arquivos e o que cada um faz</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th class="m">Arquivo</th><th>Papel</th></tr></thead>
+      <tbody>
+        <tr><td class="m">keyboard.json</td><td>Pinos, matriz, <code>LAYOUT</code>, features, animações de RGB</td></tr>
+        <tr><td class="m">config.h</td><td>Painel de controle: perfis, coordenadas dos acordes, tempos</td></tr>
+        <tr><td class="m">totem.c</td><td><code>g_led_config</code>, motor de acordes, indicador de perfil</td></tr>
+        <tr><td class="m">totem_oled.c/.h</td><td>Menu e telas do display <em>(só na variante A)</em></td></tr>
+        <tr><td class="m">halconf.h</td><td>Liga <code>HAL_USE_I2C</code> <em>(só na variante A)</em></td></tr>
+        <tr><td class="m">keymaps/vial/</td><td>Keymap para o Vial, UID, <code>vial.json</code></td></tr>
+        <tr><td class="m">keymaps/default/</td><td>Keymap QMK puro, mesmas cinco camadas</td></tr>
+        <tr><td class="m">readme.md</td><td>Referência completa da variante</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note info">
+    <span class="lbl">Onde a lógica mora</span>
+    <p>
+      O motor de acordes e o indicador de RGB ficam no <strong>nível do
+      teclado</strong> (<code>totem.c</code>, via <code>process_record_kb</code> e
+      <code>matrix_scan_kb</code>), não nos keymaps. Assim os dois keymaps
+      compartilham uma implementação só, em vez de duplicá-la e deixar as duas
+      divergirem.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="ambiente">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 07</p>
+    <h2>Ambiente de build</h2>
+    <p>Requer o fork Vial do QMK. Não compila no <code>qmk_firmware</code> upstream.</p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Componente</th><th class="m">Versão</th><th>Por quê</th></tr></thead>
+      <tbody>
+        <tr><td>vial-qmk</td><td class="m">dd43959a</td><td>O código Vial não existe no QMK upstream</td></tr>
+        <tr><td>Python</td><td class="m">3.11</td><td>QMK usa <code>ast.Num</code>, removido no 3.12</td></tr>
+        <tr><td>Arm GNU Toolchain</td><td class="m">15.3.Rel1</td><td>Precisa incluir a newlib</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <pre><code>export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
+cd ~/vial-qmk
+
+make totem:vial       # Vial, recomendado
+make totem:default    # QMK puro</code></pre>
+
+  <p>
+    O passo a passo completo, do nada instalado até o <code>.uf2</code>, está no
+    <code>readme.md</code> de cada branch — incluindo o caminho sem sudo para o
+    toolchain da ARM.
+  </p>
+
+  <h3>Validação</h3>
+  <div class="prose">
+    <p>
+      Cada variante tem uma suíte que confere o firmware contra o esquema
+      elétrico, não contra si mesmo: coordenadas da matriz, ausência de
+      duplicatas, <code>LAYOUT</code> idêntico ao <code>vial.json</code>, pinos
+      distintos e existentes na placa, keycodes de jogo conferidos um a um contra
+      as legendas brancas, e ausência real dos vestígios de split.
+    </p>
+    <p style="margin-bottom:0">
+      Os quatro builds — dois keymaps × duas variantes — passam com
+      <strong>zero warnings e zero erros</strong>. O QMK trata warning como erro,
+      então não existe "compilou com avisos".
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="pendencias">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 08</p>
+    <h2>O que ainda está em aberto</h2>
+    <p>Nada disso impede compilar. Tudo isso impede montar com confiança.</p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Item</th><th>Situação</th><th>Risco se ignorado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Ordem da cadeia de LEDs</strong></td>
+          <td>Firmware assume SW1→SW20</td>
+          <td style="color:var(--warn)">Efeitos reativos acendem na tecla errada</td>
+        </tr>
+        <tr>
+          <td><strong>Nível lógico dos LEDs</strong></td>
+          <td>GPIO dá 3,3 V; WS2812B em 5 V quer 3,5 V</td>
+          <td style="color:var(--warn)">Primeiro LED instável ou com cor errada</td>
+        </tr>
+        <tr>
+          <td><strong>PCB novo</strong></td>
+          <td>O repo ainda tem só o <code>totem_0-3</code>, do split</td>
+          <td style="color:var(--warn)">Não há PCB para nenhuma das duas variantes</td>
+        </tr>
+        <tr>
+          <td><strong>Nada testado em hardware</strong></td>
+          <td>Tudo compila; nada foi ligado</td>
+          <td style="color:var(--warn)">Só a bancada confirma</td>
+        </tr>
+        <tr>
+          <td>Binários obsoletos no <code>main</code></td>
+          <td><code>totem_vial_left/right.uf2</code> são do split</td>
+          <td>Confusão ao gravar</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">A ressalva que vale mais que todas</span>
+    <p>
+      <strong>Nenhuma linha deste firmware rodou em hardware real.</strong> Tudo
+      que está afirmado aqui sobre compilação, pinagem e coerência com o esquema
+      foi verificado — mas comportamento de matriz, acordes, encoder, display e
+      LEDs só se confirma na protoboard. Os guias de bancada existem justamente
+      para essa etapa, e a ordem das etapas neles não é decorativa: cada uma
+      isola uma classe de erro.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <p>
+    TOTEM 20 · fork de <a href="https://github.com/GEIGEIGEIST/TOTEM">GEIGEIGEIST/TOTEM</a> ·
+    firmware em <code>firmware/QMK/VIAL_source/totem/</code>
+  </p>
+  <p>
+    Guias de bancada por variante, com fiação detalhada e roteiro de teste,
+    acompanham este documento.
+  </p>
+</footer>
+
+</div>

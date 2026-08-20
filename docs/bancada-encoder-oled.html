@@ -1,0 +1,1141 @@
+<title>Guia de Bancada TOTEM 20</title>
+<style>
+  :root {
+    --bg:        #F6F7F9;
+    --surface:   #FFFFFF;
+    --surface-2: #EDEFF3;
+    --surface-3: #E4E8EE;
+    --ink:       #131922;
+    --ink-2:     #495568;
+    --ink-3:     #6E7A8B;
+    --rule:      #DCE0E7;
+    --rule-2:    #C7CDD7;
+    --col:       #B0362C;
+    --col-bg:    #FBEDEB;
+    --row:       #2B6AA8;
+    --row-bg:    #EAF1F9;
+    --led:       #9A6210;
+    --led-bg:    #FBF2E2;
+    --ok:        #2E7D5B;
+    --ok-bg:     #E8F4EE;
+    --warn:      #8C4A0E;
+    --warn-bg:   #FBEFE3;
+    --shadow:    0 1px 2px rgba(19,25,34,.06), 0 4px 14px rgba(19,25,34,.05);
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:        #10141A;
+      --surface:   #171C24;
+      --surface-2: #1D232C;
+      --surface-3: #252C37;
+      --ink:       #E7EBF1;
+      --ink-2:     #A6B0BF;
+      --ink-3:     #7C8794;
+      --rule:      #2A323D;
+      --rule-2:    #3A434F;
+      --col:       #EC8076;
+      --col-bg:    #2E1D1B;
+      --row:       #7FB2E3;
+      --row-bg:    #16232F;
+      --led:       #E3AF56;
+      --led-bg:    #2C2415;
+      --ok:        #63C79A;
+      --ok-bg:     #14261E;
+      --warn:      #DFA469;
+      --warn-bg:   #2B2016;
+      --shadow:    0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:        #10141A;
+    --surface:   #171C24;
+    --surface-2: #1D232C;
+    --surface-3: #252C37;
+    --ink:       #E7EBF1;
+    --ink-2:     #A6B0BF;
+    --ink-3:     #7C8794;
+    --rule:      #2A323D;
+    --rule-2:    #3A434F;
+    --col:       #EC8076;
+    --col-bg:    #2E1D1B;
+    --row:       #7FB2E3;
+    --row-bg:    #16232F;
+    --led:       #E3AF56;
+    --led-bg:    #2C2415;
+    --ok:        #63C79A;
+    --ok-bg:     #14261E;
+    --warn:      #DFA469;
+    --warn-bg:   #2B2016;
+    --shadow:    0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    margin: 0;
+    padding: 0 24px 120px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 940px; margin: 0 auto; }
+  .prose { max-width: 68ch; }
+
+  /* ---------- masthead ---------- */
+  header.masthead {
+    padding: 72px 0 40px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-size: clamp(34px, 6vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -.03em;
+    font-weight: 800;
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 62ch;
+    margin: 0;
+  }
+  .meta-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    margin-top: 28px;
+  }
+  .chip {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .chip.ok  { background: var(--ok-bg);  border-color: var(--ok);  color: var(--ok); }
+
+  /* ---------- toc ---------- */
+  nav.toc {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 22px 26px;
+    margin-bottom: 56px;
+    box-shadow: var(--shadow);
+  }
+  nav.toc p {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 14px;
+  }
+  nav.toc ol {
+    margin: 0; padding: 0; list-style: none;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px 28px;
+    counter-reset: toc;
+  }
+  nav.toc li { counter-increment: toc; display: flex; gap: 10px; align-items: baseline; }
+  nav.toc li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+    flex: none;
+  }
+  nav.toc a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule-2); }
+  nav.toc a:hover { border-bottom-color: var(--ink); }
+
+  /* ---------- sections ---------- */
+  section { margin-bottom: 68px; scroll-margin-top: 24px; }
+  h2 {
+    font-size: 27px; font-weight: 750; letter-spacing: -.02em;
+    margin: 0 0 8px; padding-top: 10px;
+    text-wrap: balance;
+  }
+  .sec-head { border-top: 1px solid var(--ink); padding-top: 14px; margin-bottom: 26px; }
+  .sec-head .eyebrow { margin-bottom: 10px; }
+  .sec-head p { margin: 0; color: var(--ink-2); max-width: 66ch; }
+
+  h3 {
+    font-size: 17px; font-weight: 700; letter-spacing: -.01em;
+    margin: 38px 0 12px;
+  }
+  h4 {
+    font-family: var(--mono);
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600;
+    margin: 28px 0 10px;
+  }
+  p { margin: 0 0 16px; }
+  a { color: var(--row); }
+
+  code {
+    font-family: var(--mono);
+    font-size: .88em;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+  strong { font-weight: 680; }
+
+  /* ---------- tables ---------- */
+  .tablewrap { overflow-x: auto; margin: 20px 0 8px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  thead th {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600; background: var(--surface-2);
+    position: sticky; top: 0;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--surface-2); }
+  td.m, th.m { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .cap { color: var(--ink-3); font-size: 13px; margin: 10px 0 0; }
+
+  .tag-col { color: var(--col); background: var(--col-bg); border: 1px solid var(--col); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+  .tag-row { color: var(--row); background: var(--row-bg); border: 1px solid var(--row); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+  .tag-led { color: var(--led); background: var(--led-bg); border: 1px solid var(--led); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+  .tag-pwr { color: var(--ink-2); background: var(--surface-3); border: 1px solid var(--rule-2); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+
+  /* ---------- code blocks ---------- */
+  pre {
+    font-family: var(--mono); font-size: 13px; line-height: 1.6;
+    background: var(--surface); color: var(--ink);
+    border: 1px solid var(--rule); border-left: 3px solid var(--ink-3);
+    border-radius: 5px; padding: 14px 18px;
+    overflow-x: auto; margin: 16px 0;
+  }
+  pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+  /* ---------- callouts ---------- */
+  .note {
+    border-left: 3px solid var(--rule-2);
+    background: var(--surface);
+    border-radius: 0 5px 5px 0;
+    padding: 14px 18px; margin: 22px 0;
+    font-size: 14.5px;
+  }
+  .note p:last-child { margin-bottom: 0; }
+  .note .lbl {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em;
+    text-transform: uppercase; display: block; margin-bottom: 6px; font-weight: 600;
+  }
+  .note.warn { border-left-color: var(--warn); background: var(--warn-bg); }
+  .note.warn .lbl { color: var(--warn); }
+  .note.ok   { border-left-color: var(--ok); background: var(--ok-bg); }
+  .note.ok .lbl { color: var(--ok); }
+  .note.info .lbl { color: var(--ink-3); }
+
+  /* ---------- pinout chip ---------- */
+  .chipwrap { overflow-x: auto; margin: 24px 0 6px; }
+  .chip-diagram {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0 0;
+    min-width: 620px;
+    align-items: stretch;
+  }
+  .chip-body {
+    background: var(--surface-3);
+    border: 2px solid var(--ink-2);
+    border-radius: 8px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px 26px;
+    min-width: 150px;
+  }
+  .chip-body .nm { font-family: var(--mono); font-size: 14px; font-weight: 700; letter-spacing: .02em; }
+  .chip-body .sub { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); margin-top: 4px; letter-spacing: .08em; }
+  .chip-usb {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+    color: var(--ink-3); text-align: center; padding-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .pinlist { display: flex; flex-direction: column; gap: 3px; padding: 4px 0; }
+  .pin {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 12px;
+    padding: 5px 10px;
+    background: var(--surface); border: 1px solid var(--rule);
+  }
+  .pinlist.left .pin  { border-radius: 4px 0 0 4px; border-right: none; justify-content: flex-end; text-align: right; }
+  .pinlist.right .pin { border-radius: 0 4px 4px 0; border-left: none; }
+  .pin .num { color: var(--ink-3); font-size: 10.5px; min-width: 16px; }
+  .pin .pad { font-weight: 700; min-width: 30px; }
+  .pin .gp  { color: var(--ink-2); min-width: 42px; }
+  .pin .fn  { font-weight: 700; }
+  .pin.c .fn { color: var(--col); }
+  .pin.r .fn { color: var(--row); }
+  .pin.l .fn { color: var(--led); }
+  .pin.p .fn { color: var(--ink-2); }
+  .pin.x    { opacity: .45; }
+  .pin.x .fn { color: var(--ink-3); font-weight: 500; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 16px 0 0; font-family: var(--mono); font-size: 11.5px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
+  .sw { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
+
+  /* ---------- cell diagram ---------- */
+  .celldiag { display: flex; gap: 30px; flex-wrap: wrap; align-items: flex-start; margin: 22px 0; }
+  .celldiag svg { flex: none; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px; }
+  .celldiag .txt { flex: 1 1 300px; min-width: 280px; }
+
+  /* ---------- led chain ---------- */
+  .chain { display: flex; align-items: center; gap: 0; overflow-x: auto; padding: 18px 0 8px; }
+  .chain .node {
+    font-family: var(--mono); font-size: 11.5px;
+    border: 1px solid var(--led); color: var(--led); background: var(--led-bg);
+    border-radius: 4px; padding: 9px 12px; white-space: nowrap; text-align: center; flex: none;
+  }
+  .chain .node.src { border-color: var(--ink-2); color: var(--ink); background: var(--surface-3); }
+  .chain .arr { font-family: var(--mono); font-size: 11px; color: var(--ink-3); padding: 0 9px; flex: none; white-space: nowrap; }
+
+  /* ---------- stages ---------- */
+  .stage {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 6px; padding: 22px 26px; margin: 0 0 16px;
+    box-shadow: var(--shadow);
+  }
+  .stage-head { display: flex; gap: 14px; align-items: baseline; margin-bottom: 6px; }
+  .stage-num {
+    font-family: var(--mono); font-size: 12px; font-weight: 700;
+    color: var(--bg); background: var(--ink);
+    border-radius: 3px; padding: 3px 8px; flex: none;
+  }
+  .stage h3 { margin: 0; font-size: 18px; }
+  .stage .goal { font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); margin: 0 0 14px; }
+  .stage ol, .stage ul { margin: 0 0 12px; padding-left: 22px; }
+  .stage li { margin-bottom: 7px; }
+  .stage li:last-child { margin-bottom: 0; }
+  .stage p:last-child, .stage .tablewrap:last-child, .stage pre:last-child { margin-bottom: 0; }
+
+  ul.clean { list-style: none; padding: 0; margin: 0 0 16px; }
+  ul.clean li { padding-left: 20px; position: relative; margin-bottom: 8px; }
+  ul.clean li::before { content: "—"; position: absolute; left: 0; color: var(--ink-3); font-family: var(--mono); }
+
+  /* ---------- change list ---------- */
+  .change { border-bottom: 1px solid var(--rule); padding: 16px 0; display: grid; grid-template-columns: minmax(200px, 260px) 1fr; gap: 6px 26px; }
+  .change:last-child { border-bottom: none; }
+  .change .f { font-family: var(--mono); font-size: 12.5px; font-weight: 600; word-break: break-all; }
+  .change .d { color: var(--ink-2); font-size: 14.5px; }
+  .change .d p { margin: 0 0 8px; }
+  .change .d p:last-child { margin: 0; }
+  @media (max-width: 640px) { .change { grid-template-columns: 1fr; } }
+
+  footer {
+    border-top: 1px solid var(--rule); padding-top: 24px; margin-top: 20px;
+    font-size: 13.5px; color: var(--ink-3);
+  }
+  :focus-visible { outline: 2px solid var(--row); outline-offset: 2px; border-radius: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Macropad unibody · Waveshare RP2040-Zero</p>
+  <h1>Guia de Bancada TOTEM 20</h1>
+  <p class="standfirst">
+    Tudo que mudou no firmware, onde ligar cada switch, diodo, LED, encoder e
+    display no controlador, e como validar a montagem numa protoboard antes de
+    soldar qualquer coisa.
+  </p>
+  <div class="meta-strip">
+    <span class="chip">20 teclas + encoder</span>
+    <span class="chip">matriz 4 × 6</span>
+    <span class="chip">COL2ROW</span>
+    <span class="chip">20 LEDs por tecla</span>
+    <span class="chip">OLED 128×64</span>
+    <span class="chip">15 / 20 GPIOs</span>
+    <span class="chip ok">2 compilações OK</span>
+  </div>
+</header>
+
+<nav class="toc">
+  <p>Conteúdo</p>
+  <ol>
+    <li><a href="#placa">Por que a placa mudou</a></li>
+    <li><a href="#mudancas">O que mudou no firmware</a></li>
+    <li><a href="#pinagem">Pinagem do controlador</a></li>
+    <li><a href="#switches">Ligação dos switches</a></li>
+    <li><a href="#leds">Ligação dos LEDs</a></li>
+    <li><a href="#encoder">Encoder e display</a></li>
+    <li><a href="#protoboard">Teste em protoboard</a></li>
+    <li><a href="#build">Compilar e gravar</a></li>
+    <li><a href="#problemas">Quando não funciona</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<section id="placa">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 01</p>
+    <h2>Por que a placa mudou</h2>
+    <p>O XIAO RP2040 não comporta encoder e display. Não é limitação de software — é contagem de pinos.</p>
+  </div>
+
+  <div class="prose">
+    <p>
+      O XIAO expõe <strong>11 GPIOs</strong>, e o conjunto completo precisa de
+      <strong>15</strong>:
+    </p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Função</th><th class="m">Pinos</th></tr></thead>
+      <tbody>
+        <tr><td>6 colunas</td><td class="m">6</td></tr>
+        <tr><td>4 linhas</td><td class="m">4</td></tr>
+        <tr><td>Dados RGB</td><td class="m">1</td></tr>
+        <tr><td>Encoder A + B</td><td class="m">2</td></tr>
+        <tr><td>OLED SDA + SCL</td><td class="m">2</td></tr>
+        <tr><td><strong>Botão do encoder</strong></td><td class="m" style="color:var(--ok)"><strong>0</strong></td></tr>
+        <tr><td><strong>Total</strong></td><td class="m"><strong>15</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    O botão do encoder sai de graça: é um switch comum, ligado numa das vagas
+    livres da matriz. Não consome GPIO nenhum.
+  </p>
+
+  <div class="prose">
+    <p>
+      Nenhuma combinação de sacrifício cabia nos 11 pinos: encoder + OLED sem
+      RGB dá 14; só o encoder, sem OLED e sem RGB, ainda dá 12. E a matriz já
+      está no ótimo — 21 switches exigem no mínimo 10 pinos, seja 4×6, 5×5 ou 3×7.
+    </p>
+    <p>
+      O <strong>RP2040-Zero</strong> expõe 20 GPIOs na borda castellada. Mesmo
+      chip RP2040, mesma gravação por UF2, mesmo suporte QMK/Vial, tamanho
+      parecido. Os 15 cabem com folga de 5.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="mudancas">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 02</p>
+    <h2>O que mudou no firmware</h2>
+    <p>Tudo dentro de <code>firmware/QMK/VIAL_source/totem/</code>. Nada fora dessa pasta foi tocado.</p>
+  </div>
+
+  <h3>Removido do TOTEM split</h3>
+  <div class="prose">
+    <ul class="clean">
+      <li><code>MATRIX_ROWS 8</code> / <code>MATRIX_COLS 5</code> — a matriz vem do <code>keyboard.json</code></li>
+      <li><code>EE_HANDS</code> e <code>MASTER_LEFT</code> — não existe mais "lado"</li>
+      <li><code>SERIAL_USART_*</code> — não há metade com quem conversar</li>
+      <li>bloco <code>split</code> e feature <code>swap_hands</code></li>
+      <li><code>hand_swap_config</code> — uma peça única não tem mãos para trocar</li>
+    </ul>
+  </div>
+
+  <h3>Arquivo por arquivo</h3>
+
+  <div class="change">
+    <div class="f">keyboard.json</div>
+    <div class="d"><p>Matriz 8 × 5 → <strong>4 × 6</strong> com a pinagem do RP2040-Zero. <code>LAYOUT</code> de 38 → 21 posições (20 teclas + botão do encoder). Adicionados <code>encoder</code>, <code>oled</code> e <code>rgb_matrix</code>.</p></div>
+  </div>
+  <div class="change">
+    <div class="f">config.h</div>
+    <div class="d"><p>Painel de controle do teclado: índices dos cinco perfis, coordenadas do combo, tempos, posição do botão do encoder, resolução do encoder, timeout do menu e a configuração de I²C.</p></div>
+  </div>
+  <div class="change">
+    <div class="f">totem.c</div>
+    <div class="d"><p>Reaproveitado, não apagado. Saiu o <code>hand_swap_config</code>; entraram o <code>g_led_config</code> do RGB matrix, a máquina de estados do combo, o tratamento do encoder e o indicador de perfil.</p></div>
+  </div>
+  <div class="change">
+    <div class="f">totem_oled.c<br>totem_oled.h</div>
+    <div class="d"><p><strong>Novos.</strong> Menu do OLED, telas de status, contador de APM e cronômetro. Separados do <code>totem.c</code> para não misturar tratamento de entrada com renderização.</p></div>
+  </div>
+  <div class="change">
+    <div class="f">halconf.h</div>
+    <div class="d"><p><strong>Novo.</strong> Liga <code>HAL_USE_I2C</code> — o ChibiOS deixa o I²C fora do build a menos que se peça.</p></div>
+  </div>
+  <div class="change">
+    <div class="f">rules.mk (raiz)</div>
+    <div class="d"><p><strong>Novo.</strong> Compila o <code>totem_oled.c</code> junto.</p></div>
+  </div>
+  <div class="change">
+    <div class="f">keymaps/vial/config.h</div>
+    <div class="d"><p><code>VIAL_KEYBOARD_UID</code> nova — o Vial indexa a definição por esse valor, e reaproveitar a do TOTEM faria carregar o layout errado de 38 teclas. Combo de destravamento corrigido e defaults do RGB matrix.</p></div>
+  </div>
+  <div class="change">
+    <div class="f">keymaps/*/keymap.c</div>
+    <div class="d"><p>Cinco perfis de 21 posições. A camada 0 segue as legendas brancas do desenho.</p></div>
+  </div>
+  <div class="change">
+    <div class="f">keymaps/vial/vial.json</div>
+    <div class="d"><p>Gerado por script e conferido por replay do KLE: 21 posições, sem duplicatas.</p></div>
+  </div>
+
+  <div class="note ok">
+    <span class="lbl">Validação executada</span>
+    <p>
+      38 verificações automatizadas passaram: 21 switches, zero coordenadas
+      duplicadas, <code>LAYOUT</code> idêntico ao <code>vial.json</code>, os
+      <strong>15 GPIOs distintos e todos na borda castellada</strong>,
+      <code>GP16</code> evitado por ser o WS2812 embutido da placa, JSONs
+      válidos, keycodes de jogo conferidos um a um contra as legendas brancas, e
+      ausência real de todos os vestígios de split. Os dois keymaps compilaram
+      com <strong>zero warnings e zero erros</strong>.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="pinagem">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 03</p>
+    <h2>Pinagem do controlador</h2>
+    <p>15 dos 20 GPIOs da borda em uso. Sobram 5.</p>
+  </div>
+
+  <div class="prose">
+    <p>
+      Diagrama orientado com o <strong>USB-C para cima</strong>, vendo a placa
+      por cima. A matriz inteira ficou em GPIOs sequenciais
+      (<code>GP0</code>–<code>GP9</code>), bem mais fácil de conferir com
+      multímetro do que os números espalhados do XIAO.
+    </p>
+  </div>
+
+  <div class="chipwrap">
+    <div class="chip-usb">▲ USB-C</div>
+    <div style="display:flex;gap:3px;justify-content:center;flex-wrap:wrap;margin-bottom:6px;min-width:620px">
+      <div class="pin p"><span class="pad">5V</span><span class="fn">+5V LEDs</span></div>
+      <div class="pin p"><span class="pad">GND</span><span class="fn">GND</span></div>
+      <div class="pin x"><span class="pad">3V3</span><span class="fn">livre</span></div>
+      <div class="pin x"><span class="pad">29</span><span class="fn">livre</span></div>
+      <div class="pin x"><span class="pad">28</span><span class="fn">livre</span></div>
+      <div class="pin x"><span class="pad">27</span><span class="fn">livre</span></div>
+      <div class="pin l"><span class="pad">26</span><span class="fn">RGB DATA</span></div>
+    </div>
+    <div class="chip-diagram">
+      <div class="pinlist left">
+        <div class="pin"><span class="pad">15</span><span class="fn" style="color:var(--ink-2)">ENC B</span></div>
+        <div class="pin"><span class="pad">14</span><span class="fn" style="color:var(--ink-2)">ENC A</span></div>
+        <div class="pin x"><span class="pad">13</span><span class="fn">livre</span></div>
+        <div class="pin x"><span class="pad">12</span><span class="fn">livre</span></div>
+        <div class="pin"><span class="pad">11</span><span class="fn" style="color:var(--ok)">OLED SCL</span></div>
+        <div class="pin"><span class="pad">10</span><span class="fn" style="color:var(--ok)">OLED SDA</span></div>
+        <div class="pin r"><span class="pad">9</span><span class="fn">ROW4</span></div>
+        <div class="pin r"><span class="pad">8</span><span class="fn">ROW3</span></div>
+      </div>
+      <div class="chip-body">
+        <div class="nm">RP2040-Zero</div>
+        <div class="sub">Waveshare</div>
+      </div>
+      <div class="pinlist right">
+        <div class="pin c"><span class="pad">0</span><span class="fn">COL1</span></div>
+        <div class="pin c"><span class="pad">1</span><span class="fn">COL2</span></div>
+        <div class="pin c"><span class="pad">2</span><span class="fn">COL3</span></div>
+        <div class="pin c"><span class="pad">3</span><span class="fn">COL4</span></div>
+        <div class="pin c"><span class="pad">4</span><span class="fn">COL5</span></div>
+        <div class="pin c"><span class="pad">5</span><span class="fn">COL6</span></div>
+        <div class="pin r"><span class="pad">6</span><span class="fn">ROW1</span></div>
+        <div class="pin r"><span class="pad">7</span><span class="fn">ROW2</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--col)"></i> Colunas</span>
+    <span><i class="sw" style="background:var(--row)"></i> Linhas</span>
+    <span><i class="sw" style="background:var(--led)"></i> Dados dos LEDs</span>
+    <span><i class="sw" style="background:var(--ok)"></i> I²C do display</span>
+    <span><i class="sw" style="background:var(--ink-2)"></i> Encoder / alimentação</span>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Os pinos de I²C não são arbitrários</span>
+    <p>
+      O RP2040 multiplexa o I²C em <strong>grupos fixos de pinos</strong>. O par
+      <code>GP10</code>/<code>GP11</code> é um SDA/SCL válido do I²C1 — não dá
+      para mover o display para qualquer pino solto.
+    </p>
+    <p>
+      I²C1 especificamente porque o ChibiOS vem com
+      <code>RP_I2C_USE_I2C1 TRUE</code> e <code>RP_I2C_USE_I2C0 FALSE</code>.
+      Usar o I²C0 exigiria um <code>mcuconf.h</code> customizado só para ligar o
+      periférico. Descobri isso na marra: a primeira tentativa com
+      <code>I2CD0</code> falhou com <code>'I2CD0' undeclared</code>.
+    </p>
+  </div>
+
+  <div class="note info">
+    <span class="lbl">GP16 fica de fora</span>
+    <p>
+      É o WS2812 embutido da própria RP2040-Zero. Usá-lo faria o LED da placa
+      brigar com a sua cadeia.
+    </p>
+  </div>
+
+  <div class="note info">
+    <span class="lbl">Convenção de índices</span>
+    <p>
+      O firmware indexa linhas de cima para baixo, o <strong>inverso</strong> dos
+      nomes do seu esquema: <code>row 0</code> = ROW4, <code>row 1</code> = ROW3,
+      <code>row 2</code> = ROW2, <code>row 3</code> = ROW1. As colunas seguem
+      direto: <code>col 0</code> = COL1 … <code>col 5</code> = COL6.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="switches">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 04</p>
+    <h2>Ligação dos switches</h2>
+    <p>Switch em série com diodo. A polaridade do diodo é o erro mais comum e o mais silencioso.</p>
+  </div>
+
+  <div class="celldiag">
+    <svg width="200" height="270" viewBox="0 0 200 270" role="img" aria-label="Diagrama de uma célula da matriz: coluna, switch, diodo e linha">
+      <line x1="100" y1="14" x2="100" y2="62" stroke="#B0362C" stroke-width="2.5"/>
+      <text x="112" y="30" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#B0362C" font-weight="700">COLn</text>
+      <circle cx="100" cy="62" r="3.5" fill="#B0362C"/>
+      <line x1="100" y1="62" x2="100" y2="86" stroke="currentColor" stroke-width="2"/>
+      <line x1="100" y1="86" x2="126" y2="70" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="100" y1="112" x2="100" y2="132" stroke="currentColor" stroke-width="2"/>
+      <circle cx="100" cy="112" r="3.5" fill="currentColor"/>
+      <text x="136" y="96" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="currentColor" font-weight="700">SW</text>
+      <polygon points="86,150 114,150 100,178" fill="none" stroke="#8C4A0E" stroke-width="2.5" stroke-linejoin="round"/>
+      <line x1="84" y1="178" x2="116" y2="178" stroke="#8C4A0E" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="100" y1="132" x2="100" y2="150" stroke="currentColor" stroke-width="2"/>
+      <line x1="100" y1="178" x2="100" y2="212" stroke="currentColor" stroke-width="2"/>
+      <text x="128" y="158" font-family="ui-monospace,Menlo,monospace" font-size="10.5" fill="#8C4A0E">ânodo</text>
+      <text x="128" y="186" font-family="ui-monospace,Menlo,monospace" font-size="10.5" fill="#8C4A0E" font-weight="700">cátodo</text>
+      <text x="128" y="200" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#8C4A0E">(faixa)</text>
+      <circle cx="100" cy="212" r="3.5" fill="#2B6AA8"/>
+      <line x1="30" y1="212" x2="170" y2="212" stroke="#2B6AA8" stroke-width="2.5"/>
+      <text x="30" y="236" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="#2B6AA8" font-weight="700">ROWn</text>
+    </svg>
+
+    <div class="txt">
+      <h4>Ordem de ligação</h4>
+      <ol>
+        <li>Um terminal do switch → fio da <strong style="color:var(--col)">COLUNA</strong>.</li>
+        <li>Outro terminal → <strong>ânodo</strong> do diodo (ponta <em>sem</em> faixa).</li>
+        <li><strong>Cátodo</strong> (ponta <em>com</em> a faixa) → fio da <strong style="color:var(--row)">LINHA</strong>.</li>
+      </ol>
+      <p style="font-size:14.5px;color:var(--ink-2)">
+        Switches mecânicos não têm polaridade. O diodo tem, e é o que define
+        <code>COL2ROW</code>: a faixa aponta sempre <strong>para a linha</strong>.
+      </p>
+      <p style="font-size:14.5px;color:var(--ink-2)">
+        Diodo 1N4148 (vidro) ou 1N4148W (SOD-123). Um por tecla —
+        <strong>inclusive no botão do encoder</strong>, que é um switch como
+        qualquer outro.
+      </p>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Diodo invertido</span>
+    <p>
+      Se a faixa apontar para o switch, aquela tecla <strong>nunca registra</strong>.
+      Não dá curto, não esquenta, não dá erro — falha em silêncio. Se você
+      inverter todos os 21, troque <code>"diode_direction"</code> para
+      <code>"ROW2COL"</code> no <code>keyboard.json</code> e recompile, em vez de
+      dessoldar tudo.
+    </p>
+  </div>
+
+  <h3>Mapa completo</h3>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr><th class="m">SW</th><th class="m">Coluna</th><th class="m">GPIO</th>
+            <th class="m">Linha</th><th class="m">GPIO</th><th class="m">Matriz</th><th class="m">Teste</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="m">SW1</td><td><span class="tag-col">COL2</span></td><td class="m">GP1</td><td><span class="tag-row">ROW4</span></td><td class="m">GP9</td><td class="m">[0,1]</td><td class="m">1</td></tr>
+        <tr><td class="m">SW2</td><td><span class="tag-col">COL3</span></td><td class="m">GP2</td><td><span class="tag-row">ROW4</span></td><td class="m">GP9</td><td class="m">[0,2]</td><td class="m">2</td></tr>
+        <tr><td class="m">SW3</td><td><span class="tag-col">COL4</span></td><td class="m">GP3</td><td><span class="tag-row">ROW4</span></td><td class="m">GP9</td><td class="m">[0,3]</td><td class="m">3</td></tr>
+        <tr><td class="m">SW4</td><td><span class="tag-col">COL5</span></td><td class="m">GP4</td><td><span class="tag-row">ROW4</span></td><td class="m">GP9</td><td class="m">[0,4]</td><td class="m">R</td></tr>
+        <tr style="background:var(--surface-2)"><td class="m"><strong>ENC</strong></td><td><span class="tag-col">COL6</span></td><td class="m">GP5</td><td><span class="tag-row">ROW4</span></td><td class="m">GP9</td><td class="m">[0,5]</td><td class="m">botão</td></tr>
+        <tr><td class="m">SW5</td><td><span class="tag-col">COL1</span></td><td class="m">GP0</td><td><span class="tag-row">ROW3</span></td><td class="m">GP8</td><td class="m">[1,0]</td><td class="m">Q</td></tr>
+        <tr><td class="m">SW6</td><td><span class="tag-col">COL2</span></td><td class="m">GP1</td><td><span class="tag-row">ROW3</span></td><td class="m">GP8</td><td class="m">[1,1]</td><td class="m">A</td></tr>
+        <tr><td class="m">SW7</td><td><span class="tag-col">COL3</span></td><td class="m">GP2</td><td><span class="tag-row">ROW3</span></td><td class="m">GP8</td><td class="m">[1,2]</td><td class="m">W</td></tr>
+        <tr><td class="m">SW8</td><td><span class="tag-col">COL4</span></td><td class="m">GP3</td><td><span class="tag-row">ROW3</span></td><td class="m">GP8</td><td class="m">[1,3]</td><td class="m">D</td></tr>
+        <tr><td class="m">SW9</td><td><span class="tag-col">COL5</span></td><td class="m">GP4</td><td><span class="tag-row">ROW3</span></td><td class="m">GP8</td><td class="m">[1,4]</td><td class="m">F</td></tr>
+        <tr><td class="m">SW10</td><td><span class="tag-col">COL1</span></td><td class="m">GP0</td><td><span class="tag-row">ROW2</span></td><td class="m">GP7</td><td class="m">[2,0]</td><td class="m">Shift</td></tr>
+        <tr><td class="m">SW11</td><td><span class="tag-col">COL2</span></td><td class="m">GP1</td><td><span class="tag-row">ROW2</span></td><td class="m">GP7</td><td class="m">[2,1]</td><td class="m">Z</td></tr>
+        <tr><td class="m">SW12</td><td><span class="tag-col">COL3</span></td><td class="m">GP2</td><td><span class="tag-row">ROW2</span></td><td class="m">GP7</td><td class="m">[2,2]</td><td class="m">S</td></tr>
+        <tr><td class="m">SW13</td><td><span class="tag-col">COL4</span></td><td class="m">GP3</td><td><span class="tag-row">ROW2</span></td><td class="m">GP7</td><td class="m">[2,3]</td><td class="m">X</td></tr>
+        <tr><td class="m">SW14</td><td><span class="tag-col">COL5</span></td><td class="m">GP4</td><td><span class="tag-row">ROW2</span></td><td class="m">GP7</td><td class="m">[2,4]</td><td class="m">T</td></tr>
+        <tr><td class="m">SW15</td><td><span class="tag-col">COL6</span></td><td class="m">GP5</td><td><span class="tag-row">ROW2</span></td><td class="m">GP7</td><td class="m">[2,5]</td><td class="m">E</td></tr>
+        <tr><td class="m">SW16</td><td><span class="tag-col">COL1</span></td><td class="m">GP0</td><td><span class="tag-row">ROW1</span></td><td class="m">GP6</td><td class="m">[3,0]</td><td class="m">G</td></tr>
+        <tr><td class="m">SW17</td><td><span class="tag-col">COL2</span></td><td class="m">GP1</td><td><span class="tag-row">ROW1</span></td><td class="m">GP6</td><td class="m">[3,1]</td><td class="m">Ctrl</td></tr>
+        <tr><td class="m">SW18</td><td><span class="tag-col">COL4</span></td><td class="m">GP3</td><td><span class="tag-row">ROW1</span></td><td class="m">GP6</td><td class="m">[3,3]</td><td class="m">C</td></tr>
+        <tr><td class="m">SW19</td><td><span class="tag-col">COL5</span></td><td class="m">GP4</td><td><span class="tag-row">ROW1</span></td><td class="m">GP6</td><td class="m">[3,4]</td><td class="m">Espaço</td></tr>
+        <tr><td class="m">SW20</td><td><span class="tag-col">COL6</span></td><td class="m">GP5</td><td><span class="tag-row">ROW1</span></td><td class="m">GP6</td><td class="m">[3,5]</td><td class="m">B</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    <code>[0,0]</code>, <code>[1,5]</code> e <code>[3,2]</code> ficam vazias.
+    COL6 só aparece nas duas linhas de baixo mais o encoder; COL3 não aparece na
+    ROW1 — exatamente o que o seu esquema mostra.
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<section id="leds">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 05</p>
+    <h2>Ligação dos LEDs</h2>
+    <p>20 LEDs endereçáveis, um por tecla, dados em <code>GP26</code>, 5 V do VBUS.</p>
+  </div>
+
+  <div class="chain">
+    <div class="node src">RP2040-Zero<br>GP26</div>
+    <div class="arr">──[ 330 Ω ]──▶</div>
+    <div class="node">LED 1<br>= SW1</div>
+    <div class="arr">──▶</div>
+    <div class="node">LED 2<br>= SW2</div>
+    <div class="arr">──▶</div>
+    <div class="node">…</div>
+    <div class="arr">──▶</div>
+    <div class="node">LED 20<br>= SW20</div>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">A ordem da cadeia é um requisito do PCB</span>
+    <p>
+      Encadeie <strong>DIN → DOUT seguindo SW1 até SW20</strong>, na mesma ordem
+      da tabela da Seção 04: linha de cima da esquerda para a direita, depois
+      cada linha abaixo. O <code>RGB_MATRIX</code> precisa saber qual LED
+      corresponde a qual tecla, e é assim que o
+      <code>g_led_config</code> em <code>totem.c</code> está escrito.
+    </p>
+    <p>
+      Se o roteamento acabar serpenteando por linha, dá para acomodar — muda só
+      o primeiro bloco daquela struct. Mas me avise antes.
+    </p>
+    <p>
+      <strong>O botão do encoder não leva LED.</strong> São 21 switches e 20
+      LEDs; a posição <code>[0,5]</code> está marcada como <code>NO_LED</code>.
+    </p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Sinal</th><th class="m">Vai para</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag-led">DIN</span> do primeiro LED</td><td class="m">GP26</td><td>Resistor de 330 Ω em série, junto ao LED</td></tr>
+        <tr><td><span class="tag-pwr">VCC</span> de todos</td><td class="m">5V / VBUS</td><td>Barramento próprio</td></tr>
+        <tr><td><span class="tag-pwr">GND</span> de todos</td><td class="m">GND</td><td>Terra comum com o controlador</td></tr>
+        <tr><td><span class="tag-led">DOUT</span> → <span class="tag-led">DIN</span></td><td class="m">próximo LED</td><td>Em cadeia, nunca em paralelo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Componentes passivos</h4>
+  <ul class="clean">
+    <li><strong>330 Ω</strong> em série na linha de dados, o mais perto possível do primeiro LED.</li>
+    <li><strong>100 nF</strong> cerâmico entre VCC e GND de cada LED, colado no encapsulamento.</li>
+    <li><strong>470–1000 µF</strong> eletrolítico na entrada do barramento 5 V.</li>
+  </ul>
+
+  <div class="note warn">
+    <span class="lbl">Nível lógico 3,3 V em LED de 5 V</span>
+    <p>
+      O <code>GP26</code> entrega <strong>3,3 V</strong>, mas um WS2812B
+      alimentado com 5 V espera 0,7 × VDD = <strong>3,5 V</strong> para nível
+      alto. Está na margem — é a causa clássica do "primeiro LED com cor errada".
+    </p>
+    <p>
+      Três saídas: use <strong>SK6812</strong>, que tolera bem melhor; ou
+      alimente a cadeia com <strong>~4,3 V</strong> (um 1N4148 em série com o
+      VBUS derruba ~0,7 V); ou um <strong>level shifter 74AHCT125</strong>.
+    </p>
+  </div>
+
+  <h4>Orçamento de corrente</h4>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Cenário</th><th class="m">Corrente</th><th>Veredito</th></tr></thead>
+      <tbody>
+        <tr><td>20 LEDs, branco pleno, brilho 255</td><td class="m">≈ 1200 mA</td><td style="color:var(--warn)">Muito acima do USB</td></tr>
+        <tr><td>20 LEDs, branco pleno, brilho 120</td><td class="m">≈ 560 mA</td><td style="color:var(--warn)">Ainda no limite</td></tr>
+        <tr><td>Cor sólida de perfil, brilho 80 <em>(uso real)</em></td><td class="m">≈ 120–150 mA</td><td style="color:var(--ok)">Confortável</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    USB fornece 500 mA. Por isso <code>max_brightness</code> está travado em 120
+    no <code>keyboard.json</code> — é teto, não valor de uso.
+  </p>
+
+  <h4>Cores de perfil</h4>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th class="m">Camada</th><th>Perfil</th><th>Cor</th><th class="m">Matiz</th></tr></thead>
+      <tbody>
+        <tr><td class="m">0</td><td>Jogo</td><td>Vermelho</td><td class="m">0</td></tr>
+        <tr><td class="m">1</td><td>3ds Max</td><td>Azul</td><td class="m">170</td></tr>
+        <tr><td class="m">2</td><td>Macros</td><td>Verde</td><td class="m">85</td></tr>
+        <tr><td class="m">3</td><td>Reservada</td><td>Roxo</td><td class="m">191</td></tr>
+        <tr><td class="m">4</td><td>Configuração</td><td>Amarelo</td><td class="m">43</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    A troca de perfil mexe <strong>só na matiz</strong>. O efeito e o brilho que
+    você escolher no Vial ou no menu do OLED ficam preservados.
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<section id="encoder">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 06</p>
+    <h2>Encoder e display</h2>
+    <p>EC11 de 5 pinos e SSD1306 de 0,96". O botão do encoder entra na matriz.</p>
+  </div>
+
+  <h3>Encoder EC11</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Pino do encoder</th><th class="m">Vai para</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>A (lateral, 3 pinos)</td><td class="m">GP14</td><td>Pull-up interno, ativado pelo firmware</td></tr>
+        <tr><td>C — comum (do meio)</td><td class="m">GND</td><td></td></tr>
+        <tr><td>B (lateral, 3 pinos)</td><td class="m">GP15</td><td></td></tr>
+        <tr><td>Botão, pino 1 (2 pinos)</td><td class="m">GP5 — COL6</td><td>Como um switch da matriz</td></tr>
+        <tr><td>Botão, pino 2</td><td class="m">diodo → GP9 — ROW4</td><td>Cátodo para a linha, igual às teclas</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    O botão fica na posição <code>[0,5]</code> da matriz. Se A e B estiverem
+    trocados, o giro inverte o sentido — basta trocar os dois fios.
+  </p>
+
+  <h3>Display SSD1306</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Pino do módulo</th><th class="m">Vai para</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>VCC</td><td class="m">3V3</td><td><strong>3,3 V, não 5 V</strong></td></tr>
+        <tr><td>GND</td><td class="m">GND</td><td></td></tr>
+        <tr><td>SDA</td><td class="m">GP10</td><td>I²C1</td></tr>
+        <tr><td>SCL</td><td class="m">GP11</td><td>I²C1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    Os módulos de 0,96" costumam trazer os pull-ups de I²C já na plaquinha. Se o
+    seu não tiver, adicione 4,7 kΩ de SDA e SCL para 3V3.
+  </p>
+
+  <h3>Como o menu funciona</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Ação</th><th>Efeito</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Clique curto</strong></td><td>Próximo perfil — em qualquer tela</td></tr>
+        <tr><td><strong>Girar</strong></td><td>Abre e navega o menu; dentro de um item, ajusta o valor</td></tr>
+        <tr><td><strong>Clique longo</strong> (500 ms)</td><td>Entra no item, confirma, volta</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    O clique curto está reservado para o perfil, como você pediu. Por isso o menu
+    usa o clique longo para confirmar — sem isso não haveria como entrar num item.
+  </p>
+
+  <div class="prose">
+    <p><strong>Itens do menu:</strong> Perfil · Tela · Brilho RGB · Efeito RGB · Encoder · Cronômetro · Zerar tempo · Reiniciar.</p>
+    <p>
+      <strong>Telas de descanso</strong>, escolhidas em <em>Tela</em>:
+      <strong>Status</strong> (perfil, modo do encoder, RGB, APM, cronômetro),
+      <strong>APM</strong> (janela móvel de 60 s com barra),
+      <strong>Tempo</strong> (cronômetro) e <strong>Logo</strong>.
+    </p>
+    <p>
+      O item <em>Encoder</em> alterna o giro entre <code>Menu</code> (padrão) e
+      <code>Teclas</code> (volume; o menu continua acessível pelo clique longo).
+      O painel apaga após 60 s parado, porque OLED marca de verdade — qualquer
+      tecla ou giro acorda.
+    </p>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Duas limitações deliberadas</span>
+    <p>
+      <code>ENCODER_MAP_ENABLE</code> está <strong>desligado</strong>: com ele
+      ligado, o QMK despacha os eventos do encoder direto como keycodes e
+      <strong>nunca chama</strong> <code>encoder_update_kb()</code>, que é onde o
+      menu lê o giro. Ligá-lo tornaria o menu inacessível pelo botão giratório.
+      Consequência: <strong>o giro não é remapeável no Vial</strong>. Para dar
+      outra função ao fallback, mude os dois keycodes em
+      <code>encoder_update_kb()</code> no <code>totem.c</code>.
+    </p>
+    <p>
+      O <strong>botão</strong> também é interceptado por posição, então o keycode
+      dele no keymap nunca é enviado — remapear <code>[0,5]</code> no Vial não
+      surte efeito.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="protoboard">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 07 · sequência</p>
+    <h2>Teste em protoboard</h2>
+    <p>Oito etapas, cada uma isolando uma classe de erro. A ordem importa.</p>
+  </div>
+
+  <div class="prose">
+    <p>
+      Nunca mais de uma variável nova por vez. Grave o firmware
+      <strong>antes</strong> de ligar qualquer fio — assim, quando a primeira
+      tecla falhar, você já sabe que o firmware não é o problema.
+    </p>
+    <p>
+      A ferramenta principal é o <strong>Matrix Tester</strong> do Vial
+      (<a href="https://vial.rocks">vial.rocks</a>). Ele lê a matriz crua, sem
+      passar pelo keymap — é o que separa "fio errado" de "keymap errado".
+    </p>
+  </div>
+
+  <div class="stage">
+    <div class="stage-head"><span class="stage-num">00</span><h3>Só o controlador</h3></div>
+    <p class="goal">Objetivo: firmware e enumeração USB, sem nenhum fio.</p>
+    <ol>
+      <li>Grave <code>totem_vial.uf2</code>.</li>
+      <li>Ligue no PC. Deve enumerar como teclado.</li>
+      <li>No Vial deve aparecer <strong>TOTEM 20</strong> com o desenho de 21 posições.</li>
+    </ol>
+    <div class="note ok" style="margin-bottom:0">
+      <span class="lbl">Se aparecer</span>
+      <p>Firmware, UID e <code>vial.json</code> estão certos. Daqui para frente é fiação.</p>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="stage-head"><span class="stage-num">01</span><h3>Jumper, sem switch e sem diodo</h3></div>
+    <p class="goal">Objetivo: validar os 10 GPIOs da matriz antes de montar componente.</p>
+    <p>Com uma tecla por vez, um fio direto entre coluna e linha se comporta como tecla fechada — o diodo só faz falta com várias simultâneas.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th class="m">Ligue</th><th class="m">a</th><th class="m">Deve acender</th><th>Tecla</th></tr></thead>
+        <tbody>
+          <tr><td class="m">GP1</td><td class="m">GP9</td><td class="m">[0,1]</td><td>1 — canto superior esquerdo</td></tr>
+          <tr><td class="m">GP4</td><td class="m">GP9</td><td class="m">[0,4]</td><td>R — canto superior direito</td></tr>
+          <tr><td class="m">GP0</td><td class="m">GP6</td><td class="m">[3,0]</td><td>G — canto inferior esquerdo</td></tr>
+          <tr><td class="m">GP5</td><td class="m">GP6</td><td class="m">[3,5]</td><td>B — canto inferior direito</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px;margin-bottom:0">Respondendo os quatro, os 10 pinos estão certos. Vale percorrer os 21.</p>
+  </div>
+
+  <div class="stage">
+    <div class="stage-head"><span class="stage-num">02</span><h3>Uma tecla completa</h3></div>
+    <p class="goal">Objetivo: validar a polaridade do diodo.</p>
+    <ol>
+      <li>Monte <strong>SW5</strong> (<code>Q</code>): switch entre <code>GP0</code> e o ânodo; cátodo — lado da faixa — em <code>GP8</code>.</li>
+      <li>Aperte. Deve acender <code>[1,0]</code>.</li>
+      <li>Inverta o diodo de propósito e aperte: <strong>nada deve acontecer</strong>.</li>
+    </ol>
+    <p style="margin-bottom:0">Fazer o teste errado de propósito grava a polaridade na memória. Volte o diodo antes de continuar.</p>
+  </div>
+
+  <div class="stage">
+    <div class="stage-head"><span class="stage-num">03</span><h3>Bloco 2 × 2 e teste de fantasma</h3></div>
+    <p class="goal">Objetivo: provar que os diodos estão trabalhando.</p>
+    <p>Monte <code>Q</code> <code>[1,0]</code>, <code>A</code> <code>[1,1]</code>, <code>Shift</code> <code>[2,0]</code> e <code>Z</code> <code>[2,1]</code> — colunas <code>GP0</code>/<code>GP1</code>, linhas <code>GP8</code>/<code>GP7</code>.</p>
+    <p style="margin-bottom:0">Segure <strong>três</strong>. Devem acender exatamente três. Uma quarta acendendo é <em>ghosting</em>: diodo faltando, invertido ou com solda fria.</p>
+  </div>
+
+  <div class="stage">
+    <div class="stage-head"><span class="stage-num">04</span><h3>Matriz completa</h3></div>
+    <p class="goal">Objetivo: as 21 posições, e só elas.</p>
+    <ol>
+      <li>Monte os 20 switches com seus diodos.</li>
+      <li>Confira um a um contra a coluna <em>Matriz</em> da Seção 04.</li>
+      <li>Confirme que <code>[0,0]</code>, <code>[1,5]</code> e <code>[3,2]</code> <strong>nunca</strong> acendem.</li>
+      <li>Feche o Matrix Tester e digite num editor: deve sair <code>1 2 3 R Q A W D F …</code></li>
+    </ol>
+    <p style="margin-bottom:0">
+      Teste o combo: segure <strong>G</strong> e <strong>B</strong> por 1 segundo.
+      O perfil avança e <strong>nenhum</strong> <code>g</code> ou <code>b</code>
+      aparece. Um toque rápido nas duas escreve <code>gb</code> e não troca de camada.
+    </p>
+  </div>
+
+  <div class="stage">
+    <div class="stage-head"><span class="stage-num">05</span><h3>Botão do encoder</h3></div>
+    <p class="goal">Objetivo: a 21ª tecla, antes de mexer no giro.</p>
+    <ol>
+      <li>Ligue os dois pinos do botão em <code>GP5</code> e, via diodo, <code>GP9</code>.</li>
+      <li>No Matrix Tester deve acender <code>[0,5]</code>.</li>
+      <li>Fora do tester, um <strong>clique curto</strong> deve trocar o perfil — dá para ver pela cor do RGB, se já estiver montado.</li>
+    </ol>
+    <p style="margin-bottom:0">Se <code>[0,5]</code> não acende, é fio ou diodo — o giro nem entra na história ainda.</p>
+  </div>
+
+  <div class="stage">
+    <div class="stage-head"><span class="stage-num">06</span><h3>Display</h3></div>
+    <p class="goal">Objetivo: I²C respondendo.</p>
+    <ol>
+      <li>VCC em <strong>3V3</strong> (não 5 V), GND, SDA em <code>GP10</code>, SCL em <code>GP11</code>.</li>
+      <li>Ao ligar, deve aparecer a tela de status com o nome do perfil.</li>
+      <li>Só então ligue A e B do encoder em <code>GP14</code>/<code>GP15</code> e gire: o menu abre.</li>
+      <li>Se o menu pular dois itens por clique, baixe <code>ENCODER_RESOLUTION</code> para 2 no <code>config.h</code>; se precisar de dois cliques por item, aumente.</li>
+    </ol>
+    <p style="margin-bottom:0">Tela preta com o resto funcionando é quase sempre endereço I²C ou SDA/SCL trocados.</p>
+  </div>
+
+  <div class="stage">
+    <div class="stage-head"><span class="stage-num">07</span><h3>LEDs</h3></div>
+    <p class="goal">Objetivo: cadeia estável antes de escalar para 20.</p>
+    <ol>
+      <li>Comece com <strong>dois ou três LEDs</strong>, nunca a cadeia inteira.</li>
+      <li>5 V do VBUS, GND comum, dados em <code>GP26</code> com o resistor de 330 Ω.</li>
+      <li>Devem acender <span style="color:var(--col);font-weight:600">vermelho</span> — jogo é a camada padrão.</li>
+      <li>Troque de perfil: a cor vai para <span style="color:var(--row);font-weight:600">azul</span>, depois <span style="color:var(--ok);font-weight:600">verde</span>.</li>
+      <li>Só então estenda para os 20, respeitando a ordem SW1→SW20.</li>
+    </ol>
+    <p style="margin-bottom:0">Cor errada ou tremulação no primeiro LED aponta para o nível lógico de 3,3 V — veja a Seção 05.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="build">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 08</p>
+    <h2>Compilar e gravar</h2>
+    <p>O repositório do TOTEM é um projeto de hardware — não tem build system dentro dele.</p>
+  </div>
+
+  <div class="prose">
+    <p>
+      A pasta <code>totem/</code> é só a <em>definição</em> do teclado. Para
+      compilar, ela precisa estar dentro de uma árvore QMK que traga o
+      <code>quantum/</code>, o ChibiOS, o pico-sdk e os Makefiles — cerca de
+      1,6 GB, que deliberadamente não é versionado no seu repositório.
+      É obrigatório o fork <strong>Vial</strong>; o código Vial não compila no
+      <code>qmk_firmware</code> upstream.
+    </p>
+  </div>
+
+  <h4>Preparo, uma vez só</h4>
+  <pre><code>git clone --recurse-submodules https://github.com/vial-kb/vial-qmk.git ~/vial-qmk
+ln -s "$(pwd)/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem</code></pre>
+  <p>
+    Symlink, não cópia. Um único conjunto de arquivos: você edita no repositório
+    e o build já enxerga. Copiar cria duas versões que divergem em silêncio.
+  </p>
+
+  <h4>A cada build</h4>
+  <pre><code>export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
+cd ~/vial-qmk
+
+make totem:vial       # → totem_vial.uf2     125 KiB · recomendado
+make totem:default    # → totem_default.uf2   89 KiB · QMK puro</code></pre>
+
+  <div class="note warn">
+    <span class="lbl">Três armadilhas de ambiente</span>
+    <p><strong>Python precisa ser 3.11.</strong> Os scripts do QMK usam <code>ast.Num</code>, removido no 3.12.</p>
+    <p><strong>O <code>arm-none-eabi-gcc</code> do Homebrew não serve</strong> — vem sem a newlib, e o build morre em <code>fatal error: stdint.h</code>. Use o toolchain oficial da ARM.</p>
+    <p><strong><code>brew install qmk/qmk/qmk</code> pode sair com código 0 sem instalar nada</strong>, bloqueado pela política de tap trust. Confira se o binário existe.</p>
+  </div>
+
+  <h4>Gravar</h4>
+  <ol class="prose">
+    <li><strong>Duplo toque no RESET.</strong> A placa monta como pendrive <strong><code>RPI-RP2</code></strong>.</li>
+    <li>Copie <code>totem_vial.uf2</code> para dentro.</li>
+    <li>Ela reinicia sozinha e o pendrive some — é o esperado.</li>
+  </ol>
+  <div class="note info">
+    <span class="lbl">Se o RPI-RP2 não aparecer</span>
+    <p>Segure <strong>BOOT</strong>, pressione e solte <strong>RESET</strong>, solte <strong>BOOT</strong>. Funciona mesmo com firmware corrompido — é praticamente impossível brickar um RP2040.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="problemas">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 09</p>
+    <h2>Quando não funciona</h2>
+    <p>Sintoma, causa provável e onde olhar.</p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Sintoma</th><th>Causa provável</th><th>O que fazer</th></tr></thead>
+      <tbody>
+        <tr><td>Uma tecla nunca registra</td><td>Diodo invertido ou solda fria</td><td>Faixa aponta para a <span class="tag-row">LINHA</span></td></tr>
+        <tr><td>Linha inteira morta</td><td>Fio de linha solto</td><td>Confira contra a Seção 03</td></tr>
+        <tr><td>Coluna inteira morta</td><td>Fio de coluna solto</td><td>Idem, lado das colunas</td></tr>
+        <tr><td>Nada registra, mas enumera</td><td>Linhas e colunas trocadas</td><td>Cols <code>GP0–GP5</code>, rows <code>GP6–GP9</code></td></tr>
+        <tr><td>Tecla fantasma ao segurar três</td><td>Diodo faltando ou invertido</td><td>Refaça a etapa 03</td></tr>
+        <tr><td>Tecla certa, caractere errado</td><td>Keymap, não fiação</td><td>Matrix Tester acende certo? Então é keymap</td></tr>
+        <tr><td>Vial mostra layout de 38 teclas</td><td>Definição antiga em cache</td><td>UID nova já resolve; recarregue o Vial</td></tr>
+        <tr><td>Display totalmente preto</td><td>SDA/SCL trocados ou endereço I²C</td><td>SDA em <code>GP10</code>, SCL em <code>GP11</code>, VCC em <strong>3V3</strong></td></tr>
+        <tr><td>Menu pula dois itens por clique</td><td>Resolução do encoder</td><td><code>ENCODER_RESOLUTION</code> para 2 no <code>config.h</code></td></tr>
+        <tr><td>Giro invertido</td><td>A e B trocados</td><td>Troque os fios de <code>GP14</code> e <code>GP15</code></td></tr>
+        <tr><td>Clique não troca perfil</td><td>Botão não chega na matriz</td><td>Matrix Tester deve acender <code>[0,5]</code></td></tr>
+        <tr><td>Primeiro LED com cor errada</td><td>Nível lógico 3,3 V marginal</td><td>SK6812, ou ~4,3 V, ou level shifter</td></tr>
+        <tr><td>Efeitos RGB nas teclas erradas</td><td>Ordem da cadeia diferente de SW1→SW20</td><td>Ajustar <code>g_led_config</code> no <code>totem.c</code></td></tr>
+        <tr><td>LEDs tremem, placa reinicia</td><td>Corrente ou falta de bulk</td><td>Baixe o brilho; 470–1000 µF</td></tr>
+        <tr><td>Combo G + B não dispara</td><td>Presses fora da janela de 50 ms</td><td>Aumente <code>PROFILE_CHORD_SYNC_MS</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note info">
+    <span class="lbl">Regra de ouro do diagnóstico</span>
+    <p>
+      O <strong>Matrix Tester</strong> lê a matriz crua, antes do keymap. Se a
+      posição acende ali, a fiação está certa e o problema é software. Se não
+      acende, é fio, diodo ou solda — e não adianta mexer no firmware.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <p>
+    TOTEM 20 · fork de <a href="https://github.com/GEIGEIGEIST/TOTEM">GEIGEIGEIST/TOTEM</a> ·
+    firmware em <code>firmware/QMK/VIAL_source/totem/</code>
+  </p>
+  <p>
+    Pinagem e matriz extraídas do esquema elétrico e conferidas contra o desenho
+    de legendas. A ordem da cadeia de LEDs (SW1→SW20) e a posição do encoder na
+    matriz (<code>[0,5]</code>) são requisitos que o PCB precisa cumprir — ou me
+    avise para ajustar o firmware.
+  </p>
+</footer>
+
+</div>
