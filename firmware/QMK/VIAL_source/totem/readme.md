@@ -184,6 +184,52 @@ ou `TO()` a qualquer tecla no Vial.
 > firmware não toca na cor — senão toda troca de camada atropelaria a paleta
 > que você acabou de definir. Brilho e efeito nunca são alterados.
 
+## Materiais e ligação completa
+
+| Qtd | Item | Observação |
+|---|---|---|
+| 1 | Waveshare RP2040-Zero | Ou Seeed XIAO RP2040 — os dois servem nesta variante |
+| 20 | Switches mecânicos | MX ou Choc, conforme a carcaça |
+| 20 | Diodos 1N4148 | Vidro, ou 1N4148W em SOD-123 para SMD |
+| 20 | LEDs SK6812MINI-E | Preferível ao WS2812B — ver nota de nível lógico |
+| 1 | Resistor 330 Ω | Em série na linha de dados |
+| 20 | Capacitor 100 nF cerâmico | Um por LED |
+| 1 | Capacitor 470–1000 µF | Eletrolítico, na entrada dos 5 V |
+| 0–1 | 74AHCT125 | Só se o nível lógico de 3,3 V der problema |
+
+### Onde cada pino termina
+
+Os 11 GPIOs em uso, mais alimentação. Se um fio não estiver nesta tabela, ele
+não deveria existir.
+
+| Pino | Recebe | Quantos fios |
+|---|---|---|
+| `GP0` | COL1 — um terminal de Q, Shift, G | 3 switches |
+| `GP1` | COL2 — 1, A, Z, Ctrl | 4 switches |
+| `GP2` | COL3 — 2, W, S | 3 switches |
+| `GP3` | COL4 — 3, D, X, C | 4 switches |
+| `GP4` | COL5 — R, F, T, Espaço | 4 switches |
+| `GP5` | COL6 — E, B | 2 switches |
+| `GP6` | ROW1 — cátodos de G, Ctrl, C, Espaço, B | 5 diodos |
+| `GP7` | ROW2 — cátodos de Shift, Z, S, X, T, E | 6 diodos |
+| `GP8` | ROW3 — cátodos de Q, A, W, D, F | 5 diodos |
+| `GP9` | ROW4 — cátodos de 1, 2, 3, R | 4 diodos |
+| `GP26` | DIN do LED 1, via 330 Ω | 1 |
+| `5V` | VCC de todos os 20 LEDs | barramento |
+| `GND` | GND de todos os 20 LEDs | barramento |
+
+Conferência rápida: 3+4+3+4+4+2 = 20 switches nas colunas, e 5+6+5+4 = 20
+diodos nas linhas. Contagem diferente significa fio faltando ou sobrando.
+
+### Ordem de montagem
+
+1. **Colunas primeiro** — seis fios, cada um passando por seus switches.
+2. **Diodo em cada switch** — ânodo no switch, cátodo (faixa) para a linha.
+3. **Linhas** — quatro fios recolhendo os cátodos.
+4. **Teste a matriz inteira** antes de encostar nos LEDs. É muito mais fácil
+   corrigir um diodo sem a cadeia de LEDs por cima.
+5. **LEDs por último**, em cadeia, começando com dois ou três.
+
 ## RGB — ligação
 
 **A cadeia precisa ser roteada DIN → DOUT seguindo SW1 até SW20**, na mesma
@@ -203,19 +249,86 @@ por linha, muda só o primeiro bloco daquela struct.
 > use SK6812, baixe a alimentação para ~4,3 V com um diodo em série, ou use um
 > 74AHCT125.
 
-## Compilar
+## Compilar o firmware do zero
 
-Este repositório é um projeto de hardware, não uma árvore QMK — não há build
+Do nada instalado até um `.uf2`. Comandos verificados em macOS/arm64, agosto de
+2026.
+
+Este repositório é um **projeto de hardware**, não uma árvore QMK: não há build
 system dentro dele. A pasta `totem/` é só a *definição* do teclado e precisa
-estar dentro de uma árvore QMK. É obrigatório o fork **Vial**.
+estar dentro de uma árvore QMK que traga o `quantum/`, o ChibiOS, o pico-sdk e
+os Makefiles — cerca de 1,6 GB, deliberadamente não versionado aqui.
+
+É obrigatório o fork **Vial** do QMK. O código Vial **não compila** no
+`qmk_firmware` upstream.
+
+### 1. Python 3.11
+
+Não é preciosismo: os scripts do QMK usam `ast.Num`, removido no Python 3.12.
+Com 3.12 ou mais novo o build morre em
+`AttributeError: module 'ast' has no attribute 'Num'`.
+
+```sh
+brew install python@3.11
+```
+
+### 2. Clonar o vial-qmk
 
 ```sh
 git clone --recurse-submodules https://github.com/vial-kb/vial-qmk.git ~/vial-qmk
+```
+
+O `--recurse-submodules` é obrigatório: sem ele faltam o ChibiOS e o pico-sdk,
+e o build falha lá na frente sem dizer o porquê.
+
+### 3. Ambiente Python
+
+```sh
+/opt/homebrew/opt/python@3.11/bin/python3.11 -m venv ~/vial-qmk/.venv
+~/vial-qmk/.venv/bin/pip install --upgrade pip
+~/vial-qmk/.venv/bin/pip install -r ~/vial-qmk/requirements.txt qmk
+```
+
+### 4. Toolchain ARM
+
+Precisa incluir a **newlib**. O `arm-none-eabi-gcc` do homebrew-core **não
+serve** — vem sem os headers de libc e o build morre em
+`fatal error: stdint.h: No such file or directory`.
+
+**Caminho A — cask oficial** (pede senha de sudo):
+
+```sh
+brew install --cask gcc-arm-embedded
+```
+
+**Caminho B — sem sudo**, extraindo o mesmo `.pkg`. Foi assim que este firmware
+foi compilado:
+
+```sh
+brew fetch --cask gcc-arm-embedded
+PKG=$(find ~/Library/Caches/Homebrew/downloads -name "*arm-gnu-toolchain*.pkg" | head -1)
+
+mkdir -p /tmp/armx && cd /tmp/armx
+xar -xf "$PKG"
+mkdir -p out && cat Payload | gzip -dc | cpio -idm -D out
+
+mv out ~/vial-qmk/.toolchain
+~/vial-qmk/.toolchain/bin/arm-none-eabi-gcc --version   # confere
+```
+
+### 5. Ligar a definição do teclado
+
+```sh
+cd <este-repositorio>
+git checkout without-encoder-oled-screen
 ln -s "$(pwd)/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem
 ```
 
-Symlink, não cópia: um único conjunto de arquivos, sem duas versões divergindo
-em silêncio.
+Symlink, **nunca cópia**. Copiar cria duas versões dos mesmos arquivos: você
+edita no repositório, esquece de copiar, compila a versão velha e não entende
+por que a mudança não surtiu efeito.
+
+### 6. Compilar
 
 ```sh
 export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
@@ -225,13 +338,25 @@ make totem:vial       # -> totem_vial.uf2    119 KiB · recomendado
 make totem:default    # -> totem_default.uf2  83 KiB · QMK puro
 ```
 
-Três armadilhas de ambiente:
+O `export PATH` precisa vir **antes** do `make`, e em toda sessão de terminal
+nova. Um build limpo termina em `Creating UF2 file for deployment` e `[OK]`.
+Qualquer `[ERRORS]` é erro real — o QMK trata warnings como erro, então não
+existe "compilou com avisos".
 
-- **Python precisa ser 3.11.** Os scripts do QMK usam `ast.Num`, removido no 3.12.
-- O **`arm-none-eabi-gcc` do Homebrew não serve** — vem sem newlib e o build
-  morre em `fatal error: stdint.h`. Use o toolchain oficial da ARM.
-- `brew install qmk/qmk/qmk` pode sair com código 0 **sem instalar nada**,
-  bloqueado pela política de tap trust.
+> **Armadilha:** `brew install qmk/qmk/qmk` pode terminar com **código de saída
+> 0 sem instalar nada**, bloqueado pela política de tap trust do Homebrew — a
+> saída diz `Would install 1 formula` e para por aí. Os passos acima evitam o
+> problema por não dependerem daquele tap.
+
+### Recompilar depois de uma alteração
+
+```sh
+export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
+cd ~/vial-qmk && make totem:vial
+```
+
+Os passos 1 a 5 são uma vez só. Se algo ficar estranho depois de mudar
+`keyboard.json` ou `rules.mk`, apague o cache com `rm -rf ~/vial-qmk/.build`.
 
 ## Gravar
 
