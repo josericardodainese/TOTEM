@@ -192,7 +192,9 @@ first block of that struct changes.
 > misbehaves, use SK6812 instead, drop the LED supply to ~4.3 V with a series
 > diode, or add a 74AHCT125.
 
-## Building
+## Building from scratch
+
+From nothing installed to a `.uf2`. Verified on macOS/arm64, August 2026.
 
 This repository is a hardware project, not a QMK tree: it has no build system.
 The `totem/` folder is only the *keyboard definition*, which has to sit inside
@@ -202,15 +204,73 @@ a QMK tree supplying `quantum/`, ChibiOS, the pico-sdk and the Makefiles
 The Vial fork of QMK is required; this will **not** build against upstream
 `qmk_firmware`.
 
-**One-time setup.** Symlink the definition instead of copying it, so the build
-always sees your latest edits and the two copies can never drift apart:
+### 1. Python 3.11
+
+Not fussiness: QMK's build scripts use `ast.Num`, removed in Python 3.12. On
+3.12 or newer the build dies with
+`AttributeError: module 'ast' has no attribute 'Num'`.
+
+```sh
+brew install python@3.11
+```
+
+### 2. Clone vial-qmk
 
 ```sh
 git clone --recurse-submodules https://github.com/vial-kb/vial-qmk.git ~/vial-qmk
+```
+
+`--recurse-submodules` is mandatory: without it ChibiOS and the pico-sdk are
+missing and the build fails much later without saying why.
+
+### 3. Python environment
+
+```sh
+/opt/homebrew/opt/python@3.11/bin/python3.11 -m venv ~/vial-qmk/.venv
+~/vial-qmk/.venv/bin/pip install --upgrade pip
+~/vial-qmk/.venv/bin/pip install -r ~/vial-qmk/requirements.txt qmk
+```
+
+### 4. ARM toolchain
+
+It must include **newlib**. Homebrew's `arm-none-eabi-gcc` does **not** — it
+ships without the libc headers and the build dies on
+`fatal error: stdint.h: No such file or directory`.
+
+**Path A — official cask** (asks for a sudo password):
+
+```sh
+brew install --cask gcc-arm-embedded
+```
+
+**Path B — no sudo**, extracting the same `.pkg`. This is how this firmware was
+actually built:
+
+```sh
+brew fetch --cask gcc-arm-embedded
+PKG=$(find ~/Library/Caches/Homebrew/downloads -name "*arm-gnu-toolchain*.pkg" | head -1)
+
+mkdir -p /tmp/armx && cd /tmp/armx
+xar -xf "$PKG"
+mkdir -p out && cat Payload | gzip -dc | cpio -idm -D out
+
+mv out ~/vial-qmk/.toolchain
+~/vial-qmk/.toolchain/bin/arm-none-eabi-gcc --version   # check
+```
+
+### 5. Link the keyboard definition
+
+```sh
+cd <this-repository>
+git checkout encoder-oled-screen
 ln -s "$(pwd)/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem
 ```
 
-**Every build after that:**
+Symlink, **never a copy**. Copying makes two versions of the same files: you
+edit in the repo, forget to copy, build the stale one, and cannot work out why
+your change did nothing.
+
+### 6. Build
 
 ```sh
 export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
@@ -220,17 +280,30 @@ make totem:vial       # -> totem_vial.uf2    125 KiB · recommended
 make totem:default    # -> totem_default.uf2  89 KiB · plain QMK
 ```
 
-Toolchain notes (verified on macOS/arm64, August 2026):
+The `export PATH` must come **before** `make`, in every new shell. A clean
+build ends in `Creating UF2 file for deployment` and `[OK]`. Any `[ERRORS]` is
+a real failure — QMK treats warnings as errors, so "built with warnings" does
+not exist.
 
-- **Python must be 3.11.** QMK's build scripts use `ast.Num`, removed in 3.12.
-  `python3.11 -m venv ~/vial-qmk/.venv`, then
-  `~/vial-qmk/.venv/bin/pip install -r requirements.txt qmk`.
-- The ARM toolchain must include **newlib**. Homebrew's `arm-none-eabi-gcc`
-  formula does not — the build dies on `fatal error: stdint.h`. Use the
-  official [Arm GNU Toolchain](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads)
-  or `brew install --cask gcc-arm-embedded`.
-- `brew install qmk/qmk/qmk` can exit 0 without installing anything, blocked by
-  Homebrew's tap-trust policy. Check the binary actually exists.
+> **A trap that misleads:** `brew install qmk/qmk/qmk` can exit **0 without
+> installing anything**, blocked by Homebrew's tap-trust policy — the output
+> says `Would install 1 formula` and stops. The steps above sidestep it by not
+> depending on that tap.
+>
+> **Another one:** a `//` comment key placed *inside* a nested object in
+> `keyboard.json` fails QMK's schema validation, and the build reports it as
+> `No bootloader specified` — nowhere near the actual cause. Comment keys only
+> work at the top level.
+
+### Rebuilding after a change
+
+```sh
+export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
+cd ~/vial-qmk && make totem:vial
+```
+
+Steps 1–5 are one-time. If something behaves oddly after editing
+`keyboard.json` or `rules.mk`, clear the cache with `rm -rf ~/vial-qmk/.build`.
 
 ## Flashing
 
