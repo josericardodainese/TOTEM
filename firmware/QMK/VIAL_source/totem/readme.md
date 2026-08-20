@@ -14,12 +14,12 @@ metade, link serial, handedness nem `EE_HANDS`.
 
 | | |
 |---|---|
-| MCU | Waveshare RP2040-Zero **ou** Seeed XIAO RP2040 |
+| MCU | **Seeed XIAO RP2040** (ou Waveshare RP2040-Zero) |
 | Matriz | 4 linhas × 6 colunas — 20 teclas |
 | Diodos | um por tecla, `COL2ROW` |
-| RGB | 20 LEDs endereçáveis, um por tecla, dados em `GP26`, 5 V do VBUS |
+| RGB | 20 LEDs endereçáveis, um por tecla, dados em `GP0` (pad `D6`), 5 V do VBUS |
 
-### O XIAO RP2040 volta a servir
+### Por que o XIAO RP2040
 
 Sem encoder e sem display, o orçamento de pinos cai para **11**:
 
@@ -27,44 +27,53 @@ Sem encoder e sem display, o orçamento de pinos cai para **11**:
 6 colunas + 4 linhas + 1 dado de RGB = 11
 ```
 
-Que é exatamente o que o XIAO RP2040 expõe. A variante com encoder e OLED
-precisava de 15 e por isso exigia o RP2040-Zero; esta cabe nos dois.
+Que é exatamente o que o XIAO RP2040 expõe — e é exatamente a pinagem do
+esquema elétrico do projeto, pino a pino, incluindo o `LEDS_SIGNAL` no `D6`.
+A variante com encoder e OLED precisa de 15 pinos e por isso exige o
+RP2040-Zero; esta cabe no XIAO, sem sobra.
 
-**Pinagem padrão — RP2040-Zero:**
+**Pinagem — XIAO RP2040:**
 
-| Sinal | GPIO |
-|---|---|
-| COL1..COL6 | `GP0` `GP1` `GP2` `GP3` `GP4` `GP5` |
-| ROW1..ROW4 | `GP6` `GP7` `GP8` `GP9` |
-| RGB data | `GP26` |
+| Sinal | GPIO | Pad | Pino |
+|---|---|---|---|
+| COL1 | `GP7` | `D5` | 6 |
+| COL2 | `GP6` | `D4` | 5 |
+| COL3 | `GP29` | `D3` | 4 |
+| COL4 | `GP28` | `D2` | 3 |
+| COL5 | `GP27` | `D1` | 2 |
+| COL6 | `GP26` | `D0` | 1 |
+| ROW1 | `GP3` | `D10` | 11 |
+| ROW2 | `GP4` | `D9` | 10 |
+| ROW3 | `GP2` | `D8` | 9 |
+| ROW4 | `GP1` | `D7` | 8 |
+| RGB data | `GP0` | `D6` | 7 |
 
-**Alternativa — XIAO RP2040.** Troque o bloco `matrix_pins` e o `ws2812.pin`
-do `keyboard.json` por:
+Os 11 pads ficam ocupados, sem nenhum sobrando.
+
+**Alternativa — Waveshare RP2040-Zero.** Se preferir usar a mesma placa da
+branch `encoder-oled-screen`, troque `matrix_pins` e `ws2812.pin` no
+`keyboard.json` por:
 
 ```json
 "matrix_pins": {
-    "rows": ["GP1", "GP2", "GP4", "GP3"],
-    "cols": ["GP7", "GP6", "GP29", "GP28", "GP27", "GP26"]
+    "rows": ["GP9", "GP8", "GP7", "GP6"],
+    "cols": ["GP0", "GP1", "GP2", "GP3", "GP4", "GP5"]
 },
-"ws2812": { "pin": "GP0", "driver": "vendor" }
+"ws2812": { "pin": "GP26", "driver": "vendor" }
 ```
-
-Correspondência de pads do XIAO: COL1..COL6 = `D5 D4 D3 D2 D1 D0`,
-ROW1..ROW4 = `D10 D9 D8 D7`, dados dos LEDs = `D6`. Os 11 pads ficam ocupados,
-sem sobra.
 
 ### Convenção de índices da matriz
 
 O firmware indexa as linhas de cima para baixo, o **inverso** dos nomes do
 esquema:
 
-| Firmware | Esquema | GPIO (Zero) |
-|---|---|---|
-| row 0 | ROW4 | `GP9` |
-| row 1 | ROW3 | `GP8` |
-| row 2 | ROW2 | `GP7` |
-| row 3 | ROW1 | `GP6` |
-| col 0..5 | COL1..COL6 | `GP0`..`GP5` |
+| Firmware | Esquema | GPIO | Pad |
+|---|---|---|---|
+| row 0 | ROW4 | `GP1` | `D7` |
+| row 1 | ROW3 | `GP2` | `D8` |
+| row 2 | ROW2 | `GP4` | `D9` |
+| row 3 | ROW1 | `GP3` | `D10` |
+| col 0..5 | COL1..COL6 | `GP7` `GP6` `GP29` `GP28` `GP27` `GP26` | `D5`..`D0` |
 
 ### Mapa dos switches
 
@@ -188,7 +197,7 @@ ou `TO()` a qualquer tecla no Vial.
 
 | Qtd | Item | Observação |
 |---|---|---|
-| 1 | Waveshare RP2040-Zero | Ou Seeed XIAO RP2040 — os dois servem nesta variante |
+| 1 | Seeed XIAO RP2040 | Ou Waveshare RP2040-Zero — os dois servem nesta variante |
 | 20 | Switches mecânicos | MX ou Choc, conforme a carcaça |
 | 20 | Diodos 1N4148 | Vidro, ou 1N4148W em SOD-123 para SMD |
 | 20 | LEDs SK6812MINI-E | Preferível ao WS2812B — ver nota de nível lógico |
@@ -202,21 +211,21 @@ ou `TO()` a qualquer tecla no Vial.
 Os 11 GPIOs em uso, mais alimentação. Se um fio não estiver nesta tabela, ele
 não deveria existir.
 
-| Pino | Recebe | Quantos fios |
-|---|---|---|
-| `GP0` | COL1 — um terminal de Q, Shift, G | 3 switches |
-| `GP1` | COL2 — 1, A, Z, Ctrl | 4 switches |
-| `GP2` | COL3 — 2, W, S | 3 switches |
-| `GP3` | COL4 — 3, D, X, C | 4 switches |
-| `GP4` | COL5 — R, F, T, Espaço | 4 switches |
-| `GP5` | COL6 — E, B | 2 switches |
-| `GP6` | ROW1 — cátodos de G, Ctrl, C, Espaço, B | 5 diodos |
-| `GP7` | ROW2 — cátodos de Shift, Z, S, X, T, E | 6 diodos |
-| `GP8` | ROW3 — cátodos de Q, A, W, D, F | 5 diodos |
-| `GP9` | ROW4 — cátodos de 1, 2, 3, R | 4 diodos |
-| `GP26` | DIN do LED 1, via 330 Ω | 1 |
-| `5V` | VCC de todos os 20 LEDs | barramento |
-| `GND` | GND de todos os 20 LEDs | barramento |
+| Pad | GPIO | Recebe | Quantos fios |
+|---|---|---|---|
+| `D5` | `GP7` | COL1 — um terminal de Q, Shift, G | 3 switches |
+| `D4` | `GP6` | COL2 — 1, A, Z, Ctrl | 4 switches |
+| `D3` | `GP29` | COL3 — 2, W, S | 3 switches |
+| `D2` | `GP28` | COL4 — 3, D, X, C | 4 switches |
+| `D1` | `GP27` | COL5 — R, F, T, Espaço | 4 switches |
+| `D0` | `GP26` | COL6 — E, B | 2 switches |
+| `D10` | `GP3` | ROW1 — cátodos de G, Ctrl, C, Espaço, B | 5 diodos |
+| `D9` | `GP4` | ROW2 — cátodos de Shift, Z, S, X, T, E | 6 diodos |
+| `D8` | `GP2` | ROW3 — cátodos de Q, A, W, D, F | 5 diodos |
+| `D7` | `GP1` | ROW4 — cátodos de 1, 2, 3, R | 4 diodos |
+| `D6` | `GP0` | DIN do LED 1, via 330 Ω | 1 |
+| `5V` | VBUS | VCC de todos os 20 LEDs | barramento |
+| `GND` | — | GND de todos os 20 LEDs | barramento |
 
 Conferência rápida: 3+4+3+4+4+2 = 20 switches nas colunas, e 5+6+5+4 = 20
 diodos nas linhas. Contagem diferente significa fio faltando ou sobrando.
@@ -244,7 +253,7 @@ por linha, muda só o primeiro bloco daquela struct.
   muito além dos 500 mA do USB. Uso real — cor sólida com brilho 80 — fica em
   120–150 mA.
 
-> **Nível lógico:** `GP26` entrega 3,3 V, mas um WS2812B em 5 V espera
+> **Nível lógico:** `GP0` entrega 3,3 V, mas um WS2812B em 5 V espera
 > 0,7 × VDD = 3,5 V. Costuma funcionar, mas se o primeiro LED se comportar mal:
 > use SK6812, baixe a alimentação para ~4,3 V com um diodo em série, ou use um
 > 74AHCT125.

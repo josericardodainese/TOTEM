@@ -12,14 +12,15 @@
     "bootloader": "rp2040",
 
     "//": "Unibody 20-key macropad. No encoder, no OLED -- RGB is driven by key chords.",
-    "//board": "Waveshare RP2040-Zero. Only 11 GPIO are needed in this variant, so a",
-    "//board2": "Seeed XIAO RP2040 also fits exactly; see readme.md for its pin mapping.",
-    "//matrix": "firmware index -> schematic net:",
-    "//rows": "row 0 = ROW4 (GP9), row 1 = ROW3 (GP8), row 2 = ROW2 (GP7), row 3 = ROW1 (GP6)",
-    "//cols": "col 0 = COL1 (GP0) .. col 5 = COL6 (GP5)",
+    "//board": "Seeed XIAO RP2040. This variant needs only 11 GPIO, which is exactly",
+    "//board2": "what the XIAO exposes -- and it matches the project schematic pin for pin.",
+    "//board3": "A Waveshare RP2040-Zero also works; see readme.md for its pin mapping.",
+    "//matrix": "firmware index -> schematic net -> XIAO pad:",
+    "//rows": "row 0 = ROW4 (GP1/D7), row 1 = ROW3 (GP2/D8), row 2 = ROW2 (GP4/D9), row 3 = ROW1 (GP3/D10)",
+    "//cols": "col 0 = COL1 (GP7/D5), COL2 (GP6/D4), COL3 (GP29/D3), COL4 (GP28/D2), COL5 (GP27/D1), COL6 (GP26/D0)",
     "matrix_pins": {
-        "rows": ["GP9", "GP8", "GP7", "GP6"],
-        "cols": ["GP0", "GP1", "GP2", "GP3", "GP4", "GP5"]
+        "rows": ["GP1", "GP2", "GP4", "GP3"],
+        "cols": ["GP7", "GP6", "GP29", "GP28", "GP27", "GP26"]
     },
     "diode_direction": "COL2ROW",
     "debounce": 5,
@@ -28,8 +29,9 @@
         "rgb_matrix": true
     },
 
+    "//ws2812": "GP0 = pad D6 = LEDS_SIGNAL in the project schematic",
     "ws2812": {
-        "pin": "GP26",
+        "pin": "GP0",
         "driver": "vendor"
     },
     "rgb_matrix": {

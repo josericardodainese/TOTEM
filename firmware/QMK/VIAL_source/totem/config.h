@@ -12,9 +12,10 @@
  * NOT the original TOTEM split: no second half, no serial link, no handedness.
  * EE_HANDS, SERIAL_USART_*, SPLIT_* and hand_swap_config are all gone.
  *
- * Pin budget for this variant is only 11 (6 cols + 4 rows + 1 RGB), so it fits
- * a Seeed XIAO RP2040 as well as the RP2040-Zero. See readme.md for the XIAO
- * pin mapping.
+ * Board is a Seeed XIAO RP2040. This variant needs only 11 GPIO
+ * (6 cols + 4 rows + 1 RGB), which is exactly what the XIAO exposes -- and it
+ * matches the project schematic pin for pin, LEDS_SIGNAL on D6 included.
+ * A Waveshare RP2040-Zero also works; see readme.md for its pin mapping.
  *
  * MATRIX_ROWS / MATRIX_COLS are derived from matrix_pins in keyboard.json.
  */
