@@ -38,9 +38,9 @@
       --ink-3:     #7C8794;
       --rule:      #2A323D;
       --rule-2:    #3A434F;
-        --col:       #EC8076;
+      --col:       #EC8076;
       --accent:    #9AA0E8;
-      --accent-bg: #1B1D33;
+    --accent-bg: #1B1D33;
       --col-bg:    #2E1D1B;
       --row:       #7FB2E3;
       --row-bg:    #16232F;
@@ -65,7 +65,7 @@
     --rule-2:    #3A434F;
     --col:       #EC8076;
     --accent:    #9AA0E8;
-      --accent-bg: #1B1D33;
+    --accent-bg: #1B1D33;
     --col-bg:    #2E1D1B;
     --row:       #7FB2E3;
     --row-bg:    #16232F;
@@ -220,6 +220,10 @@
   tbody tr:hover { background: var(--surface-2); }
   td.m, th.m { font-family: var(--mono); font-variant-numeric: tabular-nums; }
   .cap { color: var(--ink-3); font-size: 13px; margin: 10px 0 0; }
+
+  /* tables whose cells carry sentences, not data */
+  .tablewrap.txt td:last-child, .tablewrap.txt td:nth-child(2) { white-space: normal; min-width: 320px; }
+  .tablewrap.txt td:first-child { vertical-align: top; }
 
   .tag-col { color: var(--col); background: var(--col-bg); border: 1px solid var(--col); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
   .tag-row { color: var(--row); background: var(--row-bg); border: 1px solid var(--row); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
@@ -411,6 +415,7 @@
   <p>Conteúdo</p>
   <ol>
     <li><a href="#oque">O que é o projeto</a></li>
+    <li><a href="#basico">Como um teclado funciona por dentro</a></li>
     <li><a href="#variantes">As duas variantes</a></li>
     <li><a href="#matriz">A matriz, fonte de tudo</a></li>
     <li><a href="#perfis">Perfis e acordes</a></li>
@@ -459,9 +464,176 @@
 </section>
 
 <!-- ============================================================ -->
+<section id="basico">
+  <div class="sec-head">
+    <p class="eyebrow">Seção 02 · para quem está chegando agora</p>
+    <h2>Como um teclado funciona por dentro</h2>
+    <p>Se as palavras QMK, Vial, keymap e camada não significam nada para você, comece por aqui. O resto do documento assume esta seção.</p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>Um teclado é um computador pequeno.</strong> Ele não manda "a
+      letra A" pelo cabo por mágica: dentro dele há um microcontrolador rodando
+      um programa que fica, milhares de vezes por segundo, verificando quais
+      teclas estão pressionadas e traduzindo isso em mensagens USB para o PC.
+    </p>
+    <p>
+      Esse programa é o <strong>firmware</strong>. Num teclado de loja ele vem
+      gravado de fábrica e você não mexe. Num teclado personalizado, o firmware
+      é seu — e é isso que este projeto é: o firmware deste teclado.
+    </p>
+  </div>
+
+  <h3>As três peças de software</h3>
+
+  <div class="dec">
+    <h3>QMK</h3>
+    <dl>
+      <dt>O que é</dt><dd>O firmware de código aberto mais usado em teclados personalizados. É <strong>o programa que roda dentro do teclado</strong>.</dd>
+      <dt>O que resolve</dt><dd>Ler as teclas, gerenciar camadas, macros, LEDs, e falar USB com o computador. Você descreve o seu teclado em alguns arquivos e o QMK cuida do resto.</dd>
+      <dt>O incômodo</dt><dd>Para mudar o que uma tecla faz, você edita código em C e <strong>recompila e regrava</strong> o firmware inteiro. Toda vez.</dd>
+    </dl>
+  </div>
+
+  <div class="dec">
+    <h3>Vial</h3>
+    <dl>
+      <dt>O que é</dt><dd>Uma versão modificada do QMK <em>mais</em> um aplicativo. Existe para navegador em <a href="https://vial.rocks">vial.rocks</a> e como app de desktop.</dd>
+      <dt>O que resolve</dt><dd>Exatamente o incômodo acima. Com o firmware Vial gravado, você pluga o teclado, abre o app, <strong>vê o desenho das suas teclas na tela</strong> e clica para mudar o que cada uma faz. Sem compilar, sem regravar, e a mudança fica salva dentro do teclado.</dd>
+      <dt>Por quê aqui</dt><dd>É o que permite você reorganizar os cinco perfis depois, sem precisar de mim nem de um ambiente de compilação.</dd>
+    </dl>
+  </div>
+
+  <div class="dec">
+    <h3>vial-qmk</h3>
+    <dl>
+      <dt>O que é</dt><dd>O código-fonte do QMK com as modificações do Vial embutidas — um <em>fork</em>.</dd>
+      <dt>Por que importa</dt><dd>É onde este firmware precisa ser compilado. O código do Vial <strong>não existe</strong> no QMK original, então tentar compilar lá simplesmente falha.</dd>
+    </dl>
+  </div>
+
+  <div class="note info">
+    <span class="lbl">A relação entre os três, em uma frase</span>
+    <p>
+      <strong>QMK</strong> é o motor, <strong>Vial</strong> é o painel que deixa
+      você mexer no motor sem abrir o capô, e <strong>vial-qmk</strong> é a
+      oficina onde o motor é montado.
+    </p>
+  </div>
+
+  <h3>O vocabulário que aparece o tempo todo</h3>
+
+  <div class="tablewrap txt">
+    <table>
+      <thead><tr><th class="m">Termo</th><th>O que significa</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="m">firmware</td>
+          <td>O programa que roda <em>dentro</em> do teclado, não no PC.</td>
+        </tr>
+        <tr>
+          <td class="m">keymap</td>
+          <td>A tabela que diz o que cada tecla faz. "A tecla da posição 5 envia <code>Q</code>."</td>
+        </tr>
+        <tr>
+          <td class="m">keycode</td>
+          <td>Uma entrada dessa tabela. <code>KC_Q</code> é a letra Q, <code>KC_LSFT</code> é o Shift esquerdo.</td>
+        </tr>
+        <tr>
+          <td class="m">camada <span style="color:var(--ink-3)">(layer)</span></td>
+          <td>As mesmas 20 teclas com um keymap diferente. É o mesmo princípio do Shift num teclado comum — a tecla é a mesma, o resultado muda — só que aplicado ao teclado inteiro. Aqui são cinco, e chamamos de <strong>perfis</strong>.</td>
+        </tr>
+        <tr>
+          <td class="m">matriz</td>
+          <td>Teclas ligadas em grade, não uma a uma. Explicado logo abaixo.</td>
+        </tr>
+        <tr>
+          <td class="m">diodo</td>
+          <td>Componente que só deixa a corrente passar num sentido. Um por tecla, e sem eles a grade se confunde.</td>
+        </tr>
+        <tr>
+          <td class="m">GPIO</td>
+          <td>Um pino do microcontrolador. <code>GP7</code> é o pino 7. Eles são poucos, e é por isso que a contagem deles decide tanta coisa neste projeto.</td>
+        </tr>
+        <tr>
+          <td class="m">.uf2</td>
+          <td>O arquivo de firmware já compilado, pronto para gravar. Você o <strong>arrasta para o teclado como se fosse um pendrive</strong>.</td>
+        </tr>
+        <tr>
+          <td class="m">bootloader</td>
+          <td>O modo em que o teclado aceita firmware novo. Você entra nele com um duplo toque no botão RESET, e o teclado aparece como um pendrive chamado <code>RPI-RP2</code>.</td>
+        </tr>
+        <tr>
+          <td class="m">EEPROM</td>
+          <td>Memória pequena dentro do teclado que <strong>sobrevive a desligar</strong>. É onde o perfil ativo e os seus ajustes do Vial ficam guardados.</td>
+        </tr>
+        <tr>
+          <td class="m">compilar</td>
+          <td>Transformar o código-fonte em <code>.uf2</code>. É o que o comando <code>make</code> faz.</td>
+        </tr>
+        <tr>
+          <td class="m">RP2040</td>
+          <td>O modelo do microcontrolador, o mesmo do Raspberry Pi Pico. As duas placas deste projeto usam ele.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Por que "matriz" e não um fio por tecla</h3>
+  <div class="prose">
+    <p>
+      O jeito ingênuo de ligar 20 teclas seria um pino do microcontrolador para
+      cada uma. Só que o controlador tem <strong>11 pinos</strong>. Não dá.
+    </p>
+    <p>
+      A saída é ligar as teclas em <strong>grade</strong>: 4 linhas × 6 colunas
+      dão 24 posições usando só 10 pinos. O firmware energiza uma linha por vez e
+      olha quais colunas responderam — como perguntar "na fileira 2, quais
+      assentos estão ocupados?", quatro vezes, milhares de vezes por segundo.
+    </p>
+    <p>
+      O <strong>diodo</strong> em cada tecla existe por causa de um efeito
+      chato: sem ele, apertar três teclas que formam um "L" na grade faz a
+      corrente dar a volta e o firmware enxerga uma <strong>quarta tecla que
+      ninguém apertou</strong>. Isso se chama <em>ghosting</em>, e num teclado de
+      jogo — onde você segura várias teclas ao mesmo tempo — seria fatal. O diodo
+      força a corrente num sentido só e o problema some.
+    </p>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">O que isso significa na prática</span>
+    <p>
+      Um diodo montado invertido faz aquela tecla <strong>nunca funcionar</strong>
+      — sem curto, sem esquentar, sem mensagem de erro. É a falha mais comum e a
+      mais silenciosa de uma montagem, e é por isso que os guias de bancada
+      insistem tanto nela.
+    </p>
+  </div>
+
+  <h3>Como uma tecla vira uma letra</h3>
+  <div class="prose">
+    <p>O caminho completo, do dedo até a tela:</p>
+    <ol>
+      <li>Você aperta uma tecla e o switch fecha um contato entre uma coluna e uma linha.</li>
+      <li>O firmware, varrendo a grade, percebe que a posição <code>[1,0]</code> fechou.</li>
+      <li>Ele consulta o <strong>keymap da camada ativa</strong> e vê que <code>[1,0]</code> é <code>KC_Q</code>.</li>
+      <li>Manda pelo USB a mensagem "tecla Q pressionada".</li>
+      <li>O computador escreve <code>q</code>.</li>
+    </ol>
+    <p style="margin-bottom:0">
+      Trocar de perfil não muda nada nos passos 1 e 2 — muda só o passo 3, a
+      tabela consultada. É por isso que as mesmas 20 teclas físicas podem ter
+      cinco significados diferentes.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
 <section id="variantes">
   <div class="sec-head">
-    <p class="eyebrow">Seção 02</p>
+    <p class="eyebrow">Seção 03</p>
     <h2>As duas variantes</h2>
     <p>Mesmo teclado, mesma matriz, mesmos perfis. O que muda é como você controla.</p>
   </div>
@@ -523,7 +695,7 @@
 <!-- ============================================================ -->
 <section id="matriz">
   <div class="sec-head">
-    <p class="eyebrow">Seção 03</p>
+    <p class="eyebrow">Seção 04</p>
     <h2>A matriz, fonte de tudo</h2>
     <p>Extraída do esquema elétrico e conferida contra o desenho de legendas. As duas fontes batem.</p>
   </div>
@@ -597,7 +769,7 @@
 <!-- ============================================================ -->
 <section id="perfis">
   <div class="sec-head">
-    <p class="eyebrow">Seção 04</p>
+    <p class="eyebrow">Seção 05</p>
     <h2>Perfis e acordes</h2>
     <p>Cinco camadas, todas as 20 teclas livres em cada uma pelo Vial.</p>
   </div>
@@ -655,7 +827,7 @@
 <!-- ============================================================ -->
 <section id="decisoes">
   <div class="sec-head">
-    <p class="eyebrow">Seção 05 · o que não está no diff</p>
+    <p class="eyebrow">Seção 06 · o que não está no diff</p>
     <h2>Registro de decisões</h2>
     <p>Cada uma foi forçada por uma restrição concreta. É isto que não se recupera lendo o código.</p>
   </div>
@@ -724,7 +896,7 @@
   </div>
 
   <h3>Três falhas que enganam</h3>
-  <div class="tablewrap">
+  <div class="tablewrap txt">
     <table>
       <thead><tr><th>Sintoma</th><th>Causa real</th></tr></thead>
       <tbody>
@@ -742,7 +914,7 @@
 <!-- ============================================================ -->
 <section id="repo">
   <div class="sec-head">
-    <p class="eyebrow">Seção 06</p>
+    <p class="eyebrow">Seção 07</p>
     <h2>Mapa do repositório</h2>
     <p>Todo o firmware vive em <code>firmware/QMK/VIAL_source/totem/</code>.</p>
   </div>
@@ -759,18 +931,18 @@
   </div>
 
   <h3>Arquivos e o que cada um faz</h3>
-  <div class="tablewrap">
+  <div class="tablewrap txt">
     <table>
       <thead><tr><th class="m">Arquivo</th><th>Papel</th></tr></thead>
       <tbody>
-        <tr><td class="m">keyboard.json</td><td>Pinos, matriz, <code>LAYOUT</code>, features, animações de RGB</td></tr>
-        <tr><td class="m">config.h</td><td>Painel de controle: perfis, coordenadas dos acordes, tempos</td></tr>
-        <tr><td class="m">totem.c</td><td><code>g_led_config</code>, motor de acordes, indicador de perfil</td></tr>
-        <tr><td class="m">totem_oled.c/.h</td><td>Menu e telas do display <em>(só na variante A)</em></td></tr>
-        <tr><td class="m">halconf.h</td><td>Liga <code>HAL_USE_I2C</code> <em>(só na variante A)</em></td></tr>
-        <tr><td class="m">keymaps/vial/</td><td>Keymap para o Vial, UID, <code>vial.json</code></td></tr>
-        <tr><td class="m">keymaps/default/</td><td>Keymap QMK puro, mesmas cinco camadas</td></tr>
-        <tr><td class="m">readme.md</td><td>Referência completa da variante</td></tr>
+        <tr><td class="m">keyboard.json</td><td><strong>A ficha técnica da placa.</strong> Em quais pinos do controlador cada linha e coluna estão ligadas, quantas teclas existem e onde ficam no desenho. É o primeiro arquivo que o QMK lê.</td></tr>
+        <tr><td class="m">config.h</td><td><strong>Os ajustes de comportamento.</strong> Quais teclas formam cada acorde, quanto tempo é preciso segurar, quantos perfis existem. Mudar um número aqui muda como o teclado reage.</td></tr>
+        <tr><td class="m">totem.c</td><td><strong>O código que roda dentro do teclado.</strong> Detecta os acordes, troca de perfil e decide a cor dos LEDs.</td></tr>
+        <tr><td class="m">totem_oled.c/.h</td><td>Desenha o menu e as telas no display. <em>Só na variante A.</em></td></tr>
+        <tr><td class="m">halconf.h</td><td>Liga o suporte a I²C, o protocolo de dois fios que conversa com o display. Sem isso o display não existe para o firmware. <em>Só na variante A.</em></td></tr>
+        <tr><td class="m">keymaps/vial/</td><td><strong>A versão que funciona com o app Vial.</strong> Além do keymap, traz o desenho das teclas que aparece na tela do app e um identificador único para o Vial reconhecer este teclado. É a versão recomendada.</td></tr>
+        <tr><td class="m">keymaps/default/</td><td><strong>A versão sem o app.</strong> Mesmas cinco camadas, mas para mudar qualquer tecla você edita este arquivo e regrava o firmware. Existe para quem não quer depender do Vial.</td></tr>
+        <tr><td class="m">readme.md</td><td>A referência completa da variante: pinagem, fiação, montagem e como compilar.</td></tr>
       </tbody>
     </table>
   </div>
@@ -790,7 +962,7 @@
 <!-- ============================================================ -->
 <section id="ambiente">
   <div class="sec-head">
-    <p class="eyebrow">Seção 07</p>
+    <p class="eyebrow">Seção 08</p>
     <h2>Ambiente de build</h2>
     <p>Requer o fork Vial do QMK. Não compila no <code>qmk_firmware</code> upstream.</p>
   </div>
@@ -838,12 +1010,12 @@ make totem:default    # QMK puro</code></pre>
 <!-- ============================================================ -->
 <section id="pendencias">
   <div class="sec-head">
-    <p class="eyebrow">Seção 08</p>
+    <p class="eyebrow">Seção 09</p>
     <h2>O que ainda está em aberto</h2>
     <p>Nada disso impede compilar. Tudo isso impede montar com confiança.</p>
   </div>
 
-  <div class="tablewrap">
+  <div class="tablewrap txt">
     <table>
       <thead><tr><th>Item</th><th>Situação</th><th>Risco se ignorado</th></tr></thead>
       <tbody>
