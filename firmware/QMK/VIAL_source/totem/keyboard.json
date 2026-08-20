@@ -1,70 +1,91 @@
 {
-    "keyboard_name": "TOTEM",
+    "keyboard_name": "TOTEM 20",
     "manufacturer": "GEIST",
-    "url": "https://github.com/GEIGEIGEIST/TOTEM",
-    "maintainer": "qmk",
+    "url": "https://github.com/josericardodainese/TOTEM",
+    "maintainer": "josericardodainese",
     "usb": {
         "vid": "0x3A3C",
-        "pid": "0x0002",
-        "device_version": "0.3.0"
+        "pid": "0x0020",
+        "device_version": "2.0.0"
     },
     "processor": "RP2040",
     "bootloader": "rp2040",
+
+    "//": "Unibody 20-key macropad + rotary encoder + SSD1306 OLED.",
+    "//board": "Waveshare RP2040-Zero (20 GPIO on the castellated edge). NOT the XIAO:",
+    "//board2": "the XIAO exposes only 11 GPIO and cannot host encoder + OLED + RGB.",
+    "//matrix": "firmware index -> schematic net:",
+    "//rows": "row 0 = ROW4 (GP9), row 1 = ROW3 (GP8), row 2 = ROW2 (GP7), row 3 = ROW1 (GP6)",
+    "//cols": "col 0 = COL1 (GP0) .. col 5 = COL6 (GP5)",
+    "//encbtn": "the encoder push switch is an ordinary matrix key at [0,5] -- costs no GPIO",
     "matrix_pins": {
-        "rows": ["GP26", "GP27", "GP28", "GP29"],
-        "cols": ["GP6", "GP7", "GP3", "GP4", "GP2"]
+        "rows": ["GP9", "GP8", "GP7", "GP6"],
+        "cols": ["GP0", "GP1", "GP2", "GP3", "GP4", "GP5"]
     },
     "diode_direction": "COL2ROW",
     "debounce": 5,
+
     "features": {
-        "swap_hands": true
+        "encoder": true,
+        "oled": true,
+        "rgb_matrix": true
     },
-    "split": {
-        "serial": {
-            "driver": "vendor"
+
+    "encoder": {
+        "rotary": [
+            { "pin_a": "GP14", "pin_b": "GP15" }
+        ]
+    },
+
+    "ws2812": {
+        "pin": "GP26",
+        "driver": "vendor"
+    },
+    "rgb_matrix": {
+        "driver": "ws2812",
+        "//chain": "DIN -> DOUT must follow SW1..SW20; see g_led_config in totem.c",
+        "max_brightness": 120,
+        "sleep": true,
+        "animations": {
+            "solid_color": true,
+            "breathing": true,
+            "cycle_all": true,
+            "cycle_left_right": true,
+            "rainbow_moving_chevron": true,
+            "solid_reactive_simple": true,
+            "solid_reactive": true,
+            "splash": true,
+            "solid_splash": true
         }
     },
+
     "layouts": {
         "LAYOUT": {
             "layout": [
-                { "label": "L00", "matrix": [0, 0], "x": 1, "y": 1.4 },
-                { "label": "L01", "matrix": [0, 1], "x": 2, "y": 0.6 },
-                { "label": "L02", "matrix": [0, 2], "x": 3, "y": 0 },
-                { "label": "L03", "matrix": [0, 3], "x": 4, "y": 0.5 },
-                { "label": "L04", "matrix": [0, 4], "x": 5, "y": 0.65 },
-                { "label": "R00", "matrix": [4, 4], "x": 9, "y": 0.65 },
-                { "label": "R01", "matrix": [4, 3], "x": 10, "y": 0.5 },
-                { "label": "R02", "matrix": [4, 2], "x": 11, "y": 0 },
-                { "label": "R03", "matrix": [4, 1], "x": 12, "y": 0.6 },
-                { "label": "R04", "matrix": [4, 0], "x": 13, "y": 1.4 },
-                { "label": "L10", "matrix": [1, 0], "x": 1, "y": 2.4 },
-                { "label": "L11", "matrix": [1, 1], "x": 2, "y": 1.6 },
-                { "label": "L12", "matrix": [1, 2], "x": 3, "y": 1 },
-                { "label": "L13", "matrix": [1, 3], "x": 4, "y": 1.5 },
-                { "label": "L14", "matrix": [1, 4], "x": 5, "y": 1.65 },
-                { "label": "R10", "matrix": [5, 4], "x": 9, "y": 1.65 },
-                { "label": "R11", "matrix": [5, 3], "x": 10, "y": 1.5 },
-                { "label": "R12", "matrix": [5, 2], "x": 11, "y": 1 },
-                { "label": "R13", "matrix": [5, 1], "x": 12, "y": 1.6 },
-                { "label": "R14", "matrix": [5, 0], "x": 13, "y": 2.4 },
-                { "label": "L30", "matrix": [3, 0], "x": 0, "y": 2.9 },
-                { "label": "L20", "matrix": [2, 0], "x": 1, "y": 3.4 },
-                { "label": "L21", "matrix": [2, 1], "x": 2, "y": 2.6 },
-                { "label": "L22", "matrix": [2, 2], "x": 3, "y": 2 },
-                { "label": "L23", "matrix": [2, 3], "x": 4, "y": 2.5 },
-                { "label": "L24", "matrix": [2, 4], "x": 5, "y": 2.65 },
-                { "label": "R20", "matrix": [6, 4], "x": 9, "y": 2.65 },
-                { "label": "R21", "matrix": [6, 3], "x": 10, "y": 2.5 },
-                { "label": "R22", "matrix": [6, 2], "x": 11, "y": 2 },
-                { "label": "R23", "matrix": [6, 1], "x": 12, "y": 2.6 },
-                { "label": "R24", "matrix": [6, 0], "x": 13, "y": 3.4 },
-                { "label": "R34", "matrix": [7, 0], "x": 14, "y": 2.9 },
-                { "label": "L32", "matrix": [3, 2], "x": 3.6, "y": 3.5 },
-                { "label": "L33", "matrix": [3, 3], "x": 4.8, "y": 3.65 },
-                { "label": "L34", "matrix": [3, 4], "x": 6, "y": 3.85 },
-                { "label": "R30", "matrix": [7, 4], "x": 8, "y": 3.85 },
-                { "label": "R31", "matrix": [7, 3], "x": 9.2, "y": 3.65 },
-                { "label": "R32", "matrix": [7, 2], "x": 10.4, "y": 3.5 }
+                { "label": "1",      "matrix": [0, 1], "x": 2.2,  "y": 0.25 },
+                { "label": "2",      "matrix": [0, 2], "x": 3.2,  "y": 0    },
+                { "label": "3",      "matrix": [0, 3], "x": 4.2,  "y": 0.2  },
+                { "label": "R",      "matrix": [0, 4], "x": 5.2,  "y": 0.35 },
+                { "label": "Enc",    "matrix": [0, 5], "x": 6.9,  "y": 0.2  },
+
+                { "label": "Q",      "matrix": [1, 0], "x": 1.2,  "y": 1.55 },
+                { "label": "A",      "matrix": [1, 1], "x": 2.2,  "y": 1.25 },
+                { "label": "W",      "matrix": [1, 2], "x": 3.2,  "y": 1    },
+                { "label": "D",      "matrix": [1, 3], "x": 4.2,  "y": 1.2  },
+                { "label": "F",      "matrix": [1, 4], "x": 5.2,  "y": 1.35 },
+
+                { "label": "Shift",  "matrix": [2, 0], "x": 1.2,  "y": 2.55 },
+                { "label": "Z",      "matrix": [2, 1], "x": 2.2,  "y": 2.25 },
+                { "label": "S",      "matrix": [2, 2], "x": 3.2,  "y": 2    },
+                { "label": "X",      "matrix": [2, 3], "x": 4.2,  "y": 2.2  },
+                { "label": "T",      "matrix": [2, 4], "x": 6.4,  "y": 1.7  },
+                { "label": "E",      "matrix": [2, 5], "x": 7.45, "y": 2.5  },
+
+                { "label": "G",      "matrix": [3, 0], "x": 0,    "y": 2.7  },
+                { "label": "Ctrl",   "matrix": [3, 1], "x": 1.6,  "y": 3.4  },
+                { "label": "C",      "matrix": [3, 3], "x": 4.2,  "y": 3.3  },
+                { "label": "Space",  "matrix": [3, 4], "x": 6.4,  "y": 2.7, "h": 2 },
+                { "label": "B",      "matrix": [3, 5], "x": 7.45, "y": 3.5  }
             ]
         }
     }
