@@ -1,4 +1,4 @@
-/* TOTEM 20 -- unibody 20-key macropad + encoder + OLED (Waveshare RP2040-Zero)
+/* TOTEM 20 -- unibody 20-key macropad, no encoder, no OLED
  *
  * Copyright 2022 GEIST @geigeigeist
  * Copyright 2026 josericardodainese
@@ -6,8 +6,8 @@
  *
  * Board-level behaviour shared by every keymap:
  *   - the RGB matrix layout (LED chain order);
- *   - the two-key, one-second-hold profile chord;
- *   - the encoder: short click switches profile, long click drives the menu;
+ *   - a small chord engine: two-key combinations, each held for one second,
+ *     that cycle the profile and open the RGB control layer;
  *   - the profile colour indicator.
  *
  * The original TOTEM hand_swap_config lived here. It is gone: the board is a
@@ -17,7 +17,6 @@
  */
 
 #include "quantum.h"
-#include "totem_oled.h"
 
 // ┌─────────────────────────────────────────────────┐
 // │ R G B   m a t r i x   l a y o u t               │
@@ -27,11 +26,10 @@
 /* The LED chain must be routed DIN -> DOUT following SW1..SW20, i.e. the same
  * order as the LAYOUT macro: top row left-to-right, then each row below.
  * If the PCB ends up serpentining instead, only the first block changes.
- * [0,5] is the encoder button -- a switch with no LED, hence NO_LED.
  */
 led_config_t g_led_config = {
     {   // matrix position -> LED index
-        { NO_LED,      0,      1,      2,      3, NO_LED },   // row 0 (ROW4), [0,5] = encoder button
+        { NO_LED,      0,      1,      2,      3, NO_LED },   // row 0 (ROW4)
         {      4,      5,      6,      7,      8, NO_LED },   // row 1 (ROW3)
         {      9,     10,     11,     12,     13,     14 },   // row 2 (ROW2)
         {     15,     16, NO_LED,     17,     18,     19 },   // row 3 (ROW1)
@@ -71,10 +69,11 @@ led_config_t g_led_config = {
 // │ p r o f i l e s                                 │
 // └─────────────────────────────────────────────────┘
 
-/* Only these three rotate through the chord and the short click:
+/* Only these three rotate through the G+B chord:
  *     Jogo -> 3ds Max -> Macros -> Jogo
- * RESERVED and CONFIG are reached from the OLED menu (Perfil) or by a layer
- * keycode assigned in Vial. Cycling while on one of them returns to jogo.
+ * RESERVED stays out of the cycle and is reached by assigning a layer keycode
+ * in Vial; RGB is reached with the G+E chord. Cycling while on either of them
+ * returns to jogo.
  */
 static const uint8_t profile_cycle_order[] = {
     TOTEM20_PROFILE_GAME,
@@ -83,54 +82,36 @@ static const uint8_t profile_cycle_order[] = {
 };
 
 /* jogo = vermelho, 3ds Max = azul, macros = verde,
- * reservada = roxo, configuracao = amarelo
+ * reservada = roxo, RGB = amarelo
  */
 static const uint8_t profile_hue[TOTEM20_PROFILE_COUNT] = {
     [TOTEM20_PROFILE_GAME]     = 0,     // red
     [TOTEM20_PROFILE_MAX3DS]   = 170,   // blue
     [TOTEM20_PROFILE_MACROS]   = 85,    // green
     [TOTEM20_PROFILE_RESERVED] = 191,   // purple
-    [TOTEM20_PROFILE_CONFIG]   = 43,    // yellow
+    [TOTEM20_PROFILE_RGB]      = 43,    // yellow
 };
-
-const char *totem_profile_name(uint8_t profile) {
-    switch (profile) {
-        case TOTEM20_PROFILE_GAME:     return "JOGO";
-        case TOTEM20_PROFILE_MAX3DS:   return "3DS MAX";
-        case TOTEM20_PROFILE_MACROS:   return "MACROS";
-        case TOTEM20_PROFILE_RESERVED: return "RESERVADA";
-        case TOTEM20_PROFILE_CONFIG:   return "CONFIG";
-        default:                       return "?";
-    }
-}
-
-uint8_t totem_profile_current(void) {
-    return get_highest_layer(default_layer_state);
-}
 
 static void profile_indicate(uint8_t profile) {
 #ifdef RGB_MATRIX_ENABLE
     if (profile >= TOTEM20_PROFILE_COUNT) return;
     /* Respect an explicit "RGB off": never light up on our own. */
     if (!rgb_matrix_is_enabled()) return;
-    /* Only the hue moves. The effect and brightness the user picked -- in Vial
-     * or in the OLED menu -- are left alone, and _noeeprom keeps us from
-     * overwriting their saved settings or wearing out the flash.
+    /* The profile colour only means anything on the solid effect. On any
+     * animation the hue belongs to the user, so we keep our hands off it --
+     * otherwise every layer change would stomp on the palette they just set
+     * from the RGB layer. Brightness and effect are never touched either way.
      */
+    if (rgb_matrix_get_mode() != RGB_MATRIX_SOLID_COLOR) return;
+    /* _noeeprom: never overwrite saved settings, never wear out the flash. */
     rgb_matrix_sethsv_noeeprom(profile_hue[profile], 255, rgb_matrix_get_val());
 #else
     (void)profile;
 #endif
 }
 
-void totem_profile_set(uint8_t profile) {
-    if (profile >= TOTEM20_PROFILE_COUNT) return;
-    /* Persists in EEPROM, so the profile survives a reboot or replug. */
-    set_single_persistent_default_layer(profile);
-}
-
-void totem_profile_switch_next(void) {
-    uint8_t current = totem_profile_current();
+static void profile_switch_next(void) {
+    uint8_t current = get_highest_layer(default_layer_state);
     uint8_t next    = profile_cycle_order[0];
 
     for (uint8_t i = 0; i < ARRAY_SIZE(profile_cycle_order); i++) {
@@ -139,190 +120,169 @@ void totem_profile_switch_next(void) {
             break;
         }
     }
-    totem_profile_set(next);
+    /* Persists in EEPROM, so the profile survives a reboot or replug. */
+    set_single_persistent_default_layer(next);
+}
+
+static void rgb_layer_toggle(void) {
+    layer_invert(TOTEM20_PROFILE_RGB);
 }
 
 // ┌─────────────────────────────────────────────────┐
-// │ c h o r d   s t a t e   m a c h i n e           │
+// │ c h o r d   e n g i n e                         │
 // └─────────────────────────────────────────────────┘
 
+/* Every key that takes part in a chord is tracked here. A chord key is
+ * withheld from the host for up to CHORD_SYNC_MS so that a recognised chord
+ * never leaks its normal keycode; if no partner shows up in that window the
+ * key is forwarded and behaves completely normally.
+ */
+enum chord_keys {
+    CK_ANCHOR = 0,   // "G"
+    CK_PROFILE,      // "B"
+    CK_RGB,          // "E"
+    CK_COUNT,
+};
+
 typedef struct {
-    bool     down;       // key is physically pressed
-    bool     held_back;  // pressed, but its keycode has not reached the host
-    bool     forwarded;  // its keycode is currently registered on the host
-    bool     consumed;   // chord fired -- swallow the matching release
+    uint8_t  row, col;
+    bool     down;
+    bool     held_back;   // pressed, keycode not yet sent to the host
+    bool     forwarded;   // keycode currently registered on the host
+    bool     consumed;    // a chord fired -- swallow the release
     uint16_t keycode;
     uint16_t press_time;
-} profile_key_t;
+} chord_key_t;
 
-static profile_key_t profile_key[2];
-static uint16_t      chord_start_time;
-static bool          chord_armed;
+static chord_key_t chord_key[CK_COUNT] = {
+    [CK_ANCHOR]  = { .row = CHORD_ANCHOR_ROW,  .col = CHORD_ANCHOR_COL  },
+    [CK_PROFILE] = { .row = CHORD_PROFILE_ROW, .col = CHORD_PROFILE_COL },
+    [CK_RGB]     = { .row = CHORD_RGB_ROW,     .col = CHORD_RGB_COL     },
+};
 
-static int8_t profile_key_index(keypos_t key) {
-    if (key.row == PROFILE_KEY_A_ROW && key.col == PROFILE_KEY_A_COL) return 0;
-    if (key.row == PROFILE_KEY_B_ROW && key.col == PROFILE_KEY_B_COL) return 1;
+typedef struct {
+    uint8_t a, b;            // indices into chord_key[]
+    void  (*action)(void);
+} chord_def_t;
+
+/* Checked in order, so if all three keys somehow go down together the first
+ * entry wins. */
+static const chord_def_t chords[] = {
+    { CK_ANCHOR, CK_PROFILE, profile_switch_next },
+    { CK_ANCHOR, CK_RGB,     rgb_layer_toggle    },
+};
+
+static int8_t  armed_chord = -1;
+static uint16_t armed_since;
+
+static int8_t chord_key_index(keypos_t key) {
+    for (uint8_t i = 0; i < CK_COUNT; i++) {
+        if (chord_key[i].row == key.row && chord_key[i].col == key.col) return i;
+    }
     return -1;
 }
 
-static void profile_key_forward(uint8_t i) {
-    profile_key[i].held_back = false;
-    profile_key[i].forwarded = true;
-    register_code16(profile_key[i].keycode);
+/* Release a withheld key to the host as a normal hold. */
+static void chord_key_forward(uint8_t i) {
+    chord_key[i].held_back = false;
+    chord_key[i].forwarded = true;
+    register_code16(chord_key[i].keycode);
 }
 
-// ┌─────────────────────────────────────────────────┐
-// │ e n c o d e r   b u t t o n                     │
-// └─────────────────────────────────────────────────┘
-
-static bool     enc_btn_down;
-static bool     enc_btn_long_fired;
-static uint16_t enc_btn_press_time;
-
-static bool is_encoder_button(keypos_t key) {
-    return key.row == ENCODER_BTN_ROW && key.col == ENCODER_BTN_COL;
+/* Is this key half of the chord currently armed? */
+static bool in_armed_chord(uint8_t i) {
+    if (armed_chord < 0) return false;
+    return chords[armed_chord].a == i || chords[armed_chord].b == i;
 }
-
-// ┌─────────────────────────────────────────────────┐
-// │ e v e n t   h a n d l i n g                     │
-// └─────────────────────────────────────────────────┘
 
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     if (!process_record_user(keycode, record)) return false;
 
-    if (record->event.pressed) {
-        totem_oled_note_keypress();
-    }
+    int8_t idx = chord_key_index(record->event.key);
+    if (idx < 0) return true;   // not a chord key -- nothing to do
 
-    /* ---- encoder push switch: an ordinary matrix key, owned by us ---- */
-    if (is_encoder_button(record->event.key)) {
-        if (record->event.pressed) {
-            enc_btn_down       = true;
-            enc_btn_long_fired = false;
-            enc_btn_press_time = timer_read();
-        } else {
-            enc_btn_down = false;
-            /* A long press already acted while the button was still held. */
-            if (!enc_btn_long_fired) {
-                totem_profile_switch_next();
+    if (record->event.pressed) {
+        chord_key[idx].down       = true;
+        chord_key[idx].held_back  = true;
+        chord_key[idx].forwarded  = false;
+        chord_key[idx].consumed   = false;
+        chord_key[idx].keycode    = keycode;
+        chord_key[idx].press_time = timer_read();
+
+        /* Arm a chord only if both of its keys are down AND still withheld,
+         * i.e. the two presses landed within CHORD_SYNC_MS of each other.
+         * Pressing G, waiting, then pressing B will never arm anything.
+         */
+        if (armed_chord < 0) {
+            for (uint8_t c = 0; c < ARRAY_SIZE(chords); c++) {
+                const chord_key_t *a = &chord_key[chords[c].a];
+                const chord_key_t *b = &chord_key[chords[c].b];
+                if (a->down && a->held_back && b->down && b->held_back) {
+                    armed_chord = c;
+                    armed_since = timer_read();
+                    break;
+                }
             }
         }
-        return false;   // never emits a keycode
+        return false;   // withhold; matrix_scan_kb decides what happens next
     }
 
-    /* ---- profile chord ---------------------------------------------- */
-    int8_t idx = profile_key_index(record->event.key);
-    if (idx < 0) return true;
+    chord_key[idx].down = false;
 
-    uint8_t other = idx ^ 1;
+    if (chord_key[idx].consumed) {
+        /* A chord already fired on this press -- the release is silent. */
+        chord_key[idx].consumed  = false;
+        chord_key[idx].held_back = false;
+        return false;
+    }
 
-    if (record->event.pressed) {
-        profile_key[idx].down       = true;
-        profile_key[idx].held_back  = true;
-        profile_key[idx].forwarded  = false;
-        profile_key[idx].consumed   = false;
-        profile_key[idx].keycode    = keycode;
-        profile_key[idx].press_time = timer_read();
-
-        /* Armed only if the partner is also down AND still withheld, i.e. the
-         * two presses landed within PROFILE_CHORD_SYNC_MS of each other.
+    if (in_armed_chord(idx)) {
+        /* Broken before the hold completed: treat it as ordinary typing. The
+         * partner that is still down becomes a normal hold.
          */
-        if (profile_key[other].down && profile_key[other].held_back) {
-            chord_armed      = true;
-            chord_start_time = timer_read();
-        }
-        return false;
-    }
-
-    profile_key[idx].down = false;
-
-    if (profile_key[idx].consumed) {
-        profile_key[idx].consumed  = false;
-        profile_key[idx].held_back = false;
-        return false;
-    }
-
-    if (chord_armed) {
-        /* Broken before the hold completed: treat it as ordinary typing. */
-        chord_armed = false;
-        if (profile_key[other].down && profile_key[other].held_back) {
-            profile_key_forward(other);
+        uint8_t partner = (chords[armed_chord].a == idx) ? chords[armed_chord].b
+                                                         : chords[armed_chord].a;
+        armed_chord = -1;
+        if (chord_key[partner].down && chord_key[partner].held_back) {
+            chord_key_forward(partner);
         }
     }
 
-    if (profile_key[idx].held_back) {
-        profile_key[idx].held_back = false;
-        tap_code16(profile_key[idx].keycode);
-    } else if (profile_key[idx].forwarded) {
-        profile_key[idx].forwarded = false;
-        unregister_code16(profile_key[idx].keycode);
+    if (chord_key[idx].held_back) {
+        chord_key[idx].held_back = false;
+        tap_code16(chord_key[idx].keycode);   // quick tap that never reached the host
+    } else if (chord_key[idx].forwarded) {
+        chord_key[idx].forwarded = false;
+        unregister_code16(chord_key[idx].keycode);
     }
     return false;
 }
 
 void matrix_scan_kb(void) {
-    /* ---- encoder long press ------------------------------------------ */
-    if (enc_btn_down && !enc_btn_long_fired &&
-        timer_elapsed(enc_btn_press_time) >= ENCODER_LONG_PRESS_MS) {
-        enc_btn_long_fired = true;
-        totem_oled_long_press();
-    }
+    if (armed_chord >= 0) {
+        if (timer_elapsed(armed_since) >= CHORD_HOLD_MS) {
+            uint8_t a = chords[armed_chord].a;
+            uint8_t b = chords[armed_chord].b;
+            void (*action)(void) = chords[armed_chord].action;
 
-    /* ---- chord -------------------------------------------------------- */
-    if (chord_armed) {
-        if (timer_elapsed(chord_start_time) >= PROFILE_SWITCH_HOLD_MS) {
-            chord_armed = false;
-            for (uint8_t i = 0; i < 2; i++) {
-                profile_key[i].held_back = false;
-                profile_key[i].consumed  = true;
-            }
-            totem_profile_switch_next();
+            armed_chord = -1;
+            chord_key[a].held_back = chord_key[b].held_back = false;
+            chord_key[a].consumed  = chord_key[b].consumed  = true;
+            action();
         }
-        /* While armed, neither key may be forwarded to the host. */
-        totem_oled_tick();
+        /* While a chord is armed, none of its keys may reach the host. */
         matrix_scan_user();
         return;
     }
 
-    for (uint8_t i = 0; i < 2; i++) {
-        if (profile_key[i].down && profile_key[i].held_back &&
-            timer_elapsed(profile_key[i].press_time) >= PROFILE_CHORD_SYNC_MS) {
-            profile_key_forward(i);
+    for (uint8_t i = 0; i < CK_COUNT; i++) {
+        if (chord_key[i].down && chord_key[i].held_back &&
+            timer_elapsed(chord_key[i].press_time) >= CHORD_SYNC_MS) {
+            chord_key_forward(i);
         }
     }
-
-    totem_oled_tick();
     matrix_scan_user();
 }
-
-#ifdef ENCODER_ENABLE
-bool encoder_update_kb(uint8_t index, bool clockwise) {
-    if (!encoder_update_user(index, clockwise)) return false;
-
-    /* The menu gets first refusal. It declines only when the encoder is set
-     * to "Teclas" and the status screen is showing.
-     */
-    if (totem_oled_rotate(clockwise)) return false;
-
-    /* Fallback function when the menu is not driving. Change these two
-     * keycodes to give the encoder a different job.
-     */
-    tap_code(clockwise ? KC_VOLU : KC_VOLD);
-    return false;
-}
-#endif
-
-#ifdef OLED_ENABLE
-oled_rotation_t oled_init_kb(oled_rotation_t rotation) {
-    return oled_init_user(rotation);
-}
-
-bool oled_task_kb(void) {
-    if (!oled_task_user()) return false;
-    totem_oled_render();
-    return false;
-}
-#endif
 
 // ┌─────────────────────────────────────────────────┐
 // │ i n d i c a t o r   h o o k s                   │
@@ -334,6 +294,11 @@ layer_state_t default_layer_state_set_kb(layer_state_t state) {
 }
 
 layer_state_t layer_state_set_kb(layer_state_t state) {
+    /* Entering the RGB layer turns the board yellow (on the solid effect), so
+     * you can tell the layer is live before touching anything. Adjustments
+     * made from there stick, because profile_indicate() bows out on
+     * animations and nothing re-fires until the layer changes again.
+     */
     profile_indicate(get_highest_layer(state | default_layer_state));
     return layer_state_set_user(state);
 }

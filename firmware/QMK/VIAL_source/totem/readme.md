@@ -1,67 +1,64 @@
-# TOTEM 20
+# TOTEM 20 — variante sem encoder e sem display
 
-Unibody **20-key macropad** with a rotary encoder and an SSD1306 OLED, built on
-a Waveshare RP2040-Zero.
+Macropad unibody de **20 teclas**. Sem encoder, sem OLED: tudo é controlado
+pelas próprias teclas, por meio de dois acordes de duas teclas.
 
-Forked from [TOTEM](https://github.com/GEIGEIGEIST/TOTEM), the 38-key
-column-staggered split by @geigeigeist, and rebuilt as a one-piece board. It is
-**not split**: no second half, no serial link, no handedness, no `EE_HANDS`.
+Fork do [TOTEM](https://github.com/GEIGEIGEIST/TOTEM), o split de 38 teclas do
+@geigeigeist, reconstruído como peça única. **Não é split**: não há segunda
+metade, link serial, handedness nem `EE_HANDS`.
+
+> Esta é a variante enxuta. A versão com encoder e display está na branch
+> `encoder-oled-screen`.
 
 ## Hardware
 
 | | |
 |---|---|
-| MCU | Waveshare RP2040-Zero |
-| Matrix | 4 rows x 6 cols — 20 keys + encoder button = 21 switches |
-| Diodes | one per switch, `COL2ROW` |
-| RGB | 20 addressable LEDs, one per key, data on `GP26`, 5 V from VBUS |
-| Encoder | EC11, `GP14`/`GP15`; its push switch is a matrix key |
-| Display | SSD1306 128x64 I2C, `GP10` (SDA) / `GP11` (SCL) |
+| MCU | Waveshare RP2040-Zero **ou** Seeed XIAO RP2040 |
+| Matriz | 4 linhas × 6 colunas — 20 teclas |
+| Diodos | um por tecla, `COL2ROW` |
+| RGB | 20 LEDs endereçáveis, um por tecla, dados em `GP26`, 5 V do VBUS |
 
-### Why not the XIAO RP2040
+### O XIAO RP2040 volta a servir
 
-The original TOTEM used a Seeed XIAO RP2040, which exposes **11 GPIO**. The
-feature set needs **15**:
+Sem encoder e sem display, o orçamento de pinos cai para **11**:
 
 ```
-6 cols + 4 rows + 1 RGB + 2 encoder + 2 I2C = 15
+6 colunas + 4 linhas + 1 dado de RGB = 11
 ```
 
-No arrangement fits: even encoder-only with no OLED and no RGB needs 12. The
-matrix cannot be shrunk either — 21 switches need at least 10 pins (4x6, 5x5
-and 3x7 all cost 10). The RP2040-Zero exposes 20 GPIO on its castellated edge,
-so all 15 fit with 5 to spare.
+Que é exatamente o que o XIAO RP2040 expõe. A variante com encoder e OLED
+precisava de 15 e por isso exigia o RP2040-Zero; esta cabe nos dois.
 
-The **encoder push switch costs no GPIO**: it is wired into the matrix at
-`[0,5]`, one of the positions the 4x6 grid leaves empty.
+**Pinagem padrão — RP2040-Zero:**
 
-### Pinout
+| Sinal | GPIO |
+|---|---|
+| COL1..COL6 | `GP0` `GP1` `GP2` `GP3` `GP4` `GP5` |
+| ROW1..ROW4 | `GP6` `GP7` `GP8` `GP9` |
+| RGB data | `GP26` |
 
-| Signal | GPIO | Notes |
-|---|---|---|
-| COL1..COL6 | `GP0` `GP1` `GP2` `GP3` `GP4` `GP5` | |
-| ROW1..ROW4 | `GP6` `GP7` `GP8` `GP9` | |
-| OLED SDA | `GP10` | I2C1 |
-| OLED SCL | `GP11` | I2C1 |
-| Encoder A | `GP14` | |
-| Encoder B | `GP15` | |
-| RGB data | `GP26` | WS2812 chain |
-| free | `GP12` `GP13` `GP27` `GP28` `GP29` | |
+**Alternativa — XIAO RP2040.** Troque o bloco `matrix_pins` e o `ws2812.pin`
+do `keyboard.json` por:
 
-`GP16` is deliberately unused — it drives the RP2040-Zero's onboard WS2812.
+```json
+"matrix_pins": {
+    "rows": ["GP1", "GP2", "GP4", "GP3"],
+    "cols": ["GP7", "GP6", "GP29", "GP28", "GP27", "GP26"]
+},
+"ws2812": { "pin": "GP0", "driver": "vendor" }
+```
 
-**The I2C pins are not arbitrary.** The RP2040 muxes I2C onto fixed pin groups;
-`GP10`/`GP11` is a valid I2C1 SDA/SCL pair. I2C1 specifically, because ChibiOS
-ships with `RP_I2C_USE_I2C1 TRUE` and `RP_I2C_USE_I2C0 FALSE` — using I2C0
-would additionally need a custom `mcuconf.h`. The `halconf.h` in this folder
-turns on `HAL_USE_I2C`.
+Correspondência de pads do XIAO: COL1..COL6 = `D5 D4 D3 D2 D1 D0`,
+ROW1..ROW4 = `D10 D9 D8 D7`, dados dos LEDs = `D6`. Os 11 pads ficam ocupados,
+sem sobra.
 
-### Matrix index convention
+### Convenção de índices da matriz
 
-The firmware indexes rows top-to-bottom, the **reverse** of the schematic row
-names. Keep this handy when probing:
+O firmware indexa as linhas de cima para baixo, o **inverso** dos nomes do
+esquema:
 
-| Firmware | Schematic | GPIO |
+| Firmware | Esquema | GPIO (Zero) |
 |---|---|---|
 | row 0 | ROW4 | `GP9` |
 | row 1 | ROW3 | `GP8` |
@@ -69,182 +66,185 @@ names. Keep this handy when probing:
 | row 3 | ROW1 | `GP6` |
 | col 0..5 | COL1..COL6 | `GP0`..`GP5` |
 
-### Switch map
+### Mapa dos switches
 
-| SW | Row | Col | `LAYOUT` pos | Game keycode |
+| SW | Linha | Coluna | Pos. `LAYOUT` | Keycode no jogo |
 |---|---|---|---|---|
 | SW1  | 0 (ROW4) | 1 (COL2) | 1  | `KC_1` |
 | SW2  | 0 (ROW4) | 2 (COL3) | 2  | `KC_2` |
 | SW3  | 0 (ROW4) | 3 (COL4) | 3  | `KC_3` |
 | SW4  | 0 (ROW4) | 4 (COL5) | 4  | `KC_R` |
-| **ENC** | 0 (ROW4) | 5 (COL6) | 5 | encoder button |
-| SW5  | 1 (ROW3) | 0 (COL1) | 6  | `KC_Q` |
-| SW6  | 1 (ROW3) | 1 (COL2) | 7  | `KC_A` |
-| SW7  | 1 (ROW3) | 2 (COL3) | 8  | `KC_W` |
-| SW8  | 1 (ROW3) | 3 (COL4) | 9  | `KC_D` |
-| SW9  | 1 (ROW3) | 4 (COL5) | 10 | `KC_F` |
-| SW10 | 2 (ROW2) | 0 (COL1) | 11 | `KC_LSFT` |
-| SW11 | 2 (ROW2) | 1 (COL2) | 12 | `KC_Z` |
-| SW12 | 2 (ROW2) | 2 (COL3) | 13 | `KC_S` |
-| SW13 | 2 (ROW2) | 3 (COL4) | 14 | `KC_X` |
-| SW14 | 2 (ROW2) | 4 (COL5) | 15 | `KC_T` |
-| SW15 | 2 (ROW2) | 5 (COL6) | 16 | `KC_E` |
-| SW16 | 3 (ROW1) | 0 (COL1) | 17 | `KC_G` |
-| SW17 | 3 (ROW1) | 1 (COL2) | 18 | `KC_LCTL` |
-| SW18 | 3 (ROW1) | 3 (COL4) | 19 | `KC_C` |
-| SW19 | 3 (ROW1) | 4 (COL5) | 20 | `KC_SPC` |
-| SW20 | 3 (ROW1) | 5 (COL6) | 21 | `KC_B` |
+| SW5  | 1 (ROW3) | 0 (COL1) | 5  | `KC_Q` |
+| SW6  | 1 (ROW3) | 1 (COL2) | 6  | `KC_A` |
+| SW7  | 1 (ROW3) | 2 (COL3) | 7  | `KC_W` |
+| SW8  | 1 (ROW3) | 3 (COL4) | 8  | `KC_D` |
+| SW9  | 1 (ROW3) | 4 (COL5) | 9  | `KC_F` |
+| SW10 | 2 (ROW2) | 0 (COL1) | 10 | `KC_LSFT` |
+| SW11 | 2 (ROW2) | 1 (COL2) | 11 | `KC_Z` |
+| SW12 | 2 (ROW2) | 2 (COL3) | 12 | `KC_S` |
+| SW13 | 2 (ROW2) | 3 (COL4) | 13 | `KC_X` |
+| SW14 | 2 (ROW2) | 4 (COL5) | 14 | `KC_T` |
+| SW15 | 2 (ROW2) | 5 (COL6) | 15 | `KC_E` |
+| SW16 | 3 (ROW1) | 0 (COL1) | 16 | `KC_G` |
+| SW17 | 3 (ROW1) | 1 (COL2) | 17 | `KC_LCTL` |
+| SW18 | 3 (ROW1) | 3 (COL4) | 18 | `KC_C` |
+| SW19 | 3 (ROW1) | 4 (COL5) | 19 | `KC_SPC` |
+| SW20 | 3 (ROW1) | 5 (COL6) | 20 | `KC_B` |
 
-Positions `[0,0]`, `[1,5]` and `[3,2]` have no switch and are `KC_NO`.
+`[0,0]`, `[0,5]`, `[1,5]` e `[3,2]` não têm switch e são `KC_NO`.
 
-## Profiles
+## Os dois acordes
 
-Five Vial-configurable layers, all 20 keys freely assignable in each:
+Ambos ancorados no **G**, para haver uma única tecla a lembrar:
 
-| # | Profile | Indicator |
+| Acorde | Segurar | Faz |
 |---|---|---|
-| 0 | Jogo | red |
-| 1 | 3ds Max | blue |
-| 2 | Macros / uso geral | green |
-| 3 | Reservada | purple |
-| 4 | Configuracao / manutencao | yellow |
+| **G + B** | 1 s | Próximo perfil: Jogo → 3ds Max → Macros → Jogo |
+| **G + E** | 1 s | Liga/desliga a camada de RGB |
 
-### Switching profiles
+G, B e E são os cantos mais distantes do teclado — G embaixo à esquerda, B e E
+na ponta do cluster do polegar. Acionamento simultâneo acidental durante o jogo
+é praticamente impossível.
 
-Three ways, all landing on the same place:
+Regras aplicadas pelo motor de acordes em `totem.c`:
 
-- **Encoder short click** — next profile.
-- **G + B held together for 1 s** — the original chord, kept because it works
-  with the encoder unplugged.
-- **OLED menu → Perfil** — the only route that reaches layers 3 and 4, which
-  the other two deliberately skip.
+- as duas teclas devem descer dentro de `CHORD_SYNC_MS` (50 ms) uma da outra —
+  apertar G, esperar e depois apertar B nunca arma nada;
+- o acorde precisa ser mantido por `CHORD_HOLD_MS` (1000 ms);
+- enquanto armado, **nenhum dos keycodes chega ao computador**, então uma troca
+  reconhecida nunca vaza um `G` ou `B` perdido no jogo;
+- se soltar antes, as duas teclas são entregues normalmente — nada se perde;
+- pressionadas sozinhas, G, B e E funcionam como teclas comuns.
 
-Both cycles run `Jogo → 3ds Max → Macros → Jogo`. Triggering either while on
-layer 3 or 4 returns to Jogo.
+Todas as coordenadas e tempos estão em `config.h`. Para mover um acorde, mude
+só as coordenadas.
 
-Rules enforced by the chord (`totem.c`):
+> **Ressalva:** as teclas dos acordes ficam retidas por até 50 ms e são
+> reproduzidas com `register_code16()`. Mantenha-as em keycodes *básicos* —
+> layer taps, tap dance e macros do Vial nessas três posições não reproduzem
+> corretamente.
 
-- both keys must go down within `PROFILE_CHORD_SYNC_MS` (50 ms) of each other;
-- the chord must be held `PROFILE_SWITCH_HOLD_MS` (1000 ms);
-- while armed, neither key's keycode reaches the host, so a recognised switch
-  never leaks a stray `G` or `B` into the game;
-- if released early, both keys are delivered normally.
+## Camada de RGB
 
-The selected profile is written to EEPROM, so **it survives a reboot**.
-
-> **Caveat:** the two chord keys are withheld for up to 50 ms and replayed with
-> `register_code16()`. Keep them on *basic* keycodes — layer taps, tap dance
-> and Vial macros on those two positions will not replay correctly.
-
-## Encoder and OLED menu
+Entre com **G + E** por 1 segundo. O mesmo acorde sai. No efeito sólido a placa
+fica amarela ao entrar, para você saber que a camada está ativa.
 
 ```
-short click       -> next profile        (in any state)
-turn              -> navigate / adjust
-long click 500 ms -> open menu, enter item, confirm, go back
+            efeito-  efeito+  liga/desl   BOOT
+   brilho-   brilho+  matiz-   matiz+     satur+
+   satur-    veloc-   veloc+   EE_CLR     debug     [E]
+   [G]       gravar            tocar      parar     [B]
 ```
 
-The short click is reserved for the profile, so the menu uses the **long
-click** to confirm — otherwise there would be no way to enter an item.
+| Tecla | Função |
+|---|---|
+| `1` / `2` | Efeito anterior / próximo |
+| `3` | Liga e desliga os LEDs |
+| `R` | Bootloader |
+| `Q` / `A` | Brilho − / + |
+| `W` / `D` | Matiz − / + |
+| `F` / `Shift` | Saturação + / − |
+| `Z` / `S` | Velocidade da animação − / + |
+| `X` | Limpar EEPROM |
+| `T` | Alternar debug |
+| `Ctrl` / `C` / `Espaço` | Gravar / tocar / parar macro |
 
-Menu items: Perfil · Tela · Brilho RGB · Efeito RGB · Encoder · Cronometro ·
-Zerar tempo · Reiniciar.
+G, B e E ficam mortas nessa camada de propósito: existem ali só como parceiras
+de acorde, então um toque solto não faz nada.
 
-Idle screens, selected under *Tela*: **Status** (profile, encoder mode, RGB,
-APM, stopwatch), **APM** (rolling 60 s window with a bar), **Tempo**
-(stopwatch), **Logo**.
+### Efeitos disponíveis
 
-The *Encoder* item switches the knob between `Menu` (default: turning opens
-and drives the menu) and `Teclas` (turning sends volume up/down; the menu is
-still reachable by long click).
+`solid_color` · `breathing` (pulsar) · `hue_breathing` (pulsar de cor) ·
+`cycle_all` · `cycle_left_right` · `cycle_up_down` · `rainbow_moving_chevron` ·
+`jellybean_raindrops` · `pixel_rain` (piscar aleatório) · `typing_heatmap`
+(mapa de calor do que você digita) · `digital_rain` · `solid_reactive_simple` ·
+`solid_reactive` · `splash` · `solid_splash`
 
-The panel blanks after 60 s idle (`OLED_TIMEOUT`) because OLEDs burn in. Any
-key or turn wakes it.
+Os quatro últimos reagem ao toque das teclas.
 
-> **Two deliberate limitations.**
-> `ENCODER_MAP_ENABLE` is **off**: with it on, QMK dispatches encoder events
-> straight to keycodes and never calls `encoder_update_kb()`, which is where
-> the menu reads the rotation. So the encoder **rotation is not remappable in
-> Vial** — the menu owns it. To give it a different fallback job, change the
-> two keycodes in `encoder_update_kb()` in `totem.c`.
-> The encoder **button** is likewise intercepted by matrix position, so its
-> keycode in the keymap is never sent; remapping `[0,5]` in Vial has no effect.
+## Perfis
 
-## RGB
+Cinco camadas configuráveis no Vial, com as 20 teclas livres em cada uma:
 
-`RGB_MATRIX` over the WS2812 vendor (PIO) driver: 20 LEDs, one per key.
+| # | Perfil | Cor |
+|---|---|---|
+| 0 | Jogo | vermelho |
+| 1 | 3ds Max | azul |
+| 2 | Macros / uso geral | verde |
+| 3 | Reservada | roxo |
+| 4 | RGB / manutenção | amarelo |
 
-**The chain must be routed DIN → DOUT following SW1..SW20** — the same order as
-the `LAYOUT` macro: top row left to right, then each row below. That mapping
-lives in `g_led_config` in `totem.c`; if the PCB serpentines instead, only the
-first block of that struct changes.
+O perfil escolhido é gravado na EEPROM, então **sobrevive a reinício**.
 
-- Profile colour sets only the **hue**; the effect and brightness you pick in
-  Vial or the OLED menu are left alone.
-- All indicator writes use `_noeeprom`, so they never overwrite saved settings
-  nor wear the flash.
-- `max_brightness` is capped at 120: 20 WS2812 at full white draw well over
-  1 A, far past the 500 mA USB budget. Typical use — a solid profile colour at
-  brightness 80 — is around 120-150 mA.
+A camada 3 fica fora do ciclo do acorde — alcance-a atribuindo `MO()`, `TG()`
+ou `TO()` a qualquer tecla no Vial.
 
-> **Level shifting:** `GP26` drives 3.3 V, but a WS2812B on 5 V wants
-> 0.7 x VDD = 3.5 V for a logic high. It usually works, but if the first LED
-> misbehaves, use SK6812 instead, drop the LED supply to ~4.3 V with a series
-> diode, or add a 74AHCT125.
+> **Como a cor do perfil convive com os seus ajustes:** a indicação de perfil
+> mexe **apenas na matiz, e apenas no efeito sólido**. Em qualquer animação o
+> firmware não toca na cor — senão toda troca de camada atropelaria a paleta
+> que você acabou de definir. Brilho e efeito nunca são alterados.
 
-## Building
+## RGB — ligação
 
-This repository is a hardware project, not a QMK tree: it has no build system.
-The `totem/` folder is only the *keyboard definition*, which has to sit inside
-a QMK tree supplying `quantum/`, ChibiOS, the pico-sdk and the Makefiles
-(~1.6 GB — deliberately not vendored here).
+**A cadeia precisa ser roteada DIN → DOUT seguindo SW1 até SW20**, na mesma
+ordem da tabela de switches. O `RGB_MATRIX` precisa saber qual LED corresponde
+a qual tecla; esse mapa é o `g_led_config` em `totem.c`. Se o PCB serpentear
+por linha, muda só o primeiro bloco daquela struct.
 
-The Vial fork of QMK is required; this will **not** build against upstream
-`qmk_firmware`.
+- **330 Ω** em série na linha de dados, junto ao primeiro LED.
+- **100 nF** por LED, entre VCC e GND.
+- **470–1000 µF** na entrada do barramento de 5 V.
+- `max_brightness` travado em **120**: 20 WS2812 em branco pleno passam de 1 A,
+  muito além dos 500 mA do USB. Uso real — cor sólida com brilho 80 — fica em
+  120–150 mA.
 
-**One-time setup.** Symlink the definition instead of copying it, so the build
-always sees your latest edits and the two copies can never drift apart:
+> **Nível lógico:** `GP26` entrega 3,3 V, mas um WS2812B em 5 V espera
+> 0,7 × VDD = 3,5 V. Costuma funcionar, mas se o primeiro LED se comportar mal:
+> use SK6812, baixe a alimentação para ~4,3 V com um diodo em série, ou use um
+> 74AHCT125.
+
+## Compilar
+
+Este repositório é um projeto de hardware, não uma árvore QMK — não há build
+system dentro dele. A pasta `totem/` é só a *definição* do teclado e precisa
+estar dentro de uma árvore QMK. É obrigatório o fork **Vial**.
 
 ```sh
 git clone --recurse-submodules https://github.com/vial-kb/vial-qmk.git ~/vial-qmk
 ln -s "$(pwd)/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem
 ```
 
-**Every build after that:**
+Symlink, não cópia: um único conjunto de arquivos, sem duas versões divergindo
+em silêncio.
 
 ```sh
 export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
 cd ~/vial-qmk
 
-make totem:vial       # -> totem_vial.uf2    125 KiB · recommended
-make totem:default    # -> totem_default.uf2  89 KiB · plain QMK
+make totem:vial       # -> totem_vial.uf2    119 KiB · recomendado
+make totem:default    # -> totem_default.uf2  83 KiB · QMK puro
 ```
 
-Toolchain notes (verified on macOS/arm64, August 2026):
+Três armadilhas de ambiente:
 
-- **Python must be 3.11.** QMK's build scripts use `ast.Num`, removed in 3.12.
-  `python3.11 -m venv ~/vial-qmk/.venv`, then
-  `~/vial-qmk/.venv/bin/pip install -r requirements.txt qmk`.
-- The ARM toolchain must include **newlib**. Homebrew's `arm-none-eabi-gcc`
-  formula does not — the build dies on `fatal error: stdint.h`. Use the
-  official [Arm GNU Toolchain](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads)
-  or `brew install --cask gcc-arm-embedded`.
-- `brew install qmk/qmk/qmk` can exit 0 without installing anything, blocked by
-  Homebrew's tap-trust policy. Check the binary actually exists.
+- **Python precisa ser 3.11.** Os scripts do QMK usam `ast.Num`, removido no 3.12.
+- O **`arm-none-eabi-gcc` do Homebrew não serve** — vem sem newlib e o build
+  morre em `fatal error: stdint.h`. Use o toolchain oficial da ARM.
+- `brew install qmk/qmk/qmk` pode sair com código 0 **sem instalar nada**,
+  bloqueado pela política de tap trust.
 
-## Flashing
+## Gravar
 
-1. Double-tap RESET. The board mounts as a USB drive named `RPI-RP2`.
-2. Copy `totem_vial.uf2` onto it.
-3. It reboots into the new firmware and the drive disappears.
+1. Duplo toque no RESET. A placa monta como pendrive `RPI-RP2`.
+2. Copie o `.uf2` para dentro.
+3. Reinicia sozinha e o pendrive some.
 
-If `RPI-RP2` does not appear: hold **BOOT**, press and release **RESET**, then
-release **BOOT**.
+Se o `RPI-RP2` não aparecer: segure **BOOT**, pressione e solte **RESET**,
+solte **BOOT**.
 
 ## Vial
 
-`VIAL_KEYBOARD_UID` is freshly generated and deliberately different from the
-upstream TOTEM's — Vial caches keyboard definitions by UID, and reusing it
-would make Vial load the wrong 38-key layout.
+`VIAL_KEYBOARD_UID` é própria e diferente da do TOTEM original — o Vial indexa
+definições por UID, e reaproveitar faria carregar o layout errado de 38 teclas.
 
-The security unlock combo is **"1" + "R"** (`[0,1]` and `[0,4]`).
+Combo de destravamento: **`1` + `R`** (`[0,1]` e `[0,4]`).

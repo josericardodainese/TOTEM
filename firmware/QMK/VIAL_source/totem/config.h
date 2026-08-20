@@ -3,17 +3,18 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
 
-/* TOTEM 20 -- unibody 20-key macropad + rotary encoder + SSD1306 OLED,
- * on a Waveshare RP2040-Zero.
+/* TOTEM 20 -- unibody 20-key macropad, no encoder and no OLED.
+ *
+ * Everything is driven from the keys themselves: two two-key chords, each
+ * requiring a one-second hold, cycle the profile and open the RGB control
+ * layer. See the chord table below.
  *
  * NOT the original TOTEM split: no second half, no serial link, no handedness.
  * EE_HANDS, SERIAL_USART_*, SPLIT_* and hand_swap_config are all gone.
  *
- * The board changed from the Seeed XIAO RP2040 because the XIAO exposes only
- * 11 GPIO and the full feature set needs 15:
- *     6 cols + 4 rows + 1 RGB + 2 encoder + 2 I2C = 15
- * The encoder push switch costs nothing -- it is an ordinary matrix key at
- * [0,5], one of the positions the 4x6 matrix leaves empty.
+ * Pin budget for this variant is only 11 (6 cols + 4 rows + 1 RGB), so it fits
+ * a Seeed XIAO RP2040 as well as the RP2040-Zero. See readme.md for the XIAO
+ * pin mapping.
  *
  * MATRIX_ROWS / MATRIX_COLS are derived from matrix_pins in keyboard.json.
  */
@@ -30,68 +31,43 @@
 #define TOTEM20_PROFILE_MAX3DS   1   // 3ds Max
 #define TOTEM20_PROFILE_MACROS   2   // macros / uso geral
 #define TOTEM20_PROFILE_RESERVED 3   // reservada
-#define TOTEM20_PROFILE_CONFIG   4   // configuracao / manutencao
+#define TOTEM20_PROFILE_RGB      4   // controle de RGB / manutencao
 #define TOTEM20_PROFILE_COUNT    5
 
 // ┌─────────────────────────────────────────────────┐
-// │ p r o f i l e   s w i t c h   c h o r d         │
+// │ c h o r d s                                     │
 // └─────────────────────────────────────────────────┘
 
-/* Two-key chord that cycles profiles: the outer ends of the bottom row,
- * "G" at the far left and "B" at the far right of the thumb cluster.
- * Still available even though the encoder click now does the same thing --
- * it works with the encoder unplugged, and costs nothing to keep.
- * Change only these four coordinates to move the chord elsewhere.
- */
-#define PROFILE_KEY_A_ROW 3
-#define PROFILE_KEY_A_COL 0   // SW16 -- "G"
-#define PROFILE_KEY_B_ROW 3
-#define PROFILE_KEY_B_COL 5   // SW20 -- "B"
-
-#define PROFILE_SWITCH_HOLD_MS 1000   // both keys held this long -> switch
-#define PROFILE_CHORD_SYNC_MS    50   // presses must land this close together
-
-// ┌─────────────────────────────────────────────────┐
-// │ e n c o d e r   +   O L E D                     │
-// └─────────────────────────────────────────────────┘
-
-/* Encoder push switch, wired into the matrix like any other key.
- * Short click  -> next profile
- * Long  click  -> open the OLED menu / confirm the selected item
- */
-#define ENCODER_BTN_ROW 0
-#define ENCODER_BTN_COL 5
-#define ENCODER_LONG_PRESS_MS 500
-
-/* Most EC11 encoders emit 4 pulses per detent. Lower this to 2 if the menu
- * skips two items per click; raise it if it takes two clicks to move one.
- */
-#define ENCODER_RESOLUTION 4
-
-/* Menu returns to the status screen after this long without input. */
-#define OLED_MENU_TIMEOUT_MS 6000
-
-/* OLED on I2C1, pins GP10 (SDA) / GP11 (SCL).
+/* Two chords, both anchored on "G" so there is a single key to remember:
  *
- * The pins are NOT arbitrary: the RP2040 muxes I2C onto fixed pin groups, and
- * GP10/GP11 is a valid I2C1 SDA/SCL pair. I2C1 specifically, because ChibiOS
- * ships with RP_I2C_USE_I2C1 TRUE and RP_I2C_USE_I2C0 FALSE -- picking I2C0
- * would additionally require a custom mcuconf.h to switch the peripheral on.
+ *     G + B  held 1 s  ->  next profile   (Jogo -> 3ds Max -> Macros -> Jogo)
+ *     G + E  held 1 s  ->  toggle the RGB control layer
  *
- * Despite the "I2C1_" prefix, these two macro names are what QMK's chibios
- * i2c_master driver reads regardless of which peripheral I2C_DRIVER selects.
+ * The three keys involved are the far corners of the board -- G at the bottom
+ * left, B and E at the right end of the thumb cluster -- so an accidental
+ * simultaneous press during gameplay is essentially impossible.
+ *
+ * Change only these coordinates to move a chord to another pair of keys.
  */
-#undef I2C_DRIVER
-#define I2C_DRIVER I2CD1
-#undef I2C1_SDA_PIN
-#define I2C1_SDA_PIN GP10
-#undef I2C1_SCL_PIN
-#define I2C1_SCL_PIN GP11
+#define CHORD_ANCHOR_ROW  3
+#define CHORD_ANCHOR_COL  0   // SW16 -- "G", shared by both chords
 
-#define OLED_DISPLAY_128X64
-/* OLEDs burn in. Blank the panel after 60 s idle; any key or turn wakes it. */
-#define OLED_TIMEOUT 60000
-#define OLED_BRIGHTNESS 160
+#define CHORD_PROFILE_ROW 3
+#define CHORD_PROFILE_COL 5   // SW20 -- "B"
+
+#define CHORD_RGB_ROW     2
+#define CHORD_RGB_COL     5   // SW15 -- "E"
+
+/* How long both keys must stay down before a chord fires. */
+#define CHORD_HOLD_MS 1000
+
+/* How close together the two presses must land to count as "pressed
+ * together". This is also how long each chord key is withheld from the host,
+ * so that a recognised chord never leaks its normal keycodes. Raising it makes
+ * the chords easier to hit; lowering it cuts the latency added to G, B and E.
+ * Set to 0 to disable withholding (chords then leak keycodes).
+ */
+#define CHORD_SYNC_MS 50
 
 // ┌─────────────────────────────────────────────────┐
 // │ m i s c                                         │

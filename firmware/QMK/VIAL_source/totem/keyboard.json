@@ -6,18 +6,17 @@
     "usb": {
         "vid": "0x3A3C",
         "pid": "0x0020",
-        "device_version": "2.0.0"
+        "device_version": "2.1.0"
     },
     "processor": "RP2040",
     "bootloader": "rp2040",
 
-    "//": "Unibody 20-key macropad + rotary encoder + SSD1306 OLED.",
-    "//board": "Waveshare RP2040-Zero (20 GPIO on the castellated edge). NOT the XIAO:",
-    "//board2": "the XIAO exposes only 11 GPIO and cannot host encoder + OLED + RGB.",
+    "//": "Unibody 20-key macropad. No encoder, no OLED -- RGB is driven by key chords.",
+    "//board": "Waveshare RP2040-Zero. Only 11 GPIO are needed in this variant, so a",
+    "//board2": "Seeed XIAO RP2040 also fits exactly; see readme.md for its pin mapping.",
     "//matrix": "firmware index -> schematic net:",
     "//rows": "row 0 = ROW4 (GP9), row 1 = ROW3 (GP8), row 2 = ROW2 (GP7), row 3 = ROW1 (GP6)",
     "//cols": "col 0 = COL1 (GP0) .. col 5 = COL6 (GP5)",
-    "//encbtn": "the encoder push switch is an ordinary matrix key at [0,5] -- costs no GPIO",
     "matrix_pins": {
         "rows": ["GP9", "GP8", "GP7", "GP6"],
         "cols": ["GP0", "GP1", "GP2", "GP3", "GP4", "GP5"]
@@ -26,15 +25,7 @@
     "debounce": 5,
 
     "features": {
-        "encoder": true,
-        "oled": true,
         "rgb_matrix": true
-    },
-
-    "encoder": {
-        "rotary": [
-            { "pin_a": "GP14", "pin_b": "GP15" }
-        ]
     },
 
     "ws2812": {
@@ -49,9 +40,15 @@
         "animations": {
             "solid_color": true,
             "breathing": true,
+            "hue_breathing": true,
             "cycle_all": true,
             "cycle_left_right": true,
+            "cycle_up_down": true,
             "rainbow_moving_chevron": true,
+            "jellybean_raindrops": true,
+            "pixel_rain": true,
+            "typing_heatmap": true,
+            "digital_rain": true,
             "solid_reactive_simple": true,
             "solid_reactive": true,
             "splash": true,
@@ -66,7 +63,6 @@
                 { "label": "2",      "matrix": [0, 2], "x": 3.2,  "y": 0    },
                 { "label": "3",      "matrix": [0, 3], "x": 4.2,  "y": 0.2  },
                 { "label": "R",      "matrix": [0, 4], "x": 5.2,  "y": 0.35 },
-                { "label": "Enc",    "matrix": [0, 5], "x": 6.9,  "y": 0.2  },
 
                 { "label": "Q",      "matrix": [1, 0], "x": 1.2,  "y": 1.55 },
                 { "label": "A",      "matrix": [1, 1], "x": 2.2,  "y": 1.25 },
