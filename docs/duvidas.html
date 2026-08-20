@@ -1,0 +1,987 @@
+<title>Dúvidas do TOTEM 20</title>
+<style>
+  :root {
+    --bg:        #F6F7F9;
+    --surface:   #FFFFFF;
+    --surface-2: #EDEFF3;
+    --surface-3: #E4E8EE;
+    --ink:       #131922;
+    --ink-2:     #495568;
+    --ink-3:     #6E7A8B;
+    --rule:      #DCE0E7;
+    --rule-2:    #C7CDD7;
+    --col:       #B0362C;
+    --accent:    #3B3F8F;
+    --accent-bg: #ECEDF7;
+    --col-bg:    #FBEDEB;
+    --row:       #2B6AA8;
+    --row-bg:    #EAF1F9;
+    --led:       #9A6210;
+    --led-bg:    #FBF2E2;
+    --ok:        #2E7D5B;
+    --ok-bg:     #E8F4EE;
+    --warn:      #8C4A0E;
+    --warn-bg:   #FBEFE3;
+    --shadow:    0 1px 2px rgba(19,25,34,.06), 0 4px 14px rgba(19,25,34,.05);
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:        #10141A;
+      --surface:   #171C24;
+      --surface-2: #1D232C;
+      --surface-3: #252C37;
+      --ink:       #E7EBF1;
+      --ink-2:     #A6B0BF;
+      --ink-3:     #7C8794;
+      --rule:      #2A323D;
+      --rule-2:    #3A434F;
+      --col:       #EC8076;
+      --accent:    #9AA0E8;
+    --accent-bg: #1B1D33;
+      --col-bg:    #2E1D1B;
+      --row:       #7FB2E3;
+      --row-bg:    #16232F;
+      --led:       #E3AF56;
+      --led-bg:    #2C2415;
+      --ok:        #63C79A;
+      --ok-bg:     #14261E;
+      --warn:      #DFA469;
+      --warn-bg:   #2B2016;
+      --shadow:    0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:        #10141A;
+    --surface:   #171C24;
+    --surface-2: #1D232C;
+    --surface-3: #252C37;
+    --ink:       #E7EBF1;
+    --ink-2:     #A6B0BF;
+    --ink-3:     #7C8794;
+    --rule:      #2A323D;
+    --rule-2:    #3A434F;
+    --col:       #EC8076;
+    --accent:    #9AA0E8;
+    --accent-bg: #1B1D33;
+    --col-bg:    #2E1D1B;
+    --row:       #7FB2E3;
+    --row-bg:    #16232F;
+    --led:       #E3AF56;
+    --led-bg:    #2C2415;
+    --ok:        #63C79A;
+    --ok-bg:     #14261E;
+    --warn:      #DFA469;
+    --warn-bg:   #2B2016;
+    --shadow:    0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    margin: 0;
+    padding: 0 24px 120px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 940px; margin: 0 auto; }
+  .prose { max-width: 68ch; }
+
+  /* ---------- masthead ---------- */
+  header.masthead {
+    padding: 72px 0 40px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-size: clamp(34px, 6vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -.03em;
+    font-weight: 800;
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 62ch;
+    margin: 0;
+  }
+  .meta-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    margin-top: 28px;
+  }
+  .chip {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .chip.ok  { background: var(--ok-bg);  border-color: var(--ok);  color: var(--ok); }
+
+  /* ---------- toc ---------- */
+  nav.toc {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 22px 26px;
+    margin-bottom: 56px;
+    box-shadow: var(--shadow);
+  }
+  nav.toc p {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 14px;
+  }
+  nav.toc ol {
+    margin: 0; padding: 0; list-style: none;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px 28px;
+    counter-reset: toc;
+  }
+  nav.toc li { counter-increment: toc; display: flex; gap: 10px; align-items: baseline; }
+  nav.toc li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+    flex: none;
+  }
+  nav.toc a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule-2); }
+  nav.toc a:hover { border-bottom-color: var(--ink); }
+
+  /* ---------- sections ---------- */
+  section { margin-bottom: 68px; scroll-margin-top: 24px; }
+  h2 {
+    font-size: 27px; font-weight: 750; letter-spacing: -.02em;
+    margin: 0 0 8px; padding-top: 10px;
+    text-wrap: balance;
+  }
+  .sec-head { border-top: 1px solid var(--ink); padding-top: 14px; margin-bottom: 26px; }
+  .sec-head .eyebrow { margin-bottom: 10px; }
+  .sec-head p { margin: 0; color: var(--ink-2); max-width: 66ch; }
+
+  h3 {
+    font-size: 17px; font-weight: 700; letter-spacing: -.01em;
+    margin: 38px 0 12px;
+  }
+  h4 {
+    font-family: var(--mono);
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600;
+    margin: 28px 0 10px;
+  }
+  p { margin: 0 0 16px; }
+  a { color: var(--row); }
+
+  code {
+    font-family: var(--mono);
+    font-size: .88em;
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+  strong { font-weight: 680; }
+
+  /* ---------- tables ---------- */
+  .tablewrap { overflow-x: auto; margin: 20px 0 8px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  thead th {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600; background: var(--surface-2);
+    position: sticky; top: 0;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--surface-2); }
+  td.m, th.m { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .cap { color: var(--ink-3); font-size: 13px; margin: 10px 0 0; }
+
+  /* tables whose cells carry sentences, not data */
+  .tablewrap.txt td:last-child, .tablewrap.txt td:nth-child(2) { white-space: normal; min-width: 320px; }
+  .tablewrap.txt td:first-child { vertical-align: top; }
+
+  .tag-col { color: var(--col); background: var(--col-bg); border: 1px solid var(--col); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+  .tag-row { color: var(--row); background: var(--row-bg); border: 1px solid var(--row); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+  .tag-led { color: var(--led); background: var(--led-bg); border: 1px solid var(--led); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+  .tag-pwr { color: var(--ink-2); background: var(--surface-3); border: 1px solid var(--rule-2); border-radius: 3px; padding: 1px 6px; font-family: var(--mono); font-size: 11.5px; }
+
+  /* ---------- code blocks ---------- */
+  pre {
+    font-family: var(--mono); font-size: 13px; line-height: 1.6;
+    background: var(--surface); color: var(--ink);
+    border: 1px solid var(--rule); border-left: 3px solid var(--ink-3);
+    border-radius: 5px; padding: 14px 18px;
+    overflow-x: auto; margin: 16px 0;
+  }
+  pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+  /* ---------- callouts ---------- */
+  .note {
+    border-left: 3px solid var(--rule-2);
+    background: var(--surface);
+    border-radius: 0 5px 5px 0;
+    padding: 14px 18px; margin: 22px 0;
+    font-size: 14.5px;
+  }
+  .note p:last-child { margin-bottom: 0; }
+  .note .lbl {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em;
+    text-transform: uppercase; display: block; margin-bottom: 6px; font-weight: 600;
+  }
+  .note.warn { border-left-color: var(--warn); background: var(--warn-bg); }
+  .note.warn .lbl { color: var(--warn); }
+  .note.ok   { border-left-color: var(--ok); background: var(--ok-bg); }
+  .note.ok .lbl { color: var(--ok); }
+  .note.info .lbl { color: var(--ink-3); }
+
+  /* ---------- pinout chip ---------- */
+  .chipwrap { overflow-x: auto; margin: 24px 0 6px; }
+  .chip-diagram {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0 0;
+    min-width: 620px;
+    align-items: stretch;
+  }
+  .chip-body {
+    background: var(--surface-3);
+    border: 2px solid var(--ink-2);
+    border-radius: 8px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px 26px;
+    min-width: 150px;
+  }
+  .chip-body .nm { font-family: var(--mono); font-size: 14px; font-weight: 700; letter-spacing: .02em; }
+  .chip-body .sub { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); margin-top: 4px; letter-spacing: .08em; }
+  .chip-usb {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+    color: var(--ink-3); text-align: center; padding-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .pinlist { display: flex; flex-direction: column; gap: 3px; padding: 4px 0; }
+  .pin {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 12px;
+    padding: 5px 10px;
+    background: var(--surface); border: 1px solid var(--rule);
+  }
+  .pinlist.left .pin  { border-radius: 4px 0 0 4px; border-right: none; justify-content: flex-end; text-align: right; }
+  .pinlist.right .pin { border-radius: 0 4px 4px 0; border-left: none; }
+  .pin .num { color: var(--ink-3); font-size: 10.5px; min-width: 16px; }
+  .pin .pad { font-weight: 700; min-width: 30px; }
+  .pin .gp  { color: var(--ink-2); min-width: 42px; }
+  .pin .fn  { font-weight: 700; }
+  .pin.c .fn { color: var(--col); }
+  .pin.r .fn { color: var(--row); }
+  .pin.l .fn { color: var(--led); }
+  .pin.p .fn { color: var(--ink-2); }
+  .pin.x    { opacity: .45; }
+  .pin.x .fn { color: var(--ink-3); font-weight: 500; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 16px 0 0; font-family: var(--mono); font-size: 11.5px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
+  .sw { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
+
+  /* ---------- cell diagram ---------- */
+  .celldiag { display: flex; gap: 30px; flex-wrap: wrap; align-items: flex-start; margin: 22px 0; }
+  .celldiag svg { flex: none; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px; }
+  .celldiag .txt { flex: 1 1 300px; min-width: 280px; }
+
+  /* ---------- led chain ---------- */
+  .chain { display: flex; align-items: center; gap: 0; overflow-x: auto; padding: 18px 0 8px; }
+  .chain .node {
+    font-family: var(--mono); font-size: 11.5px;
+    border: 1px solid var(--led); color: var(--led); background: var(--led-bg);
+    border-radius: 4px; padding: 9px 12px; white-space: nowrap; text-align: center; flex: none;
+  }
+  .chain .node.src { border-color: var(--ink-2); color: var(--ink); background: var(--surface-3); }
+  .chain .arr { font-family: var(--mono); font-size: 11px; color: var(--ink-3); padding: 0 9px; flex: none; white-space: nowrap; }
+
+  /* ---------- stages ---------- */
+  .stage {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 6px; padding: 22px 26px; margin: 0 0 16px;
+    box-shadow: var(--shadow);
+  }
+  .stage-head { display: flex; gap: 14px; align-items: baseline; margin-bottom: 6px; }
+  .stage-num {
+    font-family: var(--mono); font-size: 12px; font-weight: 700;
+    color: var(--bg); background: var(--ink);
+    border-radius: 3px; padding: 3px 8px; flex: none;
+  }
+  .stage h3 { margin: 0; font-size: 18px; }
+  .stage .goal { font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); margin: 0 0 14px; }
+  .stage ol, .stage ul { margin: 0 0 12px; padding-left: 22px; }
+  .stage li { margin-bottom: 7px; }
+  .stage li:last-child { margin-bottom: 0; }
+  .stage p:last-child, .stage .tablewrap:last-child, .stage pre:last-child { margin-bottom: 0; }
+
+  ul.clean { list-style: none; padding: 0; margin: 0 0 16px; }
+  ul.clean li { padding-left: 20px; position: relative; margin-bottom: 8px; }
+  ul.clean li::before { content: "—"; position: absolute; left: 0; color: var(--ink-3); font-family: var(--mono); }
+
+  /* ---------- change list ---------- */
+  .change { border-bottom: 1px solid var(--rule); padding: 16px 0; display: grid; grid-template-columns: minmax(200px, 260px) 1fr; gap: 6px 26px; }
+  .change:last-child { border-bottom: none; }
+  .change .f { font-family: var(--mono); font-size: 12.5px; font-weight: 600; word-break: break-all; }
+  .change .d { color: var(--ink-2); font-size: 14.5px; }
+  .change .d p { margin: 0 0 8px; }
+  .change .d p:last-child { margin: 0; }
+  @media (max-width: 640px) { .change { grid-template-columns: 1fr; } }
+
+  footer {
+    border-top: 1px solid var(--rule); padding-top: 24px; margin-top: 20px;
+    font-size: 13.5px; color: var(--ink-3);
+  }
+  :focus-visible { outline: 2px solid var(--row); outline-offset: 2px; border-radius: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  /* ---------- decision cards ---------- */
+  .dec {
+    border: 1px solid var(--rule); border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0; background: var(--surface);
+    padding: 20px 24px; margin: 0 0 14px; box-shadow: var(--shadow);
+  }
+  .dec h3 { margin: 0 0 14px; font-size: 17px; }
+  .dec dl { margin: 0; display: grid; grid-template-columns: 128px 1fr; gap: 10px 18px; }
+  .dec dt {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-3); font-weight: 600; padding-top: 3px;
+  }
+  .dec dd { margin: 0; font-size: 14.5px; color: var(--ink-2); }
+  .dec dd strong { color: var(--ink); }
+  @media (max-width: 600px) { .dec dl { grid-template-columns: 1fr; gap: 4px; } .dec dd { margin-bottom: 8px; } }
+
+  /* ---------- variant split ---------- */
+  .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin: 22px 0; }
+  .vcard { border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); padding: 22px 24px; box-shadow: var(--shadow); }
+  .vcard .tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .vcard h3 { margin: 8px 0 4px; font-size: 19px; }
+  .vcard .br { font-family: var(--mono); font-size: 12px; color: var(--ink-3); margin: 0 0 14px; word-break: break-all; }
+  .vcard ul { margin: 0; padding-left: 18px; font-size: 14.5px; color: var(--ink-2); }
+  .vcard li { margin-bottom: 6px; }
+
+  .kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 14px; margin: 24px 0; }
+  .kpi div { border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); padding: 14px 16px; }
+  .kpi .n { font-family: var(--mono); font-size: 22px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .kpi .l { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-top: 3px; }
+
+  /* ---------- perguntas ---------- */
+  .qa { margin: 0 0 52px; scroll-margin-top: 24px; }
+  .qa > h2 {
+    font-size: 24px; font-weight: 750; letter-spacing: -.02em;
+    margin: 0 0 6px; padding-top: 18px; border-top: 1px solid var(--ink);
+    text-wrap: balance;
+  }
+  .qa .asked {
+    font-family: var(--mono); font-size: 12px; color: var(--ink-3);
+    margin: 0 0 20px; padding-left: 12px; border-left: 2px solid var(--accent);
+  }
+  .qa .short {
+    font-size: 17px; line-height: 1.5; color: var(--ink);
+    background: var(--accent-bg); border-radius: 6px;
+    padding: 16px 20px; margin: 0 0 22px;
+  }
+  .qa .short strong { font-weight: 700; }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Companheiro do documento de visão geral</p>
+  <h1>Dúvidas do TOTEM 20</h1>
+  <p class="standfirst">
+    As perguntas que surgiram durante o projeto, com as respostas. Registradas
+    porque são exatamente as que voltam a aparecer meses depois, quando o
+    contexto já se perdeu.
+  </p>
+</header>
+
+<nav class="toc">
+  <p>Perguntas</p>
+  <ol>
+    <li><a href="#vial">O que é esse tal de Vial?</a></li>
+    <li><a href="#baixar">Onde baixo o aplicativo?</a></li>
+    <li><a href="#symlink">Como o <code>make</code> sabe que é o meu projeto?</a></li>
+    <li><a href="#pastas">O que é cada pasta do repositório?</a></li>
+    <li><a href="#placa">"XIAO" é o chip ou a marca?</a></li>
+    <li><a href="#gravar">Como gravo o firmware na placa?</a></li>
+    <li><a href="#docs">Os documentos ficam só na nuvem?</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<div class="qa" id="vial">
+  <h2>O que é esse tal de Vial?</h2>
+  <p class="asked">"como vou saber o que é Vial?"</p>
+
+  <div class="short">
+    Vial são <strong>duas coisas com o mesmo nome</strong>: um firmware e um
+    aplicativo. Ele existe para você mudar o que cada tecla faz
+    <strong>sem recompilar nada</strong>.
+  </div>
+
+  <div class="prose">
+    <h3>O problema que ele resolve</h3>
+    <p>
+      Sem Vial, o teclado roda QMK puro. Mudar uma única tecla — trocar o
+      <code>Q</code> por <code>Esc</code>, digamos — significa editar um arquivo
+      em C, recompilar o firmware inteiro e regravar a placa. Três minutos e um
+      ambiente de compilação montado, para trocar uma tecla. Toda vez.
+    </p>
+
+    <h3>O que ele faz</h3>
+    <p>
+      Você pluga o teclado, abre o app, e <strong>vê o desenho das suas 20
+      teclas na tela</strong>. Clica numa, escolhe a nova função de uma lista,
+      pronto. A mudança vai direto para dentro do teclado e sobrevive a
+      desligar.
+    </p>
+
+    <h3>Por que ele sabe como é o seu teclado</h3>
+    <p>
+      Esta é a parte elegante. O arquivo <code>keymaps/vial/vial.json</code> é
+      literalmente o desenho que aparece no app: a posição de cada tecla, o
+      cluster do polegar inclinado, o Espaço mais alto. Na compilação, um script
+      comprime esse JSON e o <strong>embute dentro do próprio firmware</strong>.
+    </p>
+    <p>
+      Quando você pluga, o teclado <em>conta ao app</em> como ele é. Nada
+      precisa estar cadastrado em lugar nenhum. É também por isso que o
+      <code>VIAL_KEYBOARD_UID</code> importa — é o identificador que o app usa
+      para reconhecer este teclado, e reaproveitar a do TOTEM original faria ele
+      desenhar 38 teclas na sua tela.
+    </p>
+  </div>
+
+  <h3>O que você controla pelo app, e o que não</h3>
+  <div class="tablewrap txt">
+    <table>
+      <thead><tr><th>Pelo app</th><th>Fixo no firmware</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Qualquer uma das 20 teclas, em qualquer um dos 5 perfis</td>
+          <td>Os acordes G+B e G+E</td>
+        </tr>
+        <tr>
+          <td>Gravar macros</td>
+          <td>O giro do encoder <em>(variante A)</em></td>
+        </tr>
+        <tr>
+          <td>Ajustar efeito e brilho do RGB</td>
+          <td>O botão do encoder <em>(variante A)</em></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    Os itens da direita são interceptados por posição na matriz, então
+    remapeá-los no app não surte efeito. É o preço de funcionarem de forma
+    garantida.
+  </p>
+
+  <div class="note info">
+    <span class="lbl">Por isso existem dois keymaps</span>
+    <p>
+      <code>keymaps/vial/</code> é a versão que o app enxerga — é a recomendada.
+      <code>keymaps/default/</code> é QMK puro, sem app: funciona como teclado
+      normalmente, mas para mudar qualquer tecla você edita o arquivo e regrava.
+      São os mesmos cinco perfis nos dois.
+    </p>
+  </div>
+
+  <div class="note info">
+    <span class="lbl">E a VIA, que é parecida?</span>
+    <p>
+      Existe uma ferramenta mais antiga chamada <strong>VIA</strong>. A
+      diferença: na VIA o seu teclado precisa estar cadastrado num repositório
+      oficial deles. O Vial carrega a definição dentro do próprio firmware. Para
+      um teclado caseiro, que nunca vai estar em lista oficial nenhuma, é a
+      diferença entre funcionar e não funcionar.
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="qa" id="baixar">
+  <h2>Onde baixo o aplicativo?</h2>
+
+  <div class="short">
+    Para a bancada, use o <strong>navegador</strong>: nada para instalar, e você
+    vai abrir e fechar o Vial muitas vezes durante os testes.
+  </div>
+
+  <div class="tablewrap txt">
+    <table>
+      <thead><tr><th>Onde</th><th>Endereço</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Navegador</strong></td>
+          <td class="m">vial.rocks</td>
+          <td>Sem instalar. Exige Chrome, Edge ou Opera — Firefox e Safari não têm WebHID</td>
+        </tr>
+        <tr>
+          <td><strong>Desktop</strong></td>
+          <td class="m">get.vial.today/download</td>
+          <td>Windows, macOS e Linux</td>
+        </tr>
+        <tr>
+          <td>Código-fonte</td>
+          <td class="m">github.com/vial-kb/vial-gui</td>
+          <td>Onde o projeto vive</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Cuidado ao buscar</span>
+    <p>
+      Buscando por "Vial download" aparecem sites agregadores como o Softonic,
+      que costumam empacotar instaladores com coisas indesejadas. Use
+      <code>get.vial.today</code> ou o GitHub.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      Quando conectar, a aba mais importante para a montagem não é a de
+      remapeamento — é o <strong>Matrix Tester</strong>. Ela mostra a matriz
+      crua, antes do keymap, e é o que separa "fio errado" de "keymap errado".
+      Os guias de bancada a usam em quase todas as etapas.
+    </p>
+    <p style="margin-bottom:0">
+      Lembrando da ordem: o Vial só enxerga o teclado depois que você gravar o
+      <code>totem_vial.uf2</code>. Com o <code>totem_default.uf2</code> o teclado
+      funciona, mas é invisível para o app.
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="qa" id="symlink">
+  <h2>Como o <code>make</code> sabe que é o meu projeto?</h2>
+  <p class="asked">"eu rodo o comando dentro de ~/vial-qmk, como que sabe que é meu projeto?"</p>
+
+  <div class="short">
+    Não sabe. <strong>Você apontou para ele</strong>, uma vez, com um symlink.
+  </div>
+
+  <div class="prose">
+    <p>
+      Um symlink é um atalho no nível do sistema de arquivos. No passo 5 do
+      setup rodamos:
+    </p>
+  </div>
+
+  <pre><code>ln -s ".../TOTEM/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem</code></pre>
+
+  <div class="prose">
+    <p>
+      Isso criou dentro do vial-qmk uma entrada chamada <code>totem</code> que
+      <strong>não contém nada</strong> — ela só diz "o conteúdo real está lá no
+      repositório". A prova é o inode, o número que identifica um arquivo no
+      disco:
+    </p>
+  </div>
+
+  <pre><code>$ stat -f "%i %N" ~/vial-qmk/keyboards/totem/keyboard.json \
+                  ~/Documents/GitHub/TOTEM/firmware/QMK/VIAL_source/totem/keyboard.json
+
+80113874  /Users/josericardodainese/vial-qmk/keyboards/totem/keyboard.json
+80113874  /Users/josericardodainese/Documents/GitHub/TOTEM/.../keyboard.json</code></pre>
+
+  <div class="prose">
+    <p>
+      O mesmo número nos dois. Não é cópia: é o <strong>mesmo arquivo físico</strong>
+      visto por dois caminhos. Editar num é editar no outro, porque é o mesmo lugar.
+    </p>
+    <p>Aí o comando fica óbvio:</p>
+  </div>
+
+  <pre><code>make totem:vial
+     └──┬─┘ └─┬─┘
+        │     └─ pasta dentro de keymaps/
+        └─────── pasta dentro de keyboards/</code></pre>
+
+  <div class="prose">
+    <p style="margin-bottom:0">
+      "Compile o teclado <code>keyboards/totem</code> com o keymap
+      <code>keymaps/vial</code>." O QMK entra em <code>keyboards/totem</code>, o
+      sistema de arquivos segue o atalho, e ele acaba lendo os seus arquivos sem
+      nunca saber que saiu do próprio diretório.
+    </p>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Por que symlink e não cópia</span>
+    <p>
+      Com <code>cp</code> existiriam <strong>dois</strong> <code>keyboard.json</code>
+      de verdade. Você editaria um, compilaria o outro, e passaria meia hora sem
+      entender por que a mudança não surtiu efeito.
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="qa" id="pastas">
+  <h2>O que é cada pasta do repositório?</h2>
+
+  <div class="short">
+    De tudo que está lá, <strong>só uma pasta é o seu projeto</strong>. O resto
+    veio junto no fork e descreve o TOTEM original.
+  </div>
+
+  <div class="tablewrap txt">
+    <table>
+      <thead><tr><th class="m">Pasta</th><th>O que é</th><th>Situação</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="m">firmware/QMK/<br>VIAL_source/totem/</td>
+          <td><strong>O seu teclado.</strong> É a pasta apontada pelo symlink. Todo o firmware que construímos vive aqui.</td>
+          <td style="color:var(--ok)">reescrita</td>
+        </tr>
+        <tr>
+          <td class="m">docs/</td>
+          <td>Documentação. Tinha o guia de montagem do original; adicionamos a visão geral, o guia de bancada e este documento.</td>
+          <td style="color:var(--ok)">nossa + herança</td>
+        </tr>
+        <tr>
+          <td class="m">PCB/</td>
+          <td>Projeto da placa em KiCad — esquemático, gerbers, PDF. É do split. Foi daqui que li que não havia RGB nenhum no original.</td>
+          <td>herança · <strong>útil</strong></td>
+        </tr>
+        <tr>
+          <td class="m">case/</td>
+          <td>Modelos 3D da carcaça: STEP, versões USB, BLE e com inclinação.</td>
+          <td>herança · <strong>útil</strong></td>
+        </tr>
+        <tr>
+          <td class="m">.github/</td>
+          <td>Só um <code>FUNDING.yml</code>, do autor original.</td>
+          <td>herança</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note ok">
+    <span class="lbl">O que foi removido</span>
+    <p>
+      <code>firmware/QMK/totem_vial_left.uf2</code> e
+      <code>_right.uf2</code> eram binários prontos <strong>do split de 38
+      teclas</strong>, e <code>firmware/ZMK/</code> era um firmware
+      completamente diferente, usado na versão sem fio do TOTEM original.
+    </p>
+    <p>
+      Os dois <code>.uf2</code> eram os perigosos: ficavam ao lado do código que
+      mantemos, tinham nome plausível, e gravar qualquer um deles produziria um
+      teclado que enumera e não responde a nada. Melhor ausentes que enganosos.
+    </p>
+    <p>
+      <code>PCB/</code> e <code>case/</code> ficaram. Também descrevem o split,
+      mas são o ponto de partida para desenhar os seus.
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="qa" id="placa">
+  <h2>"XIAO" é o chip ou a marca? Serve qualquer RP2040?</h2>
+  <p class="asked">"o XIAO é so uma versao do RP2040 ou é a marca dele e posso usar qualquer RP2040 de 11 gpio?"</p>
+
+  <div class="short">
+    São <strong>camadas diferentes</strong>: RP2040 é o chip, XIAO é a linha de
+    placas que o carrega. E não é a <em>quantidade</em> de GPIOs que importa —
+    é <strong>quais</strong>.
+  </div>
+
+  <div class="tablewrap txt">
+    <table>
+      <thead><tr><th class="m">Nome</th><th>O que é</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="m">RP2040</td>
+          <td><strong>O microcontrolador</strong>, projetado pela Raspberry Pi. É só o chip, com 30 GPIOs no silício. Qualquer fabricante pode montar uma placa em volta dele.</td>
+        </tr>
+        <tr>
+          <td class="m">XIAO</td>
+          <td><strong>Uma linha de placas minúsculas da Seeed Studio.</strong> Existe XIAO ESP32, XIAO SAMD21, XIAO nRF52840 — chips completamente diferentes, mesmo formato de placa.</td>
+        </tr>
+        <tr>
+          <td class="m">XIAO RP2040</td>
+          <td>A placa no formato XIAO carregando o chip RP2040. É esta que o seu esquema assume.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="prose">
+    <p>
+      O Raspberry Pi Pico e o Waveshare RP2040-Zero têm <strong>o mesmo
+      chip</strong>. Mudam o tamanho da placa, quantos pinos são levados para
+      fora e onde eles ficam.
+    </p>
+
+    <h3>Por que não serve "qualquer um de 11 GPIO"</h3>
+    <p>
+      O <code>keyboard.json</code> não pede "onze pinos quaisquer" — ele nomeia
+      pinos específicos:
+    </p>
+  </div>
+
+  <pre><code>"cols": ["GP7", "GP6", "GP29", "GP28", "GP27", "GP26"]
+"rows": ["GP1", "GP2", "GP4", "GP3"]
+"pin":   "GP0"</code></pre>
+
+  <div class="prose">
+    <p>
+      Uma placa que exponha onze GPIOs <em>diferentes</em> — digamos
+      <code>GP10</code> a <code>GP20</code> — não funcionaria com esses nomes.
+      Funcionaria depois de você editar o <code>matrix_pins</code>, mas não é
+      plug-and-play.
+    </p>
+    <p>
+      E há a parte física: o footprint do XIAO — 14 pads, 21 × 17,5 mm — é o que
+      a sua carcaça e o seu esquema elétrico assumem. Trocar por uma placa de
+      outro formato significa redesenhar o PCB.
+    </p>
+  </div>
+
+  <div class="tablewrap txt">
+    <table>
+      <thead><tr><th>Placa</th><th>Serve?</th><th>O que muda</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>XIAO RP2040</strong></td>
+          <td style="color:var(--ok)">direto</td>
+          <td>Nada — é a pinagem do firmware</td>
+        </tr>
+        <tr>
+          <td>Clone do XIAO RP2040</td>
+          <td style="color:var(--ok)">direto</td>
+          <td>Nada, se respeitar o pinout do original</td>
+        </tr>
+        <tr>
+          <td>RP2040-Zero</td>
+          <td style="color:var(--warn)">com ajuste</td>
+          <td><code>matrix_pins</code> + <code>ws2812.pin</code>, e PCB novo (footprint diferente)</td>
+        </tr>
+        <tr>
+          <td>Raspberry Pi Pico</td>
+          <td style="color:var(--warn)">com ajuste</td>
+          <td>Idem, e são 51 × 21 mm — quase 2,5× o comprimento</td>
+        </tr>
+        <tr>
+          <td>XIAO <strong>RP2350</strong></td>
+          <td style="color:var(--warn)">cuidado</td>
+          <td>Mesmo formato, mas <strong>chip diferente</strong> — exige mudar <code>processor</code> e <code>bootloader</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note info">
+    <span class="lbl">A regra prática</span>
+    <p>
+      <strong>O firmware não se importa com a marca da placa — se importa com
+      os números dos pinos.</strong> Qualquer placa RP2040 funciona depois de
+      ajustar o <code>matrix_pins</code>. O que <em>não</em> se ajusta em
+      software é o footprint: aí é PCB e carcaça novos.
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="qa" id="gravar">
+  <h2>Como gravo o firmware na placa?</h2>
+
+  <div class="short">
+    Em modo bootloader, o RP2040 <strong>se apresenta como um pendrive</strong>.
+    Você arrasta o arquivo para dentro e acabou. Sem programador, sem driver.
+  </div>
+
+  <h3>Os quatro passos</h3>
+  <div class="prose">
+    <ol>
+      <li><strong>Entre em modo bootloader</strong> — veja a tabela abaixo, muda conforme a situação.</li>
+      <li><strong>Confirme o pendrive</strong> — deve montar um volume chamado <code>RPI-RP2</code>.</li>
+      <li><strong>Arraste o <code>.uf2</code></strong> para dentro dele.</li>
+      <li><strong>O pendrive some</strong> — a placa reiniciou no firmware novo.</li>
+    </ol>
+  </div>
+
+  <div class="tablewrap txt">
+    <table>
+      <thead><tr><th>Situação</th><th>Como entrar em bootloader</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Placa nova, nunca gravada</strong></td>
+          <td>Só plugar. Sem firmware válido ela já cai em bootloader sozinha. Se veio com algo de fábrica: segure <strong>BOOT</strong>, plugue, solte.</td>
+        </tr>
+        <tr>
+          <td><strong>Placa já com o nosso firmware</strong></td>
+          <td><strong>Duplo toque rápido no RESET.</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Qualquer situação, infalível</strong></td>
+          <td>Segure <strong>BOOT</strong> → pressione e solte <strong>RESET</strong> → solte <strong>BOOT</strong>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">A pegadinha da primeira vez</span>
+    <p>
+      O duplo toque no RESET <strong>não é um recurso do chip</strong> — vem do
+      nosso firmware, do <code>RP2040_BOOTLOADER_DOUBLE_TAP_RESET</code> no
+      <code>config.h</code>. Numa placa que ainda não o tem, duplo toque não faz
+      nada. Na primeira gravação use BOOT + RESET.
+    </p>
+  </div>
+
+  <div class="note info">
+    <span class="lbl">"Disco ejetado incorretamente" é sucesso</span>
+    <p>
+      A placa reinicia sozinha e desmonta o volume sem avisar o sistema. O
+      macOS reclama. <strong>É o sinal de que deu certo</strong>, não erro.
+    </p>
+  </div>
+
+  <div class="note warn">
+    <span class="lbl">Confira a branch antes de gravar</span>
+    <p>
+      As duas variantes têm <strong>pinagens completamente diferentes</strong>.
+      Gravar o firmware da <code>encoder-oled-screen</code> (RP2040-Zero) num
+      XIAO produz um teclado que enumera e não responde a nada. Troque de branch
+      e recompile com <code>rm -rf .build</code> antes — cache de build antigo já
+      enganou uma vez neste projeto.
+    </p>
+  </div>
+
+  <h3>Qual arquivo</h3>
+  <div class="tablewrap txt">
+    <table>
+      <thead><tr><th class="m">Arquivo</th><th>Quando</th></tr></thead>
+      <tbody>
+        <tr><td class="m">totem_vial.uf2</td><td><strong>É o que você quer.</strong> Versão que o app Vial enxerga.</td></tr>
+        <tr><td class="m">totem_default.uf2</td><td>Funciona como teclado, mas fica invisível para o Vial.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Se der errado</h3>
+  <div class="tablewrap txt">
+    <table>
+      <thead><tr><th>Sintoma</th><th>Causa</th><th>Solução</th></tr></thead>
+      <tbody>
+        <tr><td><code>RPI-RP2</code> não aparece</td><td>Não entrou em bootloader</td><td>BOOT → RESET → solta BOOT</td></tr>
+        <tr><td>Nem enumera</td><td>Cabo só de carga, sem dados</td><td>Troque o cabo</td></tr>
+        <tr><td>Gravou, nenhuma tecla responde</td><td>Firmware da branch errada</td><td>Confira a pinagem contra a placa</td></tr>
+        <tr><td>Teclado funciona, Vial não acha</td><td>Gravou o <code>default</code></td><td>Grave o <code>vial</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">
+    O último engana bastante: o teclado digita normalmente, tudo parece certo,
+    mas o app não enxerga. É só o keymap errado.
+  </p>
+
+  <div class="note ok">
+    <span class="lbl">É difícil estragar</span>
+    <p>
+      O bootloader do RP2040 está em ROM e não pode ser sobrescrito. A sequência
+      BOOT → RESET → solta BOOT funciona mesmo com firmware corrompido, então é
+      praticamente impossível brickar a placa.
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="qa" id="docs">
+  <h2>Os documentos ficam só na nuvem?</h2>
+  <p class="asked">"esses artifact fica so remoto ou é versionado no github?"</p>
+
+  <div class="short">
+    Ficavam. Agora estão <strong>versionados em <code>docs/</code></strong>, nas
+    branches que descrevem.
+  </div>
+
+  <div class="prose">
+    <p>
+      Antes existiam em dois lugares, nenhum seguro: publicados no claude.ai, e
+      com o fonte num diretório temporário de sessão que é apagado. Nada estava
+      no git, então não dava para versionar, comparar nem manter em sincronia com
+      o firmware.
+    </p>
+    <p>
+      Isso não era teórico: o guia de bancada continuou mostrando os pinos do
+      RP2040-Zero depois que o firmware migrou para o XIAO, e <strong>nada
+      acusou</strong>. Seguir aquele documento levaria à fiação errada.
+    </p>
+    <p>
+      Agora cada guia vive na branch que descreve. Uma mudança de pinagem que não
+      atualize o guia <strong>aparece no diff</strong>.
+    </p>
+  </div>
+
+  <div class="tablewrap txt">
+    <table>
+      <thead><tr><th class="m">Arquivo</th><th>Onde</th></tr></thead>
+      <tbody>
+        <tr><td class="m">docs/projeto-totem20.html</td><td>Visão geral e registro de decisões — nas duas branches</td></tr>
+        <tr><td class="m">docs/duvidas.html</td><td>Este documento — nas duas branches</td></tr>
+        <tr><td class="m">docs/bancada-encoder-oled.html</td><td>Só na <code>encoder-oled-screen</code></td></tr>
+        <tr><td class="m">docs/bancada-sem-encoder.html</td><td>Só na <code>without-encoder-oled-screen</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note info">
+    <span class="lbl">O GitHub não renderiza HTML</span>
+    <p>
+      Abrindo esses arquivos na página do repositório você vê o código-fonte, não
+      a página. Para ler formatado, abra o arquivo local no navegador — ou ligue
+      o GitHub Pages, que passa a servi-los como site.
+    </p>
+  </div>
+</div>
+
+<footer>
+  <p>
+    TOTEM 20 · fork de <a href="https://github.com/GEIGEIGEIST/TOTEM">GEIGEIGEIST/TOTEM</a>
+  </p>
+  <p>
+    Companheiro do documento de visão geral, que explica o projeto e registra as
+    decisões técnicas. Os guias de bancada cobrem a fiação e o teste.
+  </p>
+</footer>
+
+</div>
