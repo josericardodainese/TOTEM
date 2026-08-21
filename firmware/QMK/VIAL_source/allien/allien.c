@@ -1,4 +1,4 @@
-/* TOTEM 20 -- unibody 20-key macropad + encoder + OLED (Waveshare RP2040-Zero)
+/* Allien -- unibody 20-key macropad + encoder + OLED (Waveshare RP2040-Zero)
  *
  * Copyright 2022 GEIST @geigeigeist
  * Copyright 2026 josericardodainese
@@ -17,7 +17,7 @@
  */
 
 #include "quantum.h"
-#include "totem_oled.h"
+#include "allien_oled.h"
 
 // ┌─────────────────────────────────────────────────┐
 // │ R G B   m a t r i x   l a y o u t               │
@@ -77,40 +77,40 @@ led_config_t g_led_config = {
  * keycode assigned in Vial. Cycling while on one of them returns to jogo.
  */
 static const uint8_t profile_cycle_order[] = {
-    TOTEM20_PROFILE_GAME,
-    TOTEM20_PROFILE_MAX3DS,
-    TOTEM20_PROFILE_MACROS,
+    ALLIEN_PROFILE_GAME,
+    ALLIEN_PROFILE_MAX3DS,
+    ALLIEN_PROFILE_MACROS,
 };
 
 /* jogo = vermelho, 3ds Max = azul, macros = verde,
  * reservada = roxo, configuracao = amarelo
  */
-static const uint8_t profile_hue[TOTEM20_PROFILE_COUNT] = {
-    [TOTEM20_PROFILE_GAME]     = 0,     // red
-    [TOTEM20_PROFILE_MAX3DS]   = 170,   // blue
-    [TOTEM20_PROFILE_MACROS]   = 85,    // green
-    [TOTEM20_PROFILE_RESERVED] = 191,   // purple
-    [TOTEM20_PROFILE_CONFIG]   = 43,    // yellow
+static const uint8_t profile_hue[ALLIEN_PROFILE_COUNT] = {
+    [ALLIEN_PROFILE_GAME]     = 0,     // red
+    [ALLIEN_PROFILE_MAX3DS]   = 170,   // blue
+    [ALLIEN_PROFILE_MACROS]   = 85,    // green
+    [ALLIEN_PROFILE_RESERVED] = 191,   // purple
+    [ALLIEN_PROFILE_CONFIG]   = 43,    // yellow
 };
 
-const char *totem_profile_name(uint8_t profile) {
+const char *allien_profile_name(uint8_t profile) {
     switch (profile) {
-        case TOTEM20_PROFILE_GAME:     return "JOGO";
-        case TOTEM20_PROFILE_MAX3DS:   return "3DS MAX";
-        case TOTEM20_PROFILE_MACROS:   return "MACROS";
-        case TOTEM20_PROFILE_RESERVED: return "RESERVADA";
-        case TOTEM20_PROFILE_CONFIG:   return "CONFIG";
+        case ALLIEN_PROFILE_GAME:     return "JOGO";
+        case ALLIEN_PROFILE_MAX3DS:   return "3DS MAX";
+        case ALLIEN_PROFILE_MACROS:   return "MACROS";
+        case ALLIEN_PROFILE_RESERVED: return "RESERVADA";
+        case ALLIEN_PROFILE_CONFIG:   return "CONFIG";
         default:                       return "?";
     }
 }
 
-uint8_t totem_profile_current(void) {
+uint8_t allien_profile_current(void) {
     return get_highest_layer(default_layer_state);
 }
 
 static void profile_indicate(uint8_t profile) {
 #ifdef RGB_MATRIX_ENABLE
-    if (profile >= TOTEM20_PROFILE_COUNT) return;
+    if (profile >= ALLIEN_PROFILE_COUNT) return;
     /* Respect an explicit "RGB off": never light up on our own. */
     if (!rgb_matrix_is_enabled()) return;
     /* Only the hue moves. The effect and brightness the user picked -- in Vial
@@ -123,14 +123,14 @@ static void profile_indicate(uint8_t profile) {
 #endif
 }
 
-void totem_profile_set(uint8_t profile) {
-    if (profile >= TOTEM20_PROFILE_COUNT) return;
+void allien_profile_set(uint8_t profile) {
+    if (profile >= ALLIEN_PROFILE_COUNT) return;
     /* Persists in EEPROM, so the profile survives a reboot or replug. */
     set_single_persistent_default_layer(profile);
 }
 
-void totem_profile_switch_next(void) {
-    uint8_t current = totem_profile_current();
+void allien_profile_switch_next(void) {
+    uint8_t current = allien_profile_current();
     uint8_t next    = profile_cycle_order[0];
 
     for (uint8_t i = 0; i < ARRAY_SIZE(profile_cycle_order); i++) {
@@ -139,7 +139,7 @@ void totem_profile_switch_next(void) {
             break;
         }
     }
-    totem_profile_set(next);
+    allien_profile_set(next);
 }
 
 // ┌─────────────────────────────────────────────────┐
@@ -191,7 +191,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     if (!process_record_user(keycode, record)) return false;
 
     if (record->event.pressed) {
-        totem_oled_note_keypress();
+        allien_oled_note_keypress();
     }
 
     /* ---- encoder push switch: an ordinary matrix key, owned by us ---- */
@@ -204,7 +204,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
             enc_btn_down = false;
             /* A long press already acted while the button was still held. */
             if (!enc_btn_long_fired) {
-                totem_profile_switch_next();
+                allien_profile_switch_next();
             }
         }
         return false;   // never emits a keycode
@@ -265,7 +265,7 @@ void matrix_scan_kb(void) {
     if (enc_btn_down && !enc_btn_long_fired &&
         timer_elapsed(enc_btn_press_time) >= ENCODER_LONG_PRESS_MS) {
         enc_btn_long_fired = true;
-        totem_oled_long_press();
+        allien_oled_long_press();
     }
 
     /* ---- chord -------------------------------------------------------- */
@@ -276,10 +276,10 @@ void matrix_scan_kb(void) {
                 profile_key[i].held_back = false;
                 profile_key[i].consumed  = true;
             }
-            totem_profile_switch_next();
+            allien_profile_switch_next();
         }
         /* While armed, neither key may be forwarded to the host. */
-        totem_oled_tick();
+        allien_oled_tick();
         matrix_scan_user();
         return;
     }
@@ -291,7 +291,7 @@ void matrix_scan_kb(void) {
         }
     }
 
-    totem_oled_tick();
+    allien_oled_tick();
     matrix_scan_user();
 }
 
@@ -302,7 +302,7 @@ bool encoder_update_kb(uint8_t index, bool clockwise) {
     /* The menu gets first refusal. It declines only when the encoder is set
      * to "Teclas" and the status screen is showing.
      */
-    if (totem_oled_rotate(clockwise)) return false;
+    if (allien_oled_rotate(clockwise)) return false;
 
     /* Fallback function when the menu is not driving. Change these two
      * keycodes to give the encoder a different job.
@@ -319,7 +319,7 @@ oled_rotation_t oled_init_kb(oled_rotation_t rotation) {
 
 bool oled_task_kb(void) {
     if (!oled_task_user()) return false;
-    totem_oled_render();
+    allien_oled_render();
     return false;
 }
 #endif

@@ -1,4 +1,4 @@
-# TOTEM 20 — variante com encoder e display
+# Allien — variante com encoder e display
 
 Macropad unibody de **20 teclas** com encoder rotativo e display OLED SSD1306,
 sobre um Waveshare RP2040-Zero.
@@ -125,7 +125,7 @@ Três caminhos, todos chegando ao mesmo lugar:
 Os dois ciclos seguem `Jogo → 3ds Max → Macros → Jogo`. Disparar qualquer um
 deles estando na camada 3 ou 4 volta para Jogo.
 
-Regras que o acorde garante (em `totem.c`):
+Regras que o acorde garante (em `allien.c`):
 
 - as duas teclas devem descer dentro de `PROFILE_CHORD_SYNC_MS` (50 ms) uma da
   outra;
@@ -171,7 +171,7 @@ Qualquer tecla ou giro acorda.
 > eventos do encoder direto como keycodes e nunca chama `encoder_update_kb()`,
 > que é onde o menu lê o giro. Consequência: **o giro não é remapeável no
 > Vial** — o menu é dono dele. Para dar outra função ao fallback, mude os dois
-> keycodes em `encoder_update_kb()` no `totem.c`.
+> keycodes em `encoder_update_kb()` no `allien.c`.
 > O **botão** também é interceptado por posição na matriz, então o keycode dele
 > no keymap nunca é enviado; remapear `[0,5]` no Vial não surte efeito.
 
@@ -181,7 +181,7 @@ Qualquer tecla ou giro acorda.
 
 **A cadeia precisa ser roteada DIN → DOUT seguindo SW1 até SW20** — a mesma
 ordem do `LAYOUT`: linha de cima da esquerda para a direita, depois cada linha
-abaixo. Esse mapeamento é o `g_led_config` em `totem.c`; se o PCB serpentear,
+abaixo. Esse mapeamento é o `g_led_config` em `allien.c`; se o PCB serpentear,
 muda só o primeiro bloco daquela struct.
 
 - A cor do perfil mexe **apenas na matiz**; o efeito e o brilho que você
@@ -269,7 +269,7 @@ mv out ~/vial-qmk/.toolchain
 ```sh
 cd <este-repositorio>
 git checkout encoder-oled-screen
-ln -s "$(pwd)/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem
+ln -s "$(pwd)/firmware/QMK/VIAL_source/allien" ~/vial-qmk/keyboards/allien
 ```
 
 Symlink, **nunca cópia**. Copiar cria duas versões dos mesmos arquivos: você
@@ -282,8 +282,8 @@ por que a mudança não surtiu efeito.
 export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
 cd ~/vial-qmk
 
-make totem:vial       # -> totem_vial.uf2    125 KiB · recomendado
-make totem:default    # -> totem_default.uf2  89 KiB · QMK puro
+make allien:vial       # -> allien_vial.uf2    125 KiB · recomendado
+make allien:default    # -> allien_default.uf2  89 KiB · QMK puro
 ```
 
 O `export PATH` precisa vir **antes** do `make`, e em toda sessão de terminal
@@ -305,7 +305,7 @@ existe "compilou com avisos".
 
 ```sh
 export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
-cd ~/vial-qmk && make totem:vial
+cd ~/vial-qmk && make allien:vial
 ```
 
 Os passos 1 a 5 são uma vez só. Se algo ficar estranho depois de mudar
@@ -314,7 +314,7 @@ Os passos 1 a 5 são uma vez só. Se algo ficar estranho depois de mudar
 ## Gravar
 
 1. **Duplo toque no RESET.** A placa monta como um pendrive chamado `RPI-RP2`.
-2. Copie o `totem_vial.uf2` para dentro dele.
+2. Copie o `allien_vial.uf2` para dentro dele.
 3. Ela reinicia sozinha no firmware novo e o pendrive some — é o esperado.
 
 Se o `RPI-RP2` não aparecer: segure **BOOT**, pressione e solte **RESET**,

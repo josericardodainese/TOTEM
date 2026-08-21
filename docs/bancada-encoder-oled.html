@@ -1,4 +1,4 @@
-<title>Guia de Bancada TOTEM 20</title>
+<title>Guia de Bancada Allien</title>
 <style>
   :root {
     --bg:        #F6F7F9;
@@ -357,7 +357,7 @@
 
 <header class="masthead">
   <p class="eyebrow">Macropad unibody · Waveshare RP2040-Zero</p>
-  <h1>Guia de Bancada TOTEM 20</h1>
+  <h1>Guia de Bancada Allien</h1>
   <p class="standfirst">
     Tudo que mudou no firmware, onde ligar cada switch, diodo, LED, encoder e
     display no controlador, e como validar a montagem numa protoboard antes de
@@ -442,7 +442,7 @@
   <div class="sec-head">
     <p class="eyebrow">Seção 02</p>
     <h2>O que mudou no firmware</h2>
-    <p>Tudo dentro de <code>firmware/QMK/VIAL_source/totem/</code>. Nada fora dessa pasta foi tocado.</p>
+    <p>Tudo dentro de <code>firmware/QMK/VIAL_source/allien/</code>. Nada fora dessa pasta foi tocado.</p>
   </div>
 
   <h3>Removido do TOTEM split</h3>
@@ -467,12 +467,12 @@
     <div class="d"><p>Painel de controle do teclado: índices dos cinco perfis, coordenadas do combo, tempos, posição do botão do encoder, resolução do encoder, timeout do menu e a configuração de I²C.</p></div>
   </div>
   <div class="change">
-    <div class="f">totem.c</div>
+    <div class="f">allien.c</div>
     <div class="d"><p>Reaproveitado, não apagado. Saiu o <code>hand_swap_config</code>; entraram o <code>g_led_config</code> do RGB matrix, a máquina de estados do combo, o tratamento do encoder e o indicador de perfil.</p></div>
   </div>
   <div class="change">
-    <div class="f">totem_oled.c<br>totem_oled.h</div>
-    <div class="d"><p><strong>Novos.</strong> Menu do OLED, telas de status, contador de APM e cronômetro. Separados do <code>totem.c</code> para não misturar tratamento de entrada com renderização.</p></div>
+    <div class="f">allien_oled.c<br>allien_oled.h</div>
+    <div class="d"><p><strong>Novos.</strong> Menu do OLED, telas de status, contador de APM e cronômetro. Separados do <code>allien.c</code> para não misturar tratamento de entrada com renderização.</p></div>
   </div>
   <div class="change">
     <div class="f">halconf.h</div>
@@ -480,7 +480,7 @@
   </div>
   <div class="change">
     <div class="f">rules.mk (raiz)</div>
-    <div class="d"><p><strong>Novo.</strong> Compila o <code>totem_oled.c</code> junto.</p></div>
+    <div class="d"><p><strong>Novo.</strong> Compila o <code>allien_oled.c</code> junto.</p></div>
   </div>
   <div class="change">
     <div class="f">keymaps/vial/config.h</div>
@@ -733,7 +733,7 @@
       da tabela da Seção 04: linha de cima da esquerda para a direita, depois
       cada linha abaixo. O <code>RGB_MATRIX</code> precisa saber qual LED
       corresponde a qual tecla, e é assim que o
-      <code>g_led_config</code> em <code>totem.c</code> está escrito.
+      <code>g_led_config</code> em <code>allien.c</code> está escrito.
     </p>
     <p>
       Se o roteamento acabar serpenteando por linha, dá para acomodar — muda só
@@ -897,7 +897,7 @@
       menu lê o giro. Ligá-lo tornaria o menu inacessível pelo botão giratório.
       Consequência: <strong>o giro não é remapeável no Vial</strong>. Para dar
       outra função ao fallback, mude os dois keycodes em
-      <code>encoder_update_kb()</code> no <code>totem.c</code>.
+      <code>encoder_update_kb()</code> no <code>allien.c</code>.
     </p>
     <p>
       O <strong>botão</strong> também é interceptado por posição, então o keycode
@@ -932,9 +932,9 @@
     <div class="stage-head"><span class="stage-num">00</span><h3>Só o controlador</h3></div>
     <p class="goal">Objetivo: firmware e enumeração USB, sem nenhum fio.</p>
     <ol>
-      <li>Grave <code>totem_vial.uf2</code>.</li>
+      <li>Grave <code>allien_vial.uf2</code>.</li>
       <li>Ligue no PC. Deve enumerar como teclado.</li>
-      <li>No Vial deve aparecer <strong>TOTEM 20</strong> com o desenho de 21 posições.</li>
+      <li>No Vial deve aparecer <strong>Allien</strong> com o desenho de 21 posições.</li>
     </ol>
     <div class="note ok" style="margin-bottom:0">
       <span class="lbl">Se aparecer</span>
@@ -1052,7 +1052,7 @@
 
   <h4>Preparo, uma vez só</h4>
   <pre><code>git clone --recurse-submodules https://github.com/vial-kb/vial-qmk.git ~/vial-qmk
-ln -s "$(pwd)/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem</code></pre>
+ln -s "$(pwd)/firmware/QMK/VIAL_source/allien" ~/vial-qmk/keyboards/allien</code></pre>
   <p>
     Symlink, não cópia. Um único conjunto de arquivos: você edita no repositório
     e o build já enxerga. Copiar cria duas versões que divergem em silêncio.
@@ -1062,8 +1062,8 @@ ln -s "$(pwd)/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem</code><
   <pre><code>export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
 cd ~/vial-qmk
 
-make totem:vial       # → totem_vial.uf2     125 KiB · recomendado
-make totem:default    # → totem_default.uf2   89 KiB · QMK puro</code></pre>
+make allien:vial       # → allien_vial.uf2     125 KiB · recomendado
+make allien:default    # → allien_default.uf2   89 KiB · QMK puro</code></pre>
 
   <div class="note warn">
     <span class="lbl">Três armadilhas de ambiente</span>
@@ -1075,7 +1075,7 @@ make totem:default    # → totem_default.uf2   89 KiB · QMK puro</code></pre>
   <h4>Gravar</h4>
   <ol class="prose">
     <li><strong>Duplo toque no RESET.</strong> A placa monta como pendrive <strong><code>RPI-RP2</code></strong>.</li>
-    <li>Copie <code>totem_vial.uf2</code> para dentro.</li>
+    <li>Copie <code>allien_vial.uf2</code> para dentro.</li>
     <li>Ela reinicia sozinha e o pendrive some — é o esperado.</li>
   </ol>
   <div class="note info">
@@ -1108,7 +1108,7 @@ make totem:default    # → totem_default.uf2   89 KiB · QMK puro</code></pre>
         <tr><td>Giro invertido</td><td>A e B trocados</td><td>Troque os fios de <code>GP14</code> e <code>GP15</code></td></tr>
         <tr><td>Clique não troca perfil</td><td>Botão não chega na matriz</td><td>Matrix Tester deve acender <code>[0,5]</code></td></tr>
         <tr><td>Primeiro LED com cor errada</td><td>Nível lógico 3,3 V marginal</td><td>SK6812, ou ~4,3 V, ou level shifter</td></tr>
-        <tr><td>Efeitos RGB nas teclas erradas</td><td>Ordem da cadeia diferente de SW1→SW20</td><td>Ajustar <code>g_led_config</code> no <code>totem.c</code></td></tr>
+        <tr><td>Efeitos RGB nas teclas erradas</td><td>Ordem da cadeia diferente de SW1→SW20</td><td>Ajustar <code>g_led_config</code> no <code>allien.c</code></td></tr>
         <tr><td>LEDs tremem, placa reinicia</td><td>Corrente ou falta de bulk</td><td>Baixe o brilho; 470–1000 µF</td></tr>
         <tr><td>Combo G + B não dispara</td><td>Presses fora da janela de 50 ms</td><td>Aumente <code>PROFILE_CHORD_SYNC_MS</code></td></tr>
       </tbody>
@@ -1127,8 +1127,8 @@ make totem:default    # → totem_default.uf2   89 KiB · QMK puro</code></pre>
 
 <footer>
   <p>
-    TOTEM 20 · fork de <a href="https://github.com/GEIGEIGEIST/TOTEM">GEIGEIGEIST/TOTEM</a> ·
-    firmware em <code>firmware/QMK/VIAL_source/totem/</code>
+    Allien · fork de <a href="https://github.com/GEIGEIGEIST/TOTEM">GEIGEIGEIST/TOTEM</a> ·
+    firmware em <code>firmware/QMK/VIAL_source/allien/</code>
   </p>
   <p>
     Pinagem e matriz extraídas do esquema elétrico e conferidas contra o desenho

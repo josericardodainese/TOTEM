@@ -1,4 +1,4 @@
-/* TOTEM 20 -- unibody 20-key macropad + encoder + OLED (RP2040-Zero)
+/* Allien -- unibody 20-key macropad + encoder + OLED (RP2040-Zero)
  *
  * Copyright 2022 GEIST @geigeigeist
  * Copyright 2026 josericardodainese
@@ -16,24 +16,27 @@
  * are filled with KC_NO by the generated LAYOUT macro.
  *
  * ENC(0,5) is the encoder button. It is a normal matrix key electrically, but
- * ../../totem.c intercepts it by position, so its keycode here is never sent:
+ * ../../allien.c intercepts it by position, so its keycode here is never sent:
  *   short click -> next profile,  long click -> OLED menu.
  * The encoder ROTATION is owned by the menu and is not remappable in Vial.
  *
- * The G + B chord and the RGB profile indicator also live in ../../totem.c;
+ * The G + B chord and the RGB profile indicator also live in ../../allien.c;
  * every tunable is in ../../config.h.
  */
 
 #include QMK_KEYBOARD_H
 
-enum totem20_layers {
-    _GAME     = TOTEM20_PROFILE_GAME,
-    _MAX3DS   = TOTEM20_PROFILE_MAX3DS,
-    _MACROS   = TOTEM20_PROFILE_MACROS,
-    _RESERVED = TOTEM20_PROFILE_RESERVED,
-    _CONFIG   = TOTEM20_PROFILE_CONFIG,
+enum allien_layers {
+    _GAME     = ALLIEN_PROFILE_GAME,
+    _MAX3DS   = ALLIEN_PROFILE_MAX3DS,
+    _MACROS   = ALLIEN_PROFILE_MACROS,
+    _RESERVED = ALLIEN_PROFILE_RESERVED,
+    _CONFIG   = ALLIEN_PROFILE_CONFIG,
 };
 
+/* Plain QMK keymap: same five profiles, no Vial runtime.
+ * Edit this file and reflash to change anything.
+ */
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     /* 0 -- JOGO (white legends from the reference drawing) */

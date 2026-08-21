@@ -1,4 +1,4 @@
-/* TOTEM 20 -- OLED menu and status screens (SSD1306 128x64 over I2C)
+/* Allien -- OLED menu and status screens (SSD1306 128x64 over I2C)
  *
  * Copyright 2026 josericardodainese
  * SPDX-License-Identifier: GPL-2.0-or-later
@@ -15,7 +15,7 @@
  * With the default 6x8 font the panel is 21 columns x 8 rows.
  */
 
-#include "totem_oled.h"
+#include "allien_oled.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -167,7 +167,7 @@ static const char *item_label(uint8_t item) {
 /* Right-hand value shown next to each item in the list. */
 static void item_value(uint8_t item, char *out, size_t n) {
     switch (item) {
-        case ITEM_PROFILE:  snprintf(out, n, "%s", totem_profile_name(totem_profile_current())); break;
+        case ITEM_PROFILE:  snprintf(out, n, "%s", allien_profile_name(allien_profile_current())); break;
         case ITEM_SCREEN:   snprintf(out, n, "%s", screen_name(screen_mode)); break;
         case ITEM_RGB_VAL:  snprintf(out, n, "%u", (unsigned)rgb_val()); break;
 #ifdef RGB_MATRIX_ENABLE
@@ -188,12 +188,12 @@ static void item_value(uint8_t item, char *out, size_t n) {
 static void edit_adjust(bool clockwise) {
     switch (menu_sel) {
         case ITEM_PROFILE: {
-            uint8_t p = totem_profile_current();
-            p = clockwise ? (p + 1) % TOTEM20_PROFILE_COUNT
-                          : (p + TOTEM20_PROFILE_COUNT - 1) % TOTEM20_PROFILE_COUNT;
+            uint8_t p = allien_profile_current();
+            p = clockwise ? (p + 1) % ALLIEN_PROFILE_COUNT
+                          : (p + ALLIEN_PROFILE_COUNT - 1) % ALLIEN_PROFILE_COUNT;
             /* The menu can reach every profile, including 3 and 4, which the
              * G+B chord and the short click deliberately skip. */
-            totem_profile_set(p);
+            allien_profile_set(p);
             break;
         }
         case ITEM_SCREEN:
@@ -218,7 +218,7 @@ static void edit_adjust(bool clockwise) {
     }
 }
 
-bool totem_oled_rotate(bool clockwise) {
+bool allien_oled_rotate(bool clockwise) {
     note_input();
 
     switch (ui_state) {
@@ -241,7 +241,7 @@ bool totem_oled_rotate(bool clockwise) {
     return true;
 }
 
-void totem_oled_long_press(void) {
+void allien_oled_long_press(void) {
     note_input();
 
     switch (ui_state) {
@@ -268,13 +268,13 @@ void totem_oled_long_press(void) {
     }
 }
 
-void totem_oled_note_keypress(void) {
+void allien_oled_note_keypress(void) {
     apm_tick();
     apm_bucket[apm_head]++;
     note_input();
 }
 
-void totem_oled_tick(void) {
+void allien_oled_tick(void) {
     apm_tick();
     if (ui_state != UI_IDLE && timer_elapsed(last_input) > OLED_MENU_TIMEOUT_MS) {
         ui_state = UI_IDLE;
@@ -313,7 +313,7 @@ static void draw_bar(uint8_t col, uint8_t row, uint8_t width, uint8_t value, uin
 static void render_status(void) {
     char buf[OLED_COLS + 1];
 
-    snprintf(buf, sizeof(buf), " %-19.19s", totem_profile_name(totem_profile_current()));
+    snprintf(buf, sizeof(buf), " %-19.19s", allien_profile_name(allien_profile_current()));
     write_at(0, 0, buf, true);          // inverted banner
     draw_rule(1);
 
@@ -379,7 +379,7 @@ static void render_logo(void) {
     write_at(0, 2, "   T O T E M  2 0", false);
     draw_rule(3);
     char buf[OLED_COLS + 1];
-    snprintf(buf, sizeof(buf), "      %.14s", totem_profile_name(totem_profile_current()));
+    snprintf(buf, sizeof(buf), "      %.14s", allien_profile_name(allien_profile_current()));
     write_at(0, 4, buf, false);
 }
 
@@ -429,7 +429,7 @@ static void render_edit(void) {
     write_at(0, 7, "girar:muda  seg:ok", false);
 }
 
-void totem_oled_render(void) {
+void allien_oled_render(void) {
     oled_clear();
 
     switch (ui_state) {

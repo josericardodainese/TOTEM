@@ -1,4 +1,4 @@
-<title>Projeto TOTEM 20</title>
+<title>Projeto Allien</title>
 <style>
   :root {
     --bg:        #F6F7F9;
@@ -397,7 +397,7 @@
 
 <header class="masthead">
   <p class="eyebrow">Fork de GEIGEIGEIST/TOTEM · firmware QMK + Vial</p>
-  <h1>Projeto TOTEM 20</h1>
+  <h1>Projeto Allien</h1>
   <p class="standfirst">
     Um teclado split de 38 teclas transformado em macropad de peça única com 20.
     O que é, como chegou aqui, e por que cada decisão foi tomada do jeito que foi.
@@ -675,8 +675,8 @@
         <tr><td>Ajustar RGB</td><td class="m">menu no display</td><td class="m">camada via G + E</td></tr>
         <tr><td>Chegar na camada 4</td><td class="m">menu</td><td class="m">G + E</td></tr>
         <tr><td>Switches</td><td class="m">21</td><td class="m">20</td></tr>
-        <tr><td><code>totem_vial.uf2</code></td><td class="m">125 KiB</td><td class="m">119 KiB</td></tr>
-        <tr><td><code>totem_default.uf2</code></td><td class="m">89 KiB</td><td class="m">83 KiB</td></tr>
+        <tr><td><code>allien_vial.uf2</code></td><td class="m">125 KiB</td><td class="m">119 KiB</td></tr>
+        <tr><td><code>allien_default.uf2</code></td><td class="m">89 KiB</td><td class="m">83 KiB</td></tr>
       </tbody>
     </table>
   </div>
@@ -916,7 +916,7 @@
   <div class="sec-head">
     <p class="eyebrow">Seção 07</p>
     <h2>Mapa do repositório</h2>
-    <p>Todo o firmware vive em <code>firmware/QMK/VIAL_source/totem/</code>.</p>
+    <p>Todo o firmware vive em <code>firmware/QMK/VIAL_source/allien/</code>.</p>
   </div>
 
   <div class="tablewrap">
@@ -937,8 +937,8 @@
       <tbody>
         <tr><td class="m">keyboard.json</td><td><strong>A ficha técnica da placa.</strong> Em quais pinos do controlador cada linha e coluna estão ligadas, quantas teclas existem e onde ficam no desenho. É o primeiro arquivo que o QMK lê.</td></tr>
         <tr><td class="m">config.h</td><td><strong>Os ajustes de comportamento.</strong> Quais teclas formam cada acorde, quanto tempo é preciso segurar, quantos perfis existem. Mudar um número aqui muda como o teclado reage.</td></tr>
-        <tr><td class="m">totem.c</td><td><strong>O código que roda dentro do teclado.</strong> Detecta os acordes, troca de perfil e decide a cor dos LEDs.</td></tr>
-        <tr><td class="m">totem_oled.c/.h</td><td>Desenha o menu e as telas no display. <em>Só na variante A.</em></td></tr>
+        <tr><td class="m">allien.c</td><td><strong>O código que roda dentro do teclado.</strong> Detecta os acordes, troca de perfil e decide a cor dos LEDs.</td></tr>
+        <tr><td class="m">allien_oled.c/.h</td><td>Desenha o menu e as telas no display. <em>Só na variante A.</em></td></tr>
         <tr><td class="m">halconf.h</td><td>Liga o suporte a I²C, o protocolo de dois fios que conversa com o display. Sem isso o display não existe para o firmware. <em>Só na variante A.</em></td></tr>
         <tr><td class="m">keymaps/vial/</td><td><strong>A versão que funciona com o app Vial.</strong> Além do keymap, traz o desenho das teclas que aparece na tela do app e um identificador único para o Vial reconhecer este teclado. É a versão recomendada.</td></tr>
         <tr><td class="m">keymaps/default/</td><td><strong>A versão sem o app.</strong> Mesmas cinco camadas, mas para mudar qualquer tecla você edita este arquivo e regrava o firmware. Existe para quem não quer depender do Vial.</td></tr>
@@ -951,7 +951,7 @@
     <span class="lbl">Onde a lógica mora</span>
     <p>
       O motor de acordes e o indicador de RGB ficam no <strong>nível do
-      teclado</strong> (<code>totem.c</code>, via <code>process_record_kb</code> e
+      teclado</strong> (<code>allien.c</code>, via <code>process_record_kb</code> e
       <code>matrix_scan_kb</code>), não nos keymaps. Assim os dois keymaps
       compartilham uma implementação só, em vez de duplicá-la e deixar as duas
       divergirem.
@@ -981,8 +981,8 @@
   <pre><code>export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
 cd ~/vial-qmk
 
-make totem:vial       # Vial, recomendado
-make totem:default    # QMK puro</code></pre>
+make allien:vial       # Vial, recomendado
+make allien:default    # QMK puro</code></pre>
 
   <p>
     O passo a passo completo, do nada instalado até o <code>.uf2</code>, está no
@@ -1063,8 +1063,8 @@ make totem:default    # QMK puro</code></pre>
 
 <footer>
   <p>
-    TOTEM 20 · fork de <a href="https://github.com/GEIGEIGEIST/TOTEM">GEIGEIGEIST/TOTEM</a> ·
-    firmware em <code>firmware/QMK/VIAL_source/totem/</code>
+    Allien · fork de <a href="https://github.com/GEIGEIGEIST/TOTEM">GEIGEIGEIST/TOTEM</a> ·
+    firmware em <code>firmware/QMK/VIAL_source/allien/</code>
   </p>
   <p>
     Guias de bancada por variante, com fiação detalhada e roteiro de teste,

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
 
-/* TOTEM 20 -- unibody 20-key macropad + rotary encoder + SSD1306 OLED,
+/* Allien -- unibody 20-key macropad + rotary encoder + SSD1306 OLED,
  * on a Waveshare RP2040-Zero.
  *
  * NOT the original TOTEM split: no second half, no serial link, no handedness.
@@ -26,12 +26,12 @@
  * DYNAMIC_KEYMAP_LAYER_COUNT in keymaps/vial/{config.h,rules.mk}
  * and with the keymaps[] array in every keymap.c.
  */
-#define TOTEM20_PROFILE_GAME     0   // jogo
-#define TOTEM20_PROFILE_MAX3DS   1   // 3ds Max
-#define TOTEM20_PROFILE_MACROS   2   // macros / uso geral
-#define TOTEM20_PROFILE_RESERVED 3   // reservada
-#define TOTEM20_PROFILE_CONFIG   4   // configuracao / manutencao
-#define TOTEM20_PROFILE_COUNT    5
+#define ALLIEN_PROFILE_GAME     0   // jogo
+#define ALLIEN_PROFILE_MAX3DS   1   // 3ds Max
+#define ALLIEN_PROFILE_MACROS   2   // macros / uso geral
+#define ALLIEN_PROFILE_RESERVED 3   // reservada
+#define ALLIEN_PROFILE_CONFIG   4   // configuracao / manutencao
+#define ALLIEN_PROFILE_COUNT    5
 
 // ┌─────────────────────────────────────────────────┐
 // │ p r o f i l e   s w i t c h   c h o r d         │

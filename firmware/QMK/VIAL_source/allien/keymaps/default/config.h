@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
 
-/* The TOTEM 20 is a single-piece board, so the split handedness settings the
+/* The Allien is a single-piece board, so the split handedness settings the
  * original TOTEM keymap carried here (MASTER_LEFT / MASTER_RIGHT) are gone.
  */
 

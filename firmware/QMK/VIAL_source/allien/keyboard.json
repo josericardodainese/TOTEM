@@ -43,7 +43,7 @@
     },
     "rgb_matrix": {
         "driver": "ws2812",
-        "//chain": "DIN -> DOUT must follow SW1..SW20; see g_led_config in totem.c",
+        "//chain": "DIN -> DOUT must follow SW1..SW20; see g_led_config in allien.c",
         "max_brightness": 120,
         "sleep": true,
         "animations": {
