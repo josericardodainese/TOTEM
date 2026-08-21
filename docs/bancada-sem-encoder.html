@@ -1,4 +1,4 @@
-<title>TOTEM 20 Sem Encoder</title>
+<title>Allien Sem Encoder</title>
 <style>
   :root {
     --bg:        #F6F7F9;
@@ -360,7 +360,7 @@
 
 <header class="masthead">
   <p class="eyebrow">Variante enxuta · branch <code>without-encoder-oled-screen</code></p>
-  <h1>TOTEM 20 Sem Encoder</h1>
+  <h1>Allien Sem Encoder</h1>
   <p class="standfirst">
     Mesmo macropad de 20 teclas, sem encoder e sem display. Tudo que o botão
     giratório e o menu faziam agora sai das próprias teclas, por dois acordes.
@@ -424,7 +424,7 @@
         <tr><td>Switches no LAYOUT</td><td class="m">21</td><td class="m">20</td></tr>
         <tr><td>GPIOs necessários</td><td class="m">15</td><td class="m" style="color:var(--ok)"><strong>11</strong></td></tr>
         <tr><td>Placa</td><td class="m">só RP2040-Zero</td><td class="m">Zero <strong>ou</strong> XIAO</td></tr>
-        <tr><td><code>totem_vial.uf2</code></td><td class="m">125 KiB</td><td class="m">119 KiB</td></tr>
+        <tr><td><code>allien_vial.uf2</code></td><td class="m">125 KiB</td><td class="m">119 KiB</td></tr>
       </tbody>
     </table>
   </div>
@@ -875,7 +875,7 @@
       Encadeie <strong>DIN → DOUT seguindo SW1 até SW20</strong>, na ordem da
       tabela da Seção 06. O <code>RGB_MATRIX</code> precisa saber qual LED é qual
       tecla — sem isso, os efeitos reativos acendem no lugar errado. É assim que
-      o <code>g_led_config</code> em <code>totem.c</code> está escrito.
+      o <code>g_led_config</code> em <code>allien.c</code> está escrito.
     </p>
   </div>
 
@@ -953,9 +953,9 @@
     <div class="stage-head"><span class="stage-num">00</span><h3>Só o controlador</h3></div>
     <p class="goal">Objetivo: firmware e enumeração USB, sem nenhum fio.</p>
     <ol>
-      <li>Grave <code>totem_vial.uf2</code>.</li>
+      <li>Grave <code>allien_vial.uf2</code>.</li>
       <li>Ligue no PC — deve enumerar como teclado.</li>
-      <li>No Vial deve aparecer <strong>TOTEM 20</strong> com o desenho de 20 teclas.</li>
+      <li>No Vial deve aparecer <strong>Allien</strong> com o desenho de 20 teclas.</li>
     </ol>
   </div>
 
@@ -1039,7 +1039,7 @@
   <div class="prose">
     <p>
       Este repositório é um <strong>projeto de hardware</strong>, não uma árvore
-      QMK: não há build system dentro dele. A pasta <code>totem/</code> é só a
+      QMK: não há build system dentro dele. A pasta <code>allien/</code> é só a
       <em>definição</em> do teclado e precisa estar dentro de uma árvore QMK que
       traga o <code>quantum/</code>, o ChibiOS, o pico-sdk e os Makefiles —
       cerca de 1,6 GB, deliberadamente não versionado aqui.
@@ -1104,7 +1104,7 @@ mv out ~/vial-qmk/.toolchain
   <h3>Passo 5 — ligar a definição do teclado</h3>
   <pre><code>cd &lt;este-repositorio&gt;
 git checkout without-encoder-oled-screen
-ln -s "$(pwd)/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem</code></pre>
+ln -s "$(pwd)/firmware/QMK/VIAL_source/allien" ~/vial-qmk/keyboards/allien</code></pre>
   <div class="note warn">
     <span class="lbl">Symlink, nunca cópia</span>
     <p>
@@ -1119,8 +1119,8 @@ ln -s "$(pwd)/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem</code><
   <pre><code>export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
 cd ~/vial-qmk
 
-make totem:vial       # → totem_vial.uf2     119 KiB · recomendado
-make totem:default    # → totem_default.uf2   83 KiB · QMK puro</code></pre>
+make allien:vial       # → allien_vial.uf2     119 KiB · recomendado
+make allien:default    # → allien_default.uf2   83 KiB · QMK puro</code></pre>
   <p>
     O <code>export PATH</code> precisa vir <strong>antes</strong> do
     <code>make</code>, e em toda sessão de terminal nova. Coloque no seu
@@ -1147,7 +1147,7 @@ make totem:default    # → totem_default.uf2   83 KiB · QMK puro</code></pre>
   <h3>Passo 7 — gravar</h3>
   <ol class="prose">
     <li><strong>Duplo toque no botão RESET.</strong> A placa monta como um pendrive chamado <code>RPI-RP2</code>.</li>
-    <li>Copie <code>totem_vial.uf2</code> para dentro dele.</li>
+    <li>Copie <code>allien_vial.uf2</code> para dentro dele.</li>
     <li>Ela reinicia sozinha no firmware novo e o pendrive some — isso é o esperado, não é erro.</li>
   </ol>
   <div class="note info">
@@ -1161,7 +1161,7 @@ make totem:default    # → totem_default.uf2   83 KiB · QMK puro</code></pre>
 
   <h3>Recompilar depois de uma alteração</h3>
   <pre><code>export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
-cd ~/vial-qmk &amp;&amp; make totem:vial</code></pre>
+cd ~/vial-qmk &amp;&amp; make allien:vial</code></pre>
   <p style="margin-bottom:0">
     Só isso. Os passos 1 a 5 são uma vez só. Se algo ficar estranho depois de
     mudar <code>keyboard.json</code> ou <code>rules.mk</code>, apague o cache com
@@ -1193,7 +1193,7 @@ cd ~/vial-qmk &amp;&amp; make totem:vial</code></pre>
         <tr><td>Tecla certa, caractere errado</td><td>Keymap, não fiação</td><td>Matrix Tester acende certo? Então é keymap</td></tr>
         <tr><td>Vial mostra layout de 38 teclas</td><td>Definição antiga em cache</td><td>UID própria já resolve; recarregue o Vial</td></tr>
         <tr><td>Primeiro LED com cor errada</td><td>Nível lógico 3,3 V marginal</td><td>SK6812, ou ~4,3 V, ou level shifter</td></tr>
-        <tr><td>Efeitos reativos na tecla errada</td><td>Cadeia fora da ordem SW1→SW20</td><td>Ajustar <code>g_led_config</code> no <code>totem.c</code></td></tr>
+        <tr><td>Efeitos reativos na tecla errada</td><td>Cadeia fora da ordem SW1→SW20</td><td>Ajustar <code>g_led_config</code> no <code>allien.c</code></td></tr>
         <tr><td>LEDs tremem, placa reinicia</td><td>Corrente ou falta de bulk</td><td>Baixe o brilho; 470–1000 µF</td></tr>
       </tbody>
     </table>
@@ -1211,7 +1211,7 @@ cd ~/vial-qmk &amp;&amp; make totem:vial</code></pre>
 
 <footer>
   <p>
-    TOTEM 20 · branch <code>without-encoder-oled-screen</code> ·
+    Allien · branch <code>without-encoder-oled-screen</code> ·
     fork de <a href="https://github.com/GEIGEIGEIST/TOTEM">GEIGEIGEIST/TOTEM</a>
   </p>
   <p>

@@ -1,4 +1,4 @@
-# TOTEM 20 — variante sem encoder e sem display
+# Allien — variante sem encoder e sem display
 
 Macropad unibody de **20 teclas**. Sem encoder, sem OLED: tudo é controlado
 pelas próprias teclas, por meio de dois acordes de duas teclas.
@@ -115,7 +115,7 @@ G, B e E são os cantos mais distantes do teclado — G embaixo à esquerda, B e
 na ponta do cluster do polegar. Acionamento simultâneo acidental durante o jogo
 é praticamente impossível.
 
-Regras aplicadas pelo motor de acordes em `totem.c`:
+Regras aplicadas pelo motor de acordes em `allien.c`:
 
 - as duas teclas devem descer dentro de `CHORD_SYNC_MS` (50 ms) uma da outra —
   apertar G, esperar e depois apertar B nunca arma nada;
@@ -243,7 +243,7 @@ diodos nas linhas. Contagem diferente significa fio faltando ou sobrando.
 
 **A cadeia precisa ser roteada DIN → DOUT seguindo SW1 até SW20**, na mesma
 ordem da tabela de switches. O `RGB_MATRIX` precisa saber qual LED corresponde
-a qual tecla; esse mapa é o `g_led_config` em `totem.c`. Se o PCB serpentear
+a qual tecla; esse mapa é o `g_led_config` em `allien.c`. Se o PCB serpentear
 por linha, muda só o primeiro bloco daquela struct.
 
 - **330 Ω** em série na linha de dados, junto ao primeiro LED.
@@ -330,7 +330,7 @@ mv out ~/vial-qmk/.toolchain
 ```sh
 cd <este-repositorio>
 git checkout without-encoder-oled-screen
-ln -s "$(pwd)/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem
+ln -s "$(pwd)/firmware/QMK/VIAL_source/allien" ~/vial-qmk/keyboards/allien
 ```
 
 Symlink, **nunca cópia**. Copiar cria duas versões dos mesmos arquivos: você
@@ -343,8 +343,8 @@ por que a mudança não surtiu efeito.
 export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
 cd ~/vial-qmk
 
-make totem:vial       # -> totem_vial.uf2    119 KiB · recomendado
-make totem:default    # -> totem_default.uf2  83 KiB · QMK puro
+make allien:vial       # -> allien_vial.uf2    119 KiB · recomendado
+make allien:default    # -> allien_default.uf2  83 KiB · QMK puro
 ```
 
 O `export PATH` precisa vir **antes** do `make`, e em toda sessão de terminal
@@ -361,7 +361,7 @@ existe "compilou com avisos".
 
 ```sh
 export PATH="$HOME/vial-qmk/.toolchain/bin:$HOME/vial-qmk/.venv/bin:$PATH"
-cd ~/vial-qmk && make totem:vial
+cd ~/vial-qmk && make allien:vial
 ```
 
 Os passos 1 a 5 são uma vez só. Se algo ficar estranho depois de mudar

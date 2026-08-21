@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
 
-/* Freshly generated UID. The TOTEM 20 is a different device from the original
+/* Freshly generated UID. The Allien is a different device from the original
  * TOTEM split (different matrix, pinout, key count and controller), so it must
  * NOT reuse the upstream TOTEM UID -- Vial caches its keyboard definition by
  * this value and would otherwise load the wrong 38-key layout.

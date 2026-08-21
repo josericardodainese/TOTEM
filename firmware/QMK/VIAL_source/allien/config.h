@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
 
-/* TOTEM 20 -- unibody 20-key macropad, no encoder and no OLED.
+/* Allien -- unibody 20-key macropad, no encoder and no OLED.
  *
  * Everything is driven from the keys themselves: two two-key chords, each
  * requiring a one-second hold, cycle the profile and open the RGB control
@@ -28,12 +28,12 @@
  * DYNAMIC_KEYMAP_LAYER_COUNT in keymaps/vial/{config.h,rules.mk}
  * and with the keymaps[] array in every keymap.c.
  */
-#define TOTEM20_PROFILE_GAME     0   // jogo
-#define TOTEM20_PROFILE_MAX3DS   1   // 3ds Max
-#define TOTEM20_PROFILE_MACROS   2   // macros / uso geral
-#define TOTEM20_PROFILE_RESERVED 3   // reservada
-#define TOTEM20_PROFILE_RGB      4   // controle de RGB / manutencao
-#define TOTEM20_PROFILE_COUNT    5
+#define ALLIEN_PROFILE_GAME     0   // jogo
+#define ALLIEN_PROFILE_MAX3DS   1   // 3ds Max
+#define ALLIEN_PROFILE_MACROS   2   // macros / uso geral
+#define ALLIEN_PROFILE_RESERVED 3   // reservada
+#define ALLIEN_PROFILE_RGB      4   // controle de RGB / manutencao
+#define ALLIEN_PROFILE_COUNT    5
 
 // ┌─────────────────────────────────────────────────┐
 // │ c h o r d s                                     │

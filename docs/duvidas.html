@@ -1,4 +1,4 @@
-<title>Dúvidas do TOTEM 20</title>
+<title>Dúvidas do Allien</title>
 <style>
   :root {
     --bg:        #F6F7F9;
@@ -415,7 +415,7 @@
 
 <header class="masthead">
   <p class="eyebrow">Companheiro do documento de visão geral</p>
-  <h1>Dúvidas do TOTEM 20</h1>
+  <h1>Dúvidas do Allien</h1>
   <p class="standfirst">
     As perguntas que surgiram durante o projeto, com as respostas. Registradas
     porque são exatamente as que voltam a aparecer meses depois, quando o
@@ -578,7 +578,7 @@
     </p>
     <p style="margin-bottom:0">
       Lembrando da ordem: o Vial só enxerga o teclado depois que você gravar o
-      <code>totem_vial.uf2</code>. Com o <code>totem_default.uf2</code> o teclado
+      <code>allien_vial.uf2</code>. Com o <code>allien_default.uf2</code> o teclado
       funciona, mas é invisível para o app.
     </p>
   </div>
@@ -600,7 +600,7 @@
     </p>
   </div>
 
-  <pre><code>ln -s ".../TOTEM/firmware/QMK/VIAL_source/totem" ~/vial-qmk/keyboards/totem</code></pre>
+  <pre><code>ln -s ".../TOTEM/firmware/QMK/VIAL_source/allien" ~/vial-qmk/keyboards/allien</code></pre>
 
   <div class="prose">
     <p>
@@ -611,10 +611,10 @@
     </p>
   </div>
 
-  <pre><code>$ stat -f "%i %N" ~/vial-qmk/keyboards/totem/keyboard.json \
-                  ~/Documents/GitHub/TOTEM/firmware/QMK/VIAL_source/totem/keyboard.json
+  <pre><code>$ stat -f "%i %N" ~/vial-qmk/keyboards/allien/keyboard.json \
+                  ~/Documents/GitHub/TOTEM/firmware/QMK/VIAL_source/allien/keyboard.json
 
-80113874  /Users/josericardodainese/vial-qmk/keyboards/totem/keyboard.json
+80113874  /Users/josericardodainese/vial-qmk/keyboards/allien/keyboard.json
 80113874  /Users/josericardodainese/Documents/GitHub/TOTEM/.../keyboard.json</code></pre>
 
   <div class="prose">
@@ -625,15 +625,15 @@
     <p>Aí o comando fica óbvio:</p>
   </div>
 
-  <pre><code>make totem:vial
+  <pre><code>make allien:vial
      └──┬─┘ └─┬─┘
         │     └─ pasta dentro de keymaps/
         └─────── pasta dentro de keyboards/</code></pre>
 
   <div class="prose">
     <p style="margin-bottom:0">
-      "Compile o teclado <code>keyboards/totem</code> com o keymap
-      <code>keymaps/vial</code>." O QMK entra em <code>keyboards/totem</code>, o
+      "Compile o teclado <code>keyboards/allien</code> com o keymap
+      <code>keymaps/vial</code>." O QMK entra em <code>keyboards/allien</code>, o
       sistema de arquivos segue o atalho, e ele acaba lendo os seus arquivos sem
       nunca saber que saiu do próprio diretório.
     </p>
@@ -663,7 +663,7 @@
       <thead><tr><th class="m">Pasta</th><th>O que é</th><th>Situação</th></tr></thead>
       <tbody>
         <tr>
-          <td class="m">firmware/QMK/<br>VIAL_source/totem/</td>
+          <td class="m">firmware/QMK/<br>VIAL_source/allien/</td>
           <td><strong>O seu teclado.</strong> É a pasta apontada pelo symlink. Todo o firmware que construímos vive aqui.</td>
           <td style="color:var(--ok)">reescrita</td>
         </tr>
@@ -891,8 +891,8 @@
     <table>
       <thead><tr><th class="m">Arquivo</th><th>Quando</th></tr></thead>
       <tbody>
-        <tr><td class="m">totem_vial.uf2</td><td><strong>É o que você quer.</strong> Versão que o app Vial enxerga.</td></tr>
-        <tr><td class="m">totem_default.uf2</td><td>Funciona como teclado, mas fica invisível para o Vial.</td></tr>
+        <tr><td class="m">allien_vial.uf2</td><td><strong>É o que você quer.</strong> Versão que o app Vial enxerga.</td></tr>
+        <tr><td class="m">allien_default.uf2</td><td>Funciona como teclado, mas fica invisível para o Vial.</td></tr>
       </tbody>
     </table>
   </div>
@@ -956,7 +956,7 @@
     <table>
       <thead><tr><th class="m">Arquivo</th><th>Onde</th></tr></thead>
       <tbody>
-        <tr><td class="m">docs/projeto-totem20.html</td><td>Visão geral e registro de decisões — nas duas branches</td></tr>
+        <tr><td class="m">docs/projeto-allien.html</td><td>Visão geral e registro de decisões — nas duas branches</td></tr>
         <tr><td class="m">docs/duvidas.html</td><td>Este documento — nas duas branches</td></tr>
         <tr><td class="m">docs/bancada-encoder-oled.html</td><td>Só na <code>encoder-oled-screen</code></td></tr>
         <tr><td class="m">docs/bancada-sem-encoder.html</td><td>Só na <code>without-encoder-oled-screen</code></td></tr>
@@ -976,7 +976,7 @@
 
 <footer>
   <p>
-    TOTEM 20 · fork de <a href="https://github.com/GEIGEIGEIST/TOTEM">GEIGEIGEIST/TOTEM</a>
+    Allien · fork de <a href="https://github.com/GEIGEIGEIST/TOTEM">GEIGEIGEIST/TOTEM</a>
   </p>
   <p>
     Companheiro do documento de visão geral, que explica o projeto e registra as

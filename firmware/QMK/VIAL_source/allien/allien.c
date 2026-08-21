@@ -1,4 +1,4 @@
-/* TOTEM 20 -- unibody 20-key macropad, no encoder, no OLED
+/* Allien -- unibody 20-key macropad, no encoder, no OLED
  *
  * Copyright 2022 GEIST @geigeigeist
  * Copyright 2026 josericardodainese
@@ -76,25 +76,25 @@ led_config_t g_led_config = {
  * returns to jogo.
  */
 static const uint8_t profile_cycle_order[] = {
-    TOTEM20_PROFILE_GAME,
-    TOTEM20_PROFILE_MAX3DS,
-    TOTEM20_PROFILE_MACROS,
+    ALLIEN_PROFILE_GAME,
+    ALLIEN_PROFILE_MAX3DS,
+    ALLIEN_PROFILE_MACROS,
 };
 
 /* jogo = vermelho, 3ds Max = azul, macros = verde,
  * reservada = roxo, RGB = amarelo
  */
-static const uint8_t profile_hue[TOTEM20_PROFILE_COUNT] = {
-    [TOTEM20_PROFILE_GAME]     = 0,     // red
-    [TOTEM20_PROFILE_MAX3DS]   = 170,   // blue
-    [TOTEM20_PROFILE_MACROS]   = 85,    // green
-    [TOTEM20_PROFILE_RESERVED] = 191,   // purple
-    [TOTEM20_PROFILE_RGB]      = 43,    // yellow
+static const uint8_t profile_hue[ALLIEN_PROFILE_COUNT] = {
+    [ALLIEN_PROFILE_GAME]     = 0,     // red
+    [ALLIEN_PROFILE_MAX3DS]   = 170,   // blue
+    [ALLIEN_PROFILE_MACROS]   = 85,    // green
+    [ALLIEN_PROFILE_RESERVED] = 191,   // purple
+    [ALLIEN_PROFILE_RGB]      = 43,    // yellow
 };
 
 static void profile_indicate(uint8_t profile) {
 #ifdef RGB_MATRIX_ENABLE
-    if (profile >= TOTEM20_PROFILE_COUNT) return;
+    if (profile >= ALLIEN_PROFILE_COUNT) return;
     /* Respect an explicit "RGB off": never light up on our own. */
     if (!rgb_matrix_is_enabled()) return;
     /* The profile colour only means anything on the solid effect. On any
@@ -125,7 +125,7 @@ static void profile_switch_next(void) {
 }
 
 static void rgb_layer_toggle(void) {
-    layer_invert(TOTEM20_PROFILE_RGB);
+    layer_invert(ALLIEN_PROFILE_RGB);
 }
 
 // ┌─────────────────────────────────────────────────┐

@@ -1,4 +1,4 @@
-/* TOTEM 20 -- unibody 20-key macropad, no encoder, no OLED
+/* Allien -- unibody 20-key macropad, no encoder, no OLED
  *
  * Copyright 2022 GEIST @geigeigeist
  * Copyright 2026 josericardodainese
@@ -18,20 +18,23 @@
  *     G + B  held 1 s  ->  next profile
  *     G + E  held 1 s  ->  toggle the RGB layer below
  *
- * G, B and E are intercepted by position in ../../totem.c. Pressed alone they
+ * G, B and E are intercepted by position in ../../allien.c. Pressed alone they
  * behave completely normally; only a recognised chord swallows them.
  */
 
 #include QMK_KEYBOARD_H
 
-enum totem20_layers {
-    _GAME     = TOTEM20_PROFILE_GAME,
-    _MAX3DS   = TOTEM20_PROFILE_MAX3DS,
-    _MACROS   = TOTEM20_PROFILE_MACROS,
-    _RESERVED = TOTEM20_PROFILE_RESERVED,
-    _RGB      = TOTEM20_PROFILE_RGB,
+enum allien_layers {
+    _GAME     = ALLIEN_PROFILE_GAME,
+    _MAX3DS   = ALLIEN_PROFILE_MAX3DS,
+    _MACROS   = ALLIEN_PROFILE_MACROS,
+    _RESERVED = ALLIEN_PROFILE_RESERVED,
+    _RGB      = ALLIEN_PROFILE_RGB,
 };
 
+/* Plain QMK keymap: same five layers, no Vial runtime.
+ * Edit this file and reflash to change anything.
+ */
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     /* 0 -- JOGO (white legends from the reference drawing) */
